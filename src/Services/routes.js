@@ -44,3 +44,38 @@ export const addExercise = async (form) => {
 
   return response;
 };
+
+/******Função que faz o delete do exercicio******/
+export const deleteRenter = async (id) => {
+  const response = await db.collection("Exercicios").doc(id).delete()
+    .then(() => {
+      return (
+        { status: 200 }
+      )
+    })
+    .catch((err) => {
+      return (
+        { status: 400 }
+      )
+    })
+  return response
+}
+
+/******Função que edição do exercicio******/
+export const changeExercise = async (data, id) => {
+
+  const response = await db.collection(`Exercicios`).doc(id).update(
+    data
+  )
+    .then(() => {
+      return (
+        { status: 200 }
+      )
+    })
+    .catch((err) => {
+      return (
+        { status: 400 }
+      )
+    })
+  return response
+}

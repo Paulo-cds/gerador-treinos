@@ -6,6 +6,8 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogTitle,
   MenuItem,
   Select,
   TextField,
@@ -15,17 +17,22 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { addExercise, fetchCategories } from "../../Services/routes";
+import { changeExercise, fetchCategories } from "../../Services/routes";
 
-const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
+const EditExercise = ({
+  handleGetExercises,
+  exerciseEdit,
+  expanded,
+  setExpanded,
+}) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-
+  console.log(exerciseEdit);
   const formik = useFormik({
     initialValues: {
-      nome: "",
-      categoria: "",
-      exemplo: "",
+      nome: exerciseEdit.nome,
+      categoria: exerciseEdit.categoria,
+      exemplo: exerciseEdit.exemplo,
     },
     validationSchema: yup.object({
       nome: yup.string().required("O campo é obrigatório."),
@@ -35,9 +42,8 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await addExercise(values);
+        await changeExercise(values, exerciseEdit.id);
         setLoading(false);
-        formik.resetForm();
         setExpanded(false);
         handleGetExercises();
       } catch (e) {
@@ -46,7 +52,7 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
       }
     },
   });
-
+  console.log(formik.values);
   useEffect(() => {
     getCategories();
   }, []);
@@ -79,54 +85,44 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
 
   return (
     <>
-      <Accordion expanded={expanded} onChange={handleChange} sx={{ mb: 2 }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
+      <Dialog open={expanded} onClose={handleChange} sx={{ minWidth:'30rem', p:3 }} maxWidth='xl'>
+        <DialogTitle>Editar Exercício</DialogTitle>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
         >
-          <Typography sx={{ width: 1, flexShrink: 0 }}>
-            Cadastrar Exercício
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
+          <TextField
+            name="nome"
+            value={formik.values.nome}
+            label="Nome"
+            onChange={formik.handleChange}
+          />
+          <Select
+            name="categoria"
+            value={formik.values.categoria}
+            onChange={formik.handleChange}
+            label="Categoria"
           >
-            <TextField
-              name="nome"
-              value={formik.values.nome}
-              label="Nome"
-              onChange={formik.handleChange}
-            />
-            <Select
-              name="categoria"
-              value={formik.values.categoria}
-              onChange={formik.handleChange}
-              label="Categoria"
-            >
-              {categories.map((category) => (
-                <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
-              ))}
-            </Select>
-            <TextField
-              name="exemplo"
-              value={formik.values.exemplo}
-              label="Exemplo"
-              onChange={formik.handleChange}
-            />
-            <Button variant="contained" type="submit">
-              Salvar
-            </Button>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+            {categories.map((category) => (
+              <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
+            ))}
+          </Select>
+          <TextField
+            name="exemplo"
+            value={formik.values.exemplo}
+            label="Exemplo"
+            onChange={formik.handleChange}
+          />
+          <Button variant="contained" type="submit">
+            Salvar
+          </Button>
+        </Box>
+      </Dialog>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -138,4 +134,4 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
   );
 };
 
-export default CreateExercise;
+export default EditExercise;
