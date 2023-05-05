@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -16,31 +15,29 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { addExercise, fetchCategories } from "../../Services/routes";
+import { addCategory } from "../../Services/routes";
 
-const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
+const CreateCategory = ({ handleGetCategories, expanded, setExpanded }) => {
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
 
   const formik = useFormik({
     initialValues: {
       nome: "",
-      categoria: "",
-      exemplo: "",
     },
     validationSchema: yup.object({
       nome: yup.string().required("O campo é obrigatório."),
-      categoria: yup.string().required("O campo é obrigatório."),
-      exemplo: yup.string(),
     }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await addExercise(values);
+        const data = {
+          Nome: formik.values.nome,
+        };
+        await addCategory(data);
         setLoading(false);
         formik.resetForm();
         setExpanded(false);
-        handleGetExercises();
+        handleGetCategories();
       } catch (e) {
         console.log(e);
         setLoading(false);
@@ -48,34 +45,12 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
     },
   });
 
-  useEffect(() => {
-    getCategories();
-  }, []);
-
   const handleClose = () => {
     setLoading(false);
   };
 
   const handleChange = () => {
     setExpanded(!expanded);
-  };
-
-  const getCategories = async () => {
-    setLoading(true);
-    try {
-      let newCategory = [];
-      const response = await fetchCategories();
-      response.docs.forEach((item) => {
-        let newItem = item.data();
-        newItem.id = item.id;
-        newCategory.push(newItem);
-      });
-      setCategories(newCategory);
-      setLoading(false);
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
   };
 
   return (
@@ -87,7 +62,7 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
           id="panel1bh-header"
         >
           <Typography sx={{ width: 1, flexShrink: 0 }}>
-            Cadastrar Exercício
+            Cadastrar Categoria
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -104,24 +79,6 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
               name="nome"
               value={formik.values.nome}
               label="Nome"
-              onChange={formik.handleChange}
-            />
-            <InputLabel>Categoria</InputLabel>
-            <Select
-              sx={{ mt: 0 }}
-              name="categoria"
-              value={formik.values.categoria}
-              onChange={formik.handleChange}
-              label="Categoria"
-            >
-              {categories.map((category) => (
-                <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
-              ))}
-            </Select>
-            <TextField
-              name="exemplo"
-              value={formik.values.exemplo}
-              label="Exemplo"
               onChange={formik.handleChange}
             />
             <Button variant="contained" type="submit">
@@ -141,4 +98,4 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
   );
 };
 
-export default CreateExercise;
+export default CreateCategory;

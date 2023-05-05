@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogTitle,
   Snackbar,
+  TableFooter,
   TablePagination,
   TextField,
   styled,
@@ -20,15 +21,20 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import { deleteRenter, fetchExercises } from "../../Services/routes";
-import CreateExercise from "./createExercise";
+import {
+  deleteRenter,
+  fetchExercises,
+  fetchMetods,
+} from "../../Services/routes";
+import CreateExercise from "./createMetods";
 import Player from "../../Assets/Player";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editExercise";
+import CreateMetods from "./createMetods";
 
-const Exercises = () => {
-  const [exercises, setExercises] = useState([]);
+const Metods = () => {
+  const [metods, setMetods] = useState([]);
   const [newRegister, setNewRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -50,7 +56,7 @@ const Exercises = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
@@ -75,19 +81,19 @@ const Exercises = () => {
   }));
 
   useEffect(() => {
-    handleGetExercises();
+    handleGetMetods();
   }, []);
 
-  const handleGetExercises = async () => {
+  const handleGetMetods = async () => {
     try {
-      const newExercises = [];
-      const response = await fetchExercises();
+      const newMetods = [];
+      const response = await fetchMetods();
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
-        newExercises.push(newItem);
+        newMetods.push(newItem);
       });
-      setExercises(newExercises);
+      setMetods(newMetods);
     } catch (e) {
       console.log(e);
     }
@@ -127,7 +133,7 @@ const Exercises = () => {
       setSeverity("success");
       setOpenSnack(true);
       setLoading(false);
-      handleGetExercises();
+      handleGetMetods();
     } catch (e) {
       console.log(e);
       setTitle("Erro ao deletar, tente novamente");
@@ -168,14 +174,14 @@ const Exercises = () => {
           {title}
         </Alert>
       </Snackbar>
-      <CreateExercise
-        handleGetExercises={handleGetExercises}
+      <CreateMetods
+        handleGetMetods={handleGetMetods}
         expanded={newRegister}
         setExpanded={setNewRegister}
       />
       {editRegister && (
         <EditExercise
-          handleGetExercises={handleGetExercises}
+          handleGetMetods={handleGetMetods}
           exerciseEdit={exerciseEdit}
           expanded={editRegister}
           setExpanded={setEditRegister}
@@ -192,13 +198,12 @@ const Exercises = () => {
             <TableRow>
               <StyledTableCell></StyledTableCell>
               <StyledTableCell></StyledTableCell>
-              <StyledTableCell>Exercício</StyledTableCell>
-              <StyledTableCell align="center">Categoria</StyledTableCell>
-              <StyledTableCell align="center">Exemplo</StyledTableCell>
+              <StyledTableCell>Métodos</StyledTableCell>
+              <StyledTableCell align="center">Qtd Exercicios</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {exercises.map((row) => (
+            {metods.map((row) => (
               <StyledTableRow key={row.name}>
                 <StyledTableCell
                   component="th"
@@ -220,23 +225,16 @@ const Exercises = () => {
                   {row.nome}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.categoria}
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleSetVideo(row.exemplo)}
-                  align="center"
-                >
-                  {row.exemplo}
+                  {row.quantidade}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[1, 5, 10, 25]}
           component="div"
-          count={exercises.length}
+          count={metods.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -254,4 +252,4 @@ const Exercises = () => {
   );
 };
 
-export default Exercises;
+export default Metods;

@@ -20,15 +20,21 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import { deleteRenter, fetchExercises } from "../../Services/routes";
-import CreateExercise from "./createExercise";
+import {
+  deleteCategory,
+  deleteRenter,
+  fetchCategories,
+  fetchExercises,
+} from "../../Services/routes";
 import Player from "../../Assets/Player";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
-import EditExercise from "./editExercise";
+import EditExercise from "./editCategory";
+import CreateCategory from "./createCategory";
+import EditCategory from "./editCategory";
 
-const Exercises = () => {
-  const [exercises, setExercises] = useState([]);
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
   const [newRegister, setNewRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -75,19 +81,19 @@ const Exercises = () => {
   }));
 
   useEffect(() => {
-    handleGetExercises();
+    handleGetCategories();
   }, []);
 
-  const handleGetExercises = async () => {
+  const handleGetCategories = async () => {
     try {
-      const newExercises = [];
-      const response = await fetchExercises();
+      const newCategories = [];
+      const response = await fetchCategories();
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
-        newExercises.push(newItem);
+        newCategories.push(newItem);
       });
-      setExercises(newExercises);
+      setCategories(newCategories);
     } catch (e) {
       console.log(e);
     }
@@ -99,15 +105,10 @@ const Exercises = () => {
     setOpen(false);
   };
 
-  const handleSetVideo = (link) => {
-    setLinkVideo(link);
-    setOpenPlayer(true);
-  };
-
   const handleAlertDelete = (id) => {
     setIdDelete(id);
     setTextButton("Ok");
-    setTitle("Tem certeza que deseja excluir esse exercício?");
+    setTitle("Tem certeza que deseja excluir essa categoria?");
     setFunctionExecute("delete");
     setOpen(true);
   };
@@ -115,19 +116,19 @@ const Exercises = () => {
   const handleOk = () => {
     setOpen(false);
     if (functionExecute === "delete") {
-      deleteExercicio();
+      deleteCategoria();
     }
   };
 
-  const deleteExercicio = async () => {
+  const deleteCategoria = async () => {
     setLoading(true);
     try {
-      await deleteRenter(idDelete);
-      setTitle("Exercício deletado com sucesso!");
+      await deleteCategory(idDelete);
+      setTitle("Categoria deletada com sucesso!");
       setSeverity("success");
       setOpenSnack(true);
       setLoading(false);
-      handleGetExercises();
+      handleGetCategories();
     } catch (e) {
       console.log(e);
       setTitle("Erro ao deletar, tente novamente");
@@ -168,14 +169,14 @@ const Exercises = () => {
           {title}
         </Alert>
       </Snackbar>
-      <CreateExercise
-        handleGetExercises={handleGetExercises}
+      <CreateCategory
+        handleGetCategories={handleGetCategories}
         expanded={newRegister}
         setExpanded={setNewRegister}
       />
       {editRegister && (
-        <EditExercise
-          handleGetExercises={handleGetExercises}
+        <EditCategory
+          handleGetCategories={handleGetCategories}
           exerciseEdit={exerciseEdit}
           expanded={editRegister}
           setExpanded={setEditRegister}
@@ -192,14 +193,12 @@ const Exercises = () => {
             <TableRow>
               <StyledTableCell></StyledTableCell>
               <StyledTableCell></StyledTableCell>
-              <StyledTableCell>Exercício</StyledTableCell>
               <StyledTableCell align="center">Categoria</StyledTableCell>
-              <StyledTableCell align="center">Exemplo</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {exercises.map((row) => (
-              <StyledTableRow key={row.name}>
+            {categories.map((row) => (
+              <StyledTableRow key={row.Nome}>
                 <StyledTableCell
                   component="th"
                   scope="row"
@@ -216,18 +215,8 @@ const Exercises = () => {
                 >
                   <EditIcon onClick={() => handleSelectEdit(row)} />
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.nome}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.categoria}
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleSetVideo(row.exemplo)}
-                  align="center"
-                >
-                  {row.exemplo}
+                <StyledTableCell align="center" component="th" scope="row">
+                  {row.Nome}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -236,7 +225,7 @@ const Exercises = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={exercises.length}
+          count={categories.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -254,4 +243,4 @@ const Exercises = () => {
   );
 };
 
-export default Exercises;
+export default Categories;

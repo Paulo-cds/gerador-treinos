@@ -63,6 +63,34 @@ function Header(props) {
             <ListItemText primary={"Exercícios"} />
           </ListItemButton>
         </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/categories");
+            }}
+          >
+            <ListItemIcon>
+              <MailIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Categorias"} />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/metods");
+            }}
+          >
+            <ListItemIcon>
+              <MailIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Métodos"} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );

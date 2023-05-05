@@ -16,31 +16,29 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { addExercise, fetchCategories } from "../../Services/routes";
+import { addExercise, addMetod, fetchCategories } from "../../Services/routes";
 
-const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
+const CreateMetods = ({ handleGetMetods, expanded, setExpanded }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
   const formik = useFormik({
     initialValues: {
       nome: "",
-      categoria: "",
-      exemplo: "",
+      quantidade: "",
     },
     validationSchema: yup.object({
       nome: yup.string().required("O campo é obrigatório."),
-      categoria: yup.string().required("O campo é obrigatório."),
-      exemplo: yup.string(),
+      quantidade: yup.number().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await addExercise(values);
+        await addMetod(values);
         setLoading(false);
         formik.resetForm();
         setExpanded(false);
-        handleGetExercises();
+        handleGetMetods();
       } catch (e) {
         console.log(e);
         setLoading(false);
@@ -48,34 +46,12 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
     },
   });
 
-  useEffect(() => {
-    getCategories();
-  }, []);
-
   const handleClose = () => {
     setLoading(false);
   };
 
   const handleChange = () => {
     setExpanded(!expanded);
-  };
-
-  const getCategories = async () => {
-    setLoading(true);
-    try {
-      let newCategory = [];
-      const response = await fetchCategories();
-      response.docs.forEach((item) => {
-        let newItem = item.data();
-        newItem.id = item.id;
-        newCategory.push(newItem);
-      });
-      setCategories(newCategory);
-      setLoading(false);
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
   };
 
   return (
@@ -87,7 +63,7 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
           id="panel1bh-header"
         >
           <Typography sx={{ width: 1, flexShrink: 0 }}>
-            Cadastrar Exercício
+            Cadastrar Método
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -106,22 +82,10 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
               label="Nome"
               onChange={formik.handleChange}
             />
-            <InputLabel>Categoria</InputLabel>
-            <Select
-              sx={{ mt: 0 }}
-              name="categoria"
-              value={formik.values.categoria}
-              onChange={formik.handleChange}
-              label="Categoria"
-            >
-              {categories.map((category) => (
-                <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
-              ))}
-            </Select>
             <TextField
-              name="exemplo"
-              value={formik.values.exemplo}
-              label="Exemplo"
+              name="quantidade"
+              value={formik.values.quantidade}
+              label="Quantidade exercicios"
               onChange={formik.handleChange}
             />
             <Button variant="contained" type="submit">
@@ -141,4 +105,4 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
   );
 };
 
-export default CreateExercise;
+export default CreateMetods;
