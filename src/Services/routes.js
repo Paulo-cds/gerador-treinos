@@ -29,3 +29,18 @@ export const fetchCategories = async () => {
   const response = await data.get();
   return response;
 };
+
+/******Função que adiciona exercicio******/
+export const addExercise = async (form) => {
+  const response = await db
+    .collection("Exercicios")
+    .add(form)
+    .then((doc) => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+
+  return response;
+};
