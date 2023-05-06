@@ -8,14 +8,15 @@ const Template = ({ children }) => {
       <Box
         sx={{
           width: "100%",
-          mt: 6,
-          p: 1,
-          minHeight: "95vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          
         }}
+        width={{xs:'90%', sm:'90%',md:'100%'}}
+        height={{xs:'95vh', sm:'95vh',md:'100vh'}}
+        mt={{xs:6, sm:6,md:0}}
       >
         {children}
       </Box>

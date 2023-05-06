@@ -2,6 +2,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Backdrop,
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,9 +20,15 @@ import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { addExercise, fetchCategories } from "../../Services/routes";
 
-const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
+const CreateExercise = ({
+  handleGetExercises,
+  expanded,
+  setExpanded,
+  exercises,
+}) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -35,15 +43,23 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
     }),
     onSubmit: async (values) => {
       setLoading(true);
-      try {
-        await addExercise(values);
+      const heaveExercise = exercises.find(
+        (exe) => exe.nome === formik.values.nome
+      );
+      if (heaveExercise) {
+        setOpen(true);
         setLoading(false);
-        formik.resetForm();
-        setExpanded(false);
-        handleGetExercises();
-      } catch (e) {
-        console.log(e);
-        setLoading(false);
+      } else {
+        try {
+          await addExercise(values);
+          setLoading(false);
+          formik.resetForm();
+          setExpanded(false);
+          handleGetExercises();
+        } catch (e) {
+          console.log(e);
+          setLoading(false);
+        }
       }
     },
   });
@@ -54,6 +70,7 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
 
   const handleClose = () => {
     setLoading(false);
+    setOpen(false);
   };
 
   const handleChange = () => {
@@ -80,6 +97,11 @@ const CreateExercise = ({ handleGetExercises, expanded, setExpanded }) => {
 
   return (
     <>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Esse exercicio já foi cadastrado!
+        </Alert>
+      </Snackbar>
       <Accordion expanded={expanded} onChange={handleChange} sx={{ mb: 2 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

@@ -4,6 +4,7 @@ import Home from "./Pages/Home";
 import Exercises from "./Pages/Exercises";
 import Categories from "./Pages/Categories";
 import Metods from "./Pages/Metods";
+import Training from "./Pages/Training";
 
 function App() {
   return (
@@ -31,6 +32,14 @@ function App() {
           element={
             <Template>
               <Metods />
+            </Template>
+          }
+        />
+         <Route
+          path="/trainings"
+          element={
+            <Template>
+              <Training />
             </Template>
           }
         />

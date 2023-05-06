@@ -26,6 +26,7 @@ import Player from "../../Assets/Player";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editExercise";
+import BackdropImage from "../../Assets/Images/backdropExercise.jpg";
 
 const Exercises = () => {
   const [exercises, setExercises] = useState([]);
@@ -143,113 +144,141 @@ const Exercises = () => {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        overflowY: "scroll",
+        backgroundImage: `url(${BackdropImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+      alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
+    >
+      <Box
+        sx={{ height: "90%" }}
+        width={{ xs: "90%", sm: "90%", md: "60%" }}
+        mr={{ xs: 0, sm: 0, md: 4 }}
+        mt={{ xs: 3, sm: 3, md: 0 }}
       >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={() => handleOk()} autoFocus>
-            {textButton}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={openSnack}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message={title}
-      >
-        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
-          {title}
-        </Alert>
-      </Snackbar>
-      <CreateExercise
-        handleGetExercises={handleGetExercises}
-        expanded={newRegister}
-        setExpanded={setNewRegister}
-      />
-      {editRegister && (
-        <EditExercise
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancelar</Button>
+            <Button onClick={() => handleOk()} autoFocus>
+              {textButton}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={openSnack}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message={title}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={severity}
+            sx={{ width: "100%" }}
+          >
+            {title}
+          </Alert>
+        </Snackbar>
+        <CreateExercise
           handleGetExercises={handleGetExercises}
-          exerciseEdit={exerciseEdit}
-          expanded={editRegister}
-          setExpanded={setEditRegister}
-          setTitle={setTitle}
-          setSeverity={setSeverity}
-          setOpenSnack={setOpenSnack}
+          expanded={newRegister}
+          setExpanded={setNewRegister}
+          exercises={exercises}
         />
-      )}
+        {editRegister && (
+          <EditExercise
+            handleGetExercises={handleGetExercises}
+            exerciseEdit={exerciseEdit}
+            expanded={editRegister}
+            setExpanded={setEditRegister}
+            setTitle={setTitle}
+            setSeverity={setSeverity}
+            setOpenSnack={setOpenSnack}
+          />
+        )}
 
-      <Player open={openPlayer} setOpen={setOpenPlayer} link={linkVideo} />
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell>Exercício</StyledTableCell>
-              <StyledTableCell align="center">Categoria</StyledTableCell>
-              <StyledTableCell align="center">Exemplo</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {exercises.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell
-                  component="th"
-                  scope="row"
-                  sx={{ cursor: "pointer" }}
-                >
-                  <DeleteForeverIcon
-                    onClick={() => handleAlertDelete(row.id)}
-                  />
-                </StyledTableCell>
-                <StyledTableCell
-                  component="th"
-                  scope="row"
-                  sx={{ cursor: "pointer" }}
-                >
-                  <EditIcon onClick={() => handleSelectEdit(row)} />
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.nome}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.categoria}
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleSetVideo(row.exemplo)}
-                  align="center"
-                >
-                  {row.exemplo}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={exercises.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </TableContainer>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-        onClick={handleClose}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        <Player open={openPlayer} setOpen={setOpenPlayer} link={linkVideo} />
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>Exercício</StyledTableCell>
+                <StyledTableCell align="center">Categoria</StyledTableCell>
+                <StyledTableCell align="center">Exemplo</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {exercises
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <StyledTableRow key={row.name}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <DeleteForeverIcon
+                        onClick={() => handleAlertDelete(row.id)}
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <EditIcon onClick={() => handleSelectEdit(row)} />
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {row.nome}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.categoria}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleSetVideo(row.exemplo)}
+                      align="center"
+                    >
+                      {row.exemplo}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={exercises.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </TableContainer>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+          onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </Box>
     </Box>
   );
 };

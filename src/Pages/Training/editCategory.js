@@ -20,10 +20,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { changeExercise, fetchCategories } from "../../Services/routes";
+import {
+  changeCategory,
+  changeExercise,
+  fetchCategories,
+} from "../../Services/routes";
 
-const EditExercise = ({
-  handleGetExercises,
+const EditCategory = ({
+  handleGetCategories,
   exerciseEdit,
   expanded,
   setExpanded,
@@ -32,29 +36,27 @@ const EditExercise = ({
   setOpenSnack,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
 
   const formik = useFormik({
     initialValues: {
-      nome: exerciseEdit.nome,
-      categoria: exerciseEdit.categoria,
-      exemplo: exerciseEdit.exemplo,
+      nome: exerciseEdit.Nome,
     },
     validationSchema: yup.object({
       nome: yup.string().required("O campo é obrigatório."),
-      categoria: yup.string().required("O campo é obrigatório."),
-      exemplo: yup.string(),
     }),
     onSubmit: async (values) => {
       setLoading(true);
+      const data = {
+        Nome: formik.values.nome,
+      };
       try {
-        await changeExercise(values, exerciseEdit.id);
+        await changeCategory(data, exerciseEdit.id);
         setTitle("Editado com sucesso!");
         setSeverity("success");
         setOpenSnack(true);
         setLoading(false);
         setExpanded(false);
-        handleGetExercises();
+        handleGetCategories();
       } catch (e) {
         console.log(e);
         setLoading(false);
@@ -62,34 +64,12 @@ const EditExercise = ({
     },
   });
 
-  useEffect(() => {
-    getCategories();
-  }, []);
-
   const handleClose = () => {
     setLoading(false);
   };
 
   const handleChange = () => {
     setExpanded(!expanded);
-  };
-
-  const getCategories = async () => {
-    setLoading(true);
-    try {
-      let newCategory = [];
-      const response = await fetchCategories();
-      response.docs.forEach((item) => {
-        let newItem = item.data();
-        newItem.id = item.id;
-        newCategory.push(newItem);
-      });
-      setCategories(newCategory);
-      setLoading(false);
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
   };
 
   return (
@@ -100,7 +80,7 @@ const EditExercise = ({
         sx={{ p: 3 }}
         // maxWidth="xl"
       >
-        <DialogTitle>Editar Exercício</DialogTitle>
+        <DialogTitle>Editar Categoria</DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -109,28 +89,13 @@ const EditExercise = ({
               display: "flex",
               flexDirection: "column",
               gap: 2,
+              mt: 1,
             }}
           >
             <TextField
               name="nome"
               value={formik.values.nome}
               label="Nome"
-              onChange={formik.handleChange}
-            />
-            <Select
-              name="categoria"
-              value={formik.values.categoria}
-              onChange={formik.handleChange}
-              label="Categoria"
-            >
-              {categories.map((category) => (
-                <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
-              ))}
-            </Select>
-            <TextField
-              name="exemplo"
-              value={formik.values.exemplo}
-              label="Exemplo"
               onChange={formik.handleChange}
             />
             <Button variant="contained" type="submit">
@@ -150,4 +115,4 @@ const EditExercise = ({
   );
 };
 
-export default EditExercise;
+export default EditCategory;

@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import Backdrop from "../../Assets/backdrop.jpg";
+import Backdrop from "../../Assets/Images/backdropHome.jpg";
 import "./homeStyle.css";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -32,12 +32,15 @@ const Home = () => {
       <Box
         sx={{
           maxWidth: "xl",
-          width: "80%",
+          width: "90%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
         }}
+        justifyContent={{xs:'center', sm:'center',md:'flex-start'}}
       >
+        <Box
+        width={{xs:'100%', sm:'100%',md:'60%'}}
+        >
         <Stack spacing={5} sx={{ width: "100%", alignItems: "center" }}>
           <Item
             sx={{ cursor: "pointer" }}
@@ -61,6 +64,8 @@ const Home = () => {
             Métodos
           </Item>
         </Stack>
+
+        </Box>
       </Box>
     </Box>
   );

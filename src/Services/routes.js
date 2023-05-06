@@ -37,6 +37,13 @@ export const fetchMetods = async () => {
   return response;
 };
 
+/******Função que faz o Get dos treinos******/
+export const fetchTrainings = async () => {
+  const data = db.collection("Treinos");
+  const response = await data.get();
+  return response;
+};
+
 /******Função que adiciona exercicio******/
 export const addExercise = async (form) => {
   const response = await db
@@ -112,6 +119,21 @@ export const deleteCategory = async (id) => {
   return response;
 };
 
+/******Função que faz o delete do método******/
+export const deleteMetod = async (id) => {
+  const response = await db
+    .collection("Metodos")
+    .doc(id)
+    .delete()
+    .then(() => {
+      return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
 /******Função que edita exercicio******/
 export const changeExercise = async (data, id) => {
   const response = await db
@@ -131,6 +153,21 @@ export const changeExercise = async (data, id) => {
 export const changeCategory = async (data, id) => {
   const response = await db
     .collection("Categorias")
+    .doc(id)
+    .update(data)
+    .then(() => {
+      return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
+/******Função que edita metodo******/
+export const changeMetod = async (data, id) => {
+  const response = await db
+    .collection("Metodos")
     .doc(id)
     .update(data)
     .then(() => {

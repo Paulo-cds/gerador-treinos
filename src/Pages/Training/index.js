@@ -25,16 +25,19 @@ import {
   deleteRenter,
   fetchCategories,
   fetchExercises,
+  fetchMetods,
+  fetchTrainings,
 } from "../../Services/routes";
 import Player from "../../Assets/Player";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editCategory";
-import CreateCategory from "./createCategory";
+import CreateCategory from "./createTraining";
 import EditCategory from "./editCategory";
 import BackdropCategory from '../../Assets/Images/backdropCategory.webp'
+import CreateTraining from "./createTraining";
 
-const Categories = () => {
+const Training = () => {
   const [categories, setCategories] = useState([]);
   const [newRegister, setNewRegister] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,6 +54,10 @@ const Categories = () => {
   const [exerciseEdit, setExerciseEdit] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [metods, setMetods] = useState([])
+  const [exercises, setExercises] = useState([])
+  const [trainings, setTrainings] = useState([])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -82,21 +89,56 @@ const Categories = () => {
   }));
 
   useEffect(() => {
-    handleGetCategories();
+    handleGetMetods();
+    handleGetExercises()
+    handleGetTrainings()
   }, []);
 
-  const handleGetCategories = async () => {
+  const handleGetTrainings = async () => {
     try {
-      const newCategories = [];
-      const response = await fetchCategories();
+      const newTrainings = [];
+      const response = await fetchTrainings();
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
-        newCategories.push(newItem);
+        newTrainings.push(newItem);
       });
-      setCategories(newCategories);
+      setTrainings(newTrainings);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleGetExercises = async () => {
+    try {
+      const newExercises = [];
+      const response = await fetchExercises();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newExercises.push(newItem);
+      });
+      setExercises(newExercises);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleGetMetods = async () => {
+    setLoading(true)
+    try {
+      const newMetods = [];
+      const response = await fetchMetods();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newMetods.push(newItem);
+      });
+      setMetods(newMetods);
+      setLoading(false)
+    } catch (e) {
+      console.log(e);
+      setLoading(false)
     }
   };
 
@@ -129,7 +171,6 @@ const Categories = () => {
       setSeverity("success");
       setOpenSnack(true);
       setLoading(false);
-      handleGetCategories();
     } catch (e) {
       console.log(e);
       setTitle("Erro ao deletar, tente novamente");
@@ -192,14 +233,15 @@ const Categories = () => {
             {title}
           </Alert>
         </Snackbar>
-        <CreateCategory
-          handleGetCategories={handleGetCategories}
+        <CreateTraining
           expanded={newRegister}
           setExpanded={setNewRegister}
+          exercises={exercises}
+          metods={metods}
+          trainings={trainings}
         />
         {editRegister && (
           <EditCategory
-            handleGetCategories={handleGetCategories}
             exerciseEdit={exerciseEdit}
             expanded={editRegister}
             setExpanded={setEditRegister}
@@ -269,4 +311,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default Training;

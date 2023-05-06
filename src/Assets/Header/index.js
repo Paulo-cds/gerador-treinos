@@ -19,6 +19,9 @@ import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import CategoryIcon from '@mui/icons-material/Category';
+import FormatOverlineIcon from '@mui/icons-material/FormatOverline';
 
 const drawerWidth = 240;
 
@@ -33,23 +36,9 @@ function Header(props) {
 
   const drawer = (
     <div>
-      <Toolbar />
+      {/* <Toolbar /> */}
       <Divider />
       <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/");
-            }}
-          >
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Home"} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -58,7 +47,7 @@ function Header(props) {
             }}
           >
             <ListItemIcon>
-              <MailIcon />
+              <FitnessCenterIcon />
             </ListItemIcon>
             <ListItemText primary={"Exercícios"} />
           </ListItemButton>
@@ -72,7 +61,7 @@ function Header(props) {
             }}
           >
             <ListItemIcon>
-              <MailIcon />
+              <CategoryIcon />
             </ListItemIcon>
             <ListItemText primary={"Categorias"} />
           </ListItemButton>
@@ -86,9 +75,23 @@ function Header(props) {
             }}
           >
             <ListItemIcon>
-              <MailIcon />
+              <FormatOverlineIcon />
             </ListItemIcon>
             <ListItemText primary={"Métodos"} />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/trainings");
+            }}
+          >
+            <ListItemIcon>
+              <FormatOverlineIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Treinos"} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -106,6 +109,7 @@ function Header(props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          display:{sm:'block',md:'none'}
         }}
       >
         <Toolbar>
