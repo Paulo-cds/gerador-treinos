@@ -89,6 +89,21 @@ export const addMetod = async (form) => {
   return response;
 };
 
+/******Função que adiciona treino******/
+export const addTraining = async (form) => {
+  const response = await db
+    .collection("Treinos")
+    .add(form)
+    .then((doc) => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+
+  return response;
+};
+
 /******Função que faz o delete do exercicio******/
 export const deleteRenter = async (id) => {
   const response = await db

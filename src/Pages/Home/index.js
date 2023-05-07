@@ -36,35 +36,39 @@ const Home = () => {
           display: "flex",
           alignItems: "center",
         }}
-        justifyContent={{xs:'center', sm:'center',md:'flex-start'}}
+        justifyContent={{ xs: "center", sm: "center", md: "flex-start" }}
       >
-        <Box
-        width={{xs:'100%', sm:'100%',md:'60%'}}
-        >
-        <Stack spacing={5} sx={{ width: "100%", alignItems: "center" }}>
-          <Item
-            sx={{ cursor: "pointer" }}
-            onClick={() => navigate("/exercises")}
-            className="buttons"
-          >
-            Exercícios
-          </Item>
-          <Item
-            sx={{ cursor: "pointer" }}
-            onClick={() => navigate("/categories")}
-            className="buttons"
-          >
-            Categorias
-          </Item>
-          <Item
-            sx={{ cursor: "pointer" }}
-            onClick={() => navigate("/metods")}
-            className="buttons"
-          >
-            Métodos
-          </Item>
-        </Stack>
-
+        <Box width={{ xs: "100%", sm: "100%", md: "60%" }}>
+          <Stack spacing={5} sx={{ width: "100%", alignItems: "center" }}>
+            <Item
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/exercises")}
+              className="buttons"
+            >
+              Exercícios
+            </Item>
+            <Item
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/categories")}
+              className="buttons"
+            >
+              Categorias
+            </Item>
+            <Item
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/metods")}
+              className="buttons"
+            >
+              Métodos
+            </Item>
+            <Item
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/trainings")}
+              className="buttons"
+            >
+              Treinos
+            </Item>
+          </Stack>
         </Box>
       </Box>
     </Box>

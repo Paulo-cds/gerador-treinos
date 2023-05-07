@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { addCategory } from "../../Services/routes";
+import { addCategory, addTraining } from "../../Services/routes";
 
 const CreateTraining = ({
   expanded,
@@ -28,7 +28,7 @@ const CreateTraining = ({
   const [aquecimento, setAquecimento] = useState([]);
   const [treino, setTreino] = useState([]);
   const [mtTreino, setMtTreino] = useState("");
-  const [exeTreino, setExeTreino] = useState([])
+  const [exeTreino, setExeTreino] = useState([]);
 
   const formik = useFormik({
     initialValues: {
@@ -40,8 +40,9 @@ const CreateTraining = ({
     onSubmit: async (values) => {
       setLoading(true);
       try {
+        //gerando método
         let notMetod = true;
-        let qtdExe = 0
+        let qtdExe = 0;
         while (notMetod) {
           let sortMet = Math.floor(Math.random() * metods.length);
           const verificMet = trainings.find(
@@ -50,51 +51,85 @@ const CreateTraining = ({
 
           if (!verificMet) {
             setMtTreino(metods[sortMet].nome);
-            console.log('mtd while ', metods[sortMet].nome)
-            qtdExe = metods[sortMet].quantidade
+            qtdExe = metods[sortMet].quantidade;
             notMetod = false; // saia do laço quando a sentença for falsa
           }
         }
+        // final gerando método
 
-        let notComplet = true;
-        let newExercises = [];
-        
-        while (notComplet) {
-          console.log('2while')
-          let sortExe = Math.floor(Math.random() * exercises.length);
-          let verificMet = trainings.find(
-            (tr) => tr.exercicios === exercises[sortExe]
+        //gerando aquecimento
+        let notAqc = true;
+        let exeAqc = [];
+        while (notAqc) {
+          let sortAqc = Math.floor(Math.random() * exercises.length);
+          // const verificAqc = trainings.find(
+          //   (tr) => tr.aquecimento === exercises[sortAqc].nome
+          // );
+
+          let exists = trainings.some((train) =>
+            train.exercicios.some((exe) => exe === exercises[sortAqc].nome)
           );
-          console.log('ver 1', verificMet)
-          verificMet = newExercises.find(
-            (tr) => tr.exercicios === exercises[sortExe]
-          );
-          console.log('ver 2', verificMet)
-          if (!verificMet) {
-            newExercises.push(exercises[sortExe]);
+          exists = exeAqc.some((exe) => exe === exercises[sortAqc].nome);
 
-            if(newExercises.length === qtdExe){
-              setExeTreino(newExercises);
-              console.log('exe while ',newExercises)
-              notComplet = false; // saia do laço quando a sentença for falsa
-
+          if (!exists && exercises[sortAqc].categoria === "Aquecimento") {
+            exeAqc.push(exercises[sortAqc].nome);
+            // qtdExe = metods[sortAqc].quantidade;
+            if (exeAqc.length == formik.values.numero) {
+              notAqc = false; // saia do laço quando a sentença for falsa
+              setAquecimento(exeAqc);
             }
           }
         }
+        //final gerando aquecimento
+
+        //gerando exercicios
+        let notExe = true;
+        let exeTrn = [];
+        while (notExe) {
+          let sortExe = Math.floor(Math.random() * exercises.length);
+          // const verificAqc = trainings.find(
+          //   (tr) => tr.aquecimento === exercises[sortAqc].nome
+          // );
+
+          let exists = trainings.some((train) =>
+            train.exercicios.some((exe) => exe === exercises[sortExe].nome)
+          );
+          exists = exeTrn.some((exe) => exe === exercises[sortExe].nome);
+
+          if (!exists && exercises[sortExe].categoria !== "Aquecimento") {
+            exeTrn.push(exercises[sortExe].nome);
+            // qtdExe = metods[sortAqc].quantidade;
+            if (exeTrn.length == qtdExe) {
+              notExe = false; // saia do laço quando a sentença for falsa
+              setExeTreino(exeTrn);
+            }
+          }
+        }
+        //final gerando exercicios
+
+        const newTraining = {
+          aquecimento,
+          data: new Date().toLocaleDateString(),
+          exercicios: exeTreino,
+          metodo: mtTreino,
+        };
+
+        await addTraining(newTraining);
 
         setLoading(false);
         formik.resetForm();
-        // setExpanded(false);
+        setExpanded(false);
       } catch (e) {
         console.log(e);
         setLoading(false);
-        console.log('nao rodou')
+        console.log("nao rodou");
       }
     },
   });
-  console.log('metodo ', mtTreino)
-  console.log('exercicios ', exeTreino)
-  console.log('exes ', trainings)
+  console.log("metodo ", mtTreino);
+  console.log("aquecimento ", aquecimento);
+  console.log("exercicios ", exeTreino);
+  console.log("exes ", trainings);
   const handleClose = () => {
     setLoading(false);
   };
