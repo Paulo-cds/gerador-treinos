@@ -95,6 +95,20 @@ function Header(props) {
             <ListItemText primary={"Treinos"} />
           </ListItemButton>
         </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/trainingToDay");
+            }}
+          >
+            <ListItemIcon>
+              <GiStrongMan />
+            </ListItemIcon>
+            <ListItemText primary={"Treino de hoje"} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );

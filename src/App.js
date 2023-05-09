@@ -7,6 +7,7 @@ import Metods from "./Pages/Metods";
 import Training from "./Pages/Training";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightBlue } from "@mui/material/colors";
+import TrainingToDay from "./Pages/TrainingToDay";
 
 const theme = createTheme({
   palette: {
@@ -51,6 +52,14 @@ function App() {
             element={
               <Template>
                 <Training />
+              </Template>
+            }
+          />
+          <Route
+            path="/trainingToDay"
+            element={
+              <Template>
+                <TrainingToDay />
               </Template>
             }
           />
