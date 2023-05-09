@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import Backdrop from "../../Assets/Images/backdropHome.jpg";
+import Backdrop from "../../Assets/Images/backdropHome.jpeg";
 import "./homeStyle.css";
 
 const Item = styled(Paper)(({ theme }) => ({

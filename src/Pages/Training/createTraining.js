@@ -45,7 +45,7 @@ const CreateTraining = ({
         let qtdExe = 0;
         while (notMetod) {
           let sortMet = Math.floor(Math.random() * metods.length);
-          const verificMet = trainings.find(
+          const verificMet = trainings.Treinos.find(
             (tr) => tr.metodo === metods[sortMet].nome
           );
 
@@ -66,8 +66,8 @@ const CreateTraining = ({
           //   (tr) => tr.aquecimento === exercises[sortAqc].nome
           // );
 
-          let exists = trainings.some((train) =>
-            train.exercicios.some((exe) => exe === exercises[sortAqc].nome)
+          let exists = trainings.Treinos.some((train) =>
+            train.Exercicios.some((exe) => exe === exercises[sortAqc].nome)
           );
           exists = exeAqc.some((exe) => exe === exercises[sortAqc].nome);
 
@@ -91,8 +91,8 @@ const CreateTraining = ({
           //   (tr) => tr.aquecimento === exercises[sortAqc].nome
           // );
 
-          let exists = trainings.some((train) =>
-            train.exercicios.some((exe) => exe === exercises[sortExe].nome)
+          let exists = trainings.Treinos.some((train) =>
+            train.Exercicios.some((exe) => exe === exercises[sortExe].nome)
           );
           exists = exeTrn.some((exe) => exe === exercises[sortExe].nome);
 
@@ -108,13 +108,16 @@ const CreateTraining = ({
         //final gerando exercicios
 
         const newTraining = {
-          aquecimento,
-          data: new Date().toLocaleDateString(),
-          exercicios: exeTreino,
-          metodo: mtTreino,
+          Aquecimento: aquecimento,
+          Data: new Date().toLocaleDateString(),
+          Exercicios: exeTreino,
+          Metodo: mtTreino,
         };
-
-        await addTraining(newTraining);
+        if(trainings.Treinos.length >= 5){
+          trainings.Treinos.shift()
+        }
+        trainings.Treinos.push(newTraining)
+        await addTraining(trainings, trainings.id);
 
         setLoading(false);
         formik.resetForm();
@@ -126,10 +129,9 @@ const CreateTraining = ({
       }
     },
   });
-  console.log("metodo ", mtTreino);
-  console.log("aquecimento ", aquecimento);
-  console.log("exercicios ", exeTreino);
-  console.log("exes ", trainings);
+  // console.log("metodo ", mtTreino);
+  // console.log("aquecimento ", aquecimento);
+  // console.log("exercicios ", exeTreino);
   const handleClose = () => {
     setLoading(false);
   };

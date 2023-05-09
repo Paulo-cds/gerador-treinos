@@ -34,7 +34,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editCategory";
 import CreateCategory from "./createTraining";
 import EditCategory from "./editCategory";
-import BackdropCategory from '../../Assets/Images/backdropCategory.webp'
+import BackdropCategory from "../../Assets/Images/backdropExercises.webp";
 import CreateTraining from "./createTraining";
 
 const Training = () => {
@@ -55,9 +55,9 @@ const Training = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [metods, setMetods] = useState([])
-  const [exercises, setExercises] = useState([])
-  const [trainings, setTrainings] = useState([])
+  const [metods, setMetods] = useState([]);
+  const [exercises, setExercises] = useState([]);
+  const [trainings, setTrainings] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -90,8 +90,8 @@ const Training = () => {
 
   useEffect(() => {
     handleGetMetods();
-    handleGetExercises()
-    handleGetTrainings()
+    handleGetExercises();
+    handleGetTrainings();
   }, []);
 
   const handleGetTrainings = async () => {
@@ -103,7 +103,8 @@ const Training = () => {
         newItem.id = item.id;
         newTrainings.push(newItem);
       });
-      setTrainings(newTrainings);
+
+      setTrainings(newTrainings[0]);
     } catch (e) {
       console.log(e);
     }
@@ -125,7 +126,7 @@ const Training = () => {
   };
 
   const handleGetMetods = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const newMetods = [];
       const response = await fetchMetods();
@@ -135,10 +136,10 @@ const Training = () => {
         newMetods.push(newItem);
       });
       setMetods(newMetods);
-      setLoading(false)
+      setLoading(false);
     } catch (e) {
       console.log(e);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -263,30 +264,30 @@ const Training = () => {
             </TableHead>
             <TableBody>
               {categories
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <StyledTableRow key={row.Nome}>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <DeleteForeverIcon
-                      onClick={() => handleAlertDelete(row.id)}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <EditIcon onClick={() => handleSelectEdit(row)} />
-                  </StyledTableCell>
-                  <StyledTableCell align="center" component="th" scope="row">
-                    {row.Nome}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <StyledTableRow key={row.Nome}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <DeleteForeverIcon
+                        onClick={() => handleAlertDelete(row.id)}
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <EditIcon onClick={() => handleSelectEdit(row)} />
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {row.Nome}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </TableBody>
           </Table>
           <TablePagination
