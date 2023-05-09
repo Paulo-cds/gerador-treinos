@@ -16,6 +16,7 @@ import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { addCategory, addTraining } from "../../Services/routes";
+import './styleTraining.css'
 
 const CreateTraining = ({
   expanded,
@@ -29,18 +30,22 @@ const CreateTraining = ({
   const [mtTreino, setMtTreino] = useState("");
   const [exeTreino, setExeTreino] = useState([]);
   const [trainingGerated, setTrainingGerated] = useState();
+  const [ativacao, setAtivacao] = useState('')
 
   const formik = useFormik({
     initialValues: {
       numero: "",
+      ativacao: ''
     },
     validationSchema: yup.object({
       numero: yup.number().required("O campo é obrigatório."),
+      ativacao: yup.string()
     }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
         //gerando método
+        setAtivacao(formik.values.ativacao)
         let notMetod = true;
         let qtdExe = 0;
         while (notMetod) {
@@ -109,6 +114,7 @@ const CreateTraining = ({
 
         const newTraining = {
           Aquecimento: aquecimento,
+          Ativacao: ativacao,
           Data: new Date().toLocaleDateString(),
           Exercicios: exeTreino,
           Metodo: mtTreino,
@@ -120,7 +126,7 @@ const CreateTraining = ({
         setTrainingGerated(newTraining);
 
         setLoading(false);
-        formik.resetForm();
+        
       } catch (e) {
         console.log(e);
         setLoading(false);
@@ -130,16 +136,22 @@ const CreateTraining = ({
 
   const handleSaveTraining = async () => {
     setLoading(true);
-    try {
-      trainings.Treinos.push(trainingGerated);
-      await addTraining(trainings, trainings.id);
-      setTrainingGerated();
-      setLoading(false);
-      setExpanded(false);
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
+    const heaveTraining = trainings.Treinos.find(
+      (exe) => exe.Data === trainingGerated.Data
+    );
+    console.log(heaveTraining)
+    setLoading(false)
+    // try {
+    //   trainings.Treinos.push(trainingGerated);
+    //   await addTraining(trainings, trainings.id);
+    //   setTrainingGerated();
+    //   formik.resetForm();
+    //   setLoading(false);
+    //   setExpanded(false);
+    // } catch (e) {
+    //   console.log(e);
+    //   setLoading(false);
+    // }
   };
 
   const handleClose = () => {
@@ -152,7 +164,7 @@ const CreateTraining = ({
 
   return (
     <>
-      <Accordion expanded={expanded} onChange={handleChange} sx={{ mb: 2 }}>
+      <Accordion expanded={expanded} onChange={handleChange} sx={{ mb: 2 }} className="container">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1bh-content"
@@ -164,6 +176,7 @@ const CreateTraining = ({
         </AccordionSummary>
         <AccordionDetails>
           <Box
+          
             component="form"
             onSubmit={formik.handleSubmit}
             sx={{
@@ -176,6 +189,12 @@ const CreateTraining = ({
               name="numero"
               value={formik.values.numero}
               label="Qtd aquecimento"
+              onChange={formik.handleChange}
+            />
+            <TextField
+              name="ativacao"
+              value={formik.values.ativacao}
+              label="Ativação neural"
               onChange={formik.handleChange}
             />
             <Box
@@ -224,6 +243,10 @@ const CreateTraining = ({
                 {trainingGerated.Aquecimento.map((exe) => (
                   <Typography>{exe}</Typography>
                 ))}
+              </Box>
+              <Box sx={{ borderTop: "1px solid black" }}>
+                <Typography variant="h6">Ativação Neural</Typography>
+                  <Typography>{ativacao}</Typography>
               </Box>
               <Box sx={{ borderTop: "1px solid black" }}>
                 <Typography variant="h6">Exercícios</Typography>

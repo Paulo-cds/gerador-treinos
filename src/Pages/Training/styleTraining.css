@@ -1,0 +1,13 @@
+.container {
+    overflow: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+}
+
+
+.container::-webkit-scrollbar {
+    display: none;
+}

@@ -22,7 +22,8 @@ import { useNavigate } from "react-router-dom";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import CategoryIcon from "@mui/icons-material/Category";
 import FormatOverlineIcon from "@mui/icons-material/FormatOverline";
-import { GiStrongMan } from "react-icons/gi";
+import { GiStrongMan, GiStrong } from "react-icons/gi";
+
 
 const drawerWidth = 240;
 
@@ -104,7 +105,7 @@ function Header(props) {
             }}
           >
             <ListItemIcon>
-              <GiStrongMan />
+              <GiStrong />
             </ListItemIcon>
             <ListItemText primary={"Treino de hoje"} />
           </ListItemButton>

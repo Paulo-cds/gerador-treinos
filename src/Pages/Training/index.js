@@ -211,11 +211,13 @@ const Training = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        
       }}
       alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
     >
       <Box
         width={{ xs: "90%", sm: "90%", md: "60%" }}
+        sx={{height:'90%'}}
         ml={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}
       >
