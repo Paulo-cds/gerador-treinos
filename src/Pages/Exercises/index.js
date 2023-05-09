@@ -160,7 +160,13 @@ const Exercises = () => {
       alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
       <Box
-        sx={{ height: "90%" }}
+        sx={{
+          height: "90%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
         width={{ xs: "90%", sm: "90%", md: "60%" }}
         mr={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}

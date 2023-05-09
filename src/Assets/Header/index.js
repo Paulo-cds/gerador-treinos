@@ -19,9 +19,10 @@ import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import CategoryIcon from '@mui/icons-material/Category';
-import FormatOverlineIcon from '@mui/icons-material/FormatOverline';
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import CategoryIcon from "@mui/icons-material/Category";
+import FormatOverlineIcon from "@mui/icons-material/FormatOverline";
+import { GiStrongMan } from "react-icons/gi";
 
 const drawerWidth = 240;
 
@@ -89,7 +90,7 @@ function Header(props) {
             }}
           >
             <ListItemIcon>
-              <FormatOverlineIcon />
+              <GiStrongMan />
             </ListItemIcon>
             <ListItemText primary={"Treinos"} />
           </ListItemButton>
@@ -109,7 +110,7 @@ function Header(props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          display:{sm:'block',md:'none'}
+          display: { sm: "block", md: "none" },
         }}
       >
         <Toolbar>
@@ -123,7 +124,7 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            Correndo do Sofá
           </Typography>
         </Toolbar>
       </AppBar>

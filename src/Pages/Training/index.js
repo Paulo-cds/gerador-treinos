@@ -7,11 +7,16 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  List,
+  ListItem,
   Snackbar,
   TablePagination,
   TextField,
+  Tooltip,
+  Typography,
   styled,
 } from "@mui/material";
+import { tooltipClasses } from "@mui/material/Tooltip";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -57,7 +62,7 @@ const Training = () => {
 
   const [metods, setMetods] = useState([]);
   const [exercises, setExercises] = useState([]);
-  const [trainings, setTrainings] = useState([]);
+  const [trainings, setTrainings] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -186,6 +191,14 @@ const Training = () => {
     setEditRegister(true);
   };
 
+  const CustomWidthTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 500,
+    },
+  });
+
   return (
     <Box
       sx={{
@@ -251,55 +264,62 @@ const Training = () => {
             setOpenSnack={setOpenSnack}
           />
         )}
-
-        <Player open={openPlayer} setOpen={setOpenPlayer} link={linkVideo} />
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell align="center">Categoria</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {categories
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
+        {trainings && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Data</StyledTableCell>
+                  <StyledTableCell>Método</StyledTableCell>
+                  <StyledTableCell>Aquecimento</StyledTableCell>
+                  <StyledTableCell align="center">Exercícios</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {trainings.Treinos.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                ).map((row) => (
                   <StyledTableRow key={row.Nome}>
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <DeleteForeverIcon
-                        onClick={() => handleAlertDelete(row.id)}
-                      />
+                    <StyledTableCell component="th" scope="row">
+                      {row.Data}
                     </StyledTableCell>
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <EditIcon onClick={() => handleSelectEdit(row)} />
+                    <StyledTableCell component="th" scope="row">
+                      {row.Metodo}
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th" scope="row">
-                      {row.Nome}
+                      <CustomWidthTooltip
+                        title={row.Aquecimento.map((aqc) => (
+                          <Typography>{aqc}</Typography>
+                        ))}
+                      >
+                        <Typography>{row.Aquecimento[0]}</Typography>
+                      </CustomWidthTooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <CustomWidthTooltip
+                        title={row.Exercicios.map((aqc) => (
+                          <Typography>{aqc}</Typography>
+                        ))}
+                      >
+                        <Typography>{row.Exercicios[0]}</Typography>
+                      </CustomWidthTooltip>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={categories.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </TableContainer>
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={trainings.Treinos.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        )}
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}

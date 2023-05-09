@@ -5,46 +5,58 @@ import Exercises from "./Pages/Exercises";
 import Categories from "./Pages/Categories";
 import Metods from "./Pages/Metods";
 import Training from "./Pages/Training";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { lightBlue } from "@mui/material/colors";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: lightBlue[500],
+    },
+  },
+});
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/exercises"
-          element={
-            <Template>
-              <Exercises />
-            </Template>
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <Template>
-              <Categories />
-            </Template>
-          }
-        />
-        <Route
-          path="/metods"
-          element={
-            <Template>
-              <Metods />
-            </Template>
-          }
-        />
-         <Route
-          path="/trainings"
-          element={
-            <Template>
-              <Training />
-            </Template>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/exercises"
+            element={
+              <Template>
+                <Exercises />
+              </Template>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <Template>
+                <Categories />
+              </Template>
+            }
+          />
+          <Route
+            path="/metods"
+            element={
+              <Template>
+                <Metods />
+              </Template>
+            }
+          />
+          <Route
+            path="/trainings"
+            element={
+              <Template>
+                <Training />
+              </Template>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

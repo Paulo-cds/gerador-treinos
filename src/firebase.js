@@ -1,10 +1,9 @@
-
 //import { initializeApp } from "firebase/app"; Assim veio do firebase
 
-import firebase from "firebase/compat/app"
-import 'firebase/compat/auth'
-import "firebase/storage"
-import "firebase/compat/firestore"
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/storage";
+import "firebase/compat/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,15 +12,12 @@ const firebaseConfig = {
   projectId: "gerador-treinos",
   storageBucket: "gerador-treinos.appspot.com",
   messagingSenderId: "212023744594",
-  appId: "1:212023744594:web:294ae199e9c5ea022be78b"
+  appId: "1:212023744594:web:294ae199e9c5ea022be78b",
 };
-
 
 //const app = initializeApp(firebaseConfig); Assim veio do firebase
 
-firebase.initializeApp(firebaseConfig)
-const db = firebase.firestore()
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-
-
-export {db, firebaseConfig}
+export { db, firebaseConfig };

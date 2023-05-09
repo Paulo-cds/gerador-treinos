@@ -26,9 +26,9 @@ const CreateTraining = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [aquecimento, setAquecimento] = useState([]);
-  const [treino, setTreino] = useState([]);
   const [mtTreino, setMtTreino] = useState("");
   const [exeTreino, setExeTreino] = useState([]);
+  const [trainingGerated, setTrainingGerated] = useState();
 
   const formik = useFormik({
     initialValues: {
@@ -113,25 +113,35 @@ const CreateTraining = ({
           Exercicios: exeTreino,
           Metodo: mtTreino,
         };
-        if(trainings.Treinos.length >= 5){
-          trainings.Treinos.shift()
+        if (trainings.Treinos.length >= 5) {
+          trainings.Treinos.shift();
         }
-        trainings.Treinos.push(newTraining)
-        await addTraining(trainings, trainings.id);
+
+        setTrainingGerated(newTraining);
 
         setLoading(false);
         formik.resetForm();
-        setExpanded(false);
       } catch (e) {
         console.log(e);
         setLoading(false);
-        console.log("nao rodou");
       }
     },
   });
-  // console.log("metodo ", mtTreino);
-  // console.log("aquecimento ", aquecimento);
-  // console.log("exercicios ", exeTreino);
+
+  const handleSaveTraining = async () => {
+    setLoading(true);
+    try {
+      trainings.Treinos.push(trainingGerated);
+      await addTraining(trainings, trainings.id);
+      setTrainingGerated();
+      setLoading(false);
+      setExpanded(false);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
+  };
+
   const handleClose = () => {
     setLoading(false);
   };
@@ -168,10 +178,61 @@ const CreateTraining = ({
               label="Qtd aquecimento"
               onChange={formik.handleChange}
             />
-            <Button variant="contained" type="submit">
-              Gerar
-            </Button>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <Button variant="contained" type="submit">
+                {!trainingGerated ? "Gerar" : "Gerar novo"}
+              </Button>
+              {trainingGerated && (
+                <Button
+                  variant="contained"
+                  type="button"
+                  onClick={() => handleSaveTraining()}
+                >
+                  Salvar
+                </Button>
+              )}
+            </Box>
           </Box>
+          {trainingGerated && (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 2,
+                mt: 2,
+                borderTop: "1px solid black",
+                borderBottom: "1px solid black",
+              }}
+            >
+              <Typography variant="h4">Novo treino</Typography>
+              <Box sx={{ borderTop: "1px solid black" }}>
+                <Typography variant="h6">Método</Typography>
+                <Typography>{trainingGerated.Metodo}</Typography>
+              </Box>
+              <Box sx={{ borderTop: "1px solid black" }}>
+                <Typography variant="h6">Aquecimento</Typography>
+                {trainingGerated.Aquecimento.map((exe) => (
+                  <Typography>{exe}</Typography>
+                ))}
+              </Box>
+              <Box sx={{ borderTop: "1px solid black" }}>
+                <Typography variant="h6">Exercícios</Typography>
+                {trainingGerated.Exercicios.map((exe) => (
+                  <Typography>{exe}</Typography>
+                ))}
+              </Box>
+            </Box>
+          )}
         </AccordionDetails>
       </Accordion>
       <Backdrop

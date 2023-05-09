@@ -32,7 +32,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editCategory";
 import CreateCategory from "./createCategory";
 import EditCategory from "./editCategory";
-import BackdropCategory from '../../Assets/Images/backdropCategory.webp'
+import BackdropCategory from "../../Assets/Images/backdropCategory.webp";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -221,30 +221,30 @@ const Categories = () => {
             </TableHead>
             <TableBody>
               {categories
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <StyledTableRow key={row.Nome}>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <DeleteForeverIcon
-                      onClick={() => handleAlertDelete(row.id)}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <EditIcon onClick={() => handleSelectEdit(row)} />
-                  </StyledTableCell>
-                  <StyledTableCell align="center" component="th" scope="row">
-                    {row.Nome}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <StyledTableRow key={row.Nome}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <DeleteForeverIcon
+                        onClick={() => handleAlertDelete(row.id)}
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <EditIcon onClick={() => handleSelectEdit(row)} />
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {row.Nome}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </TableBody>
           </Table>
           <TablePagination

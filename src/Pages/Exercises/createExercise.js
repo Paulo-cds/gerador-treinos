@@ -44,7 +44,7 @@ const CreateExercise = ({
     onSubmit: async (values) => {
       setLoading(true);
       const heaveExercise = exercises.find(
-        (exe) => exe.nome === formik.values.nome
+        (exe) => exe.nome.toLowerCase() === formik.values.nome.toLowerCase()
       );
       if (heaveExercise) {
         setOpen(true);
@@ -102,7 +102,11 @@ const CreateExercise = ({
           Esse exercicio já foi cadastrado!
         </Alert>
       </Snackbar>
-      <Accordion expanded={expanded} onChange={handleChange} sx={{ mb: 2 }}>
+      <Accordion
+        expanded={expanded}
+        onChange={handleChange}
+        sx={{ mb: 2, width: "100%" }}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1bh-content"
