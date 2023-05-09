@@ -289,6 +289,7 @@ const Training = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th" scope="row">
                       <CustomWidthTooltip
+                        disableFocusListener
                         title={row.Aquecimento.map((aqc) => (
                           <Typography>{aqc}</Typography>
                         ))}
@@ -298,6 +299,7 @@ const Training = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th" scope="row">
                       <CustomWidthTooltip
+                        disableFocusListener
                         title={row.Exercicios.map((aqc) => (
                           <Typography>{aqc}</Typography>
                         ))}
