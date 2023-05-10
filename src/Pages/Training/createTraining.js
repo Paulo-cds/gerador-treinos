@@ -26,6 +26,7 @@ const CreateTraining = ({
   metods,
   trainings,
   exercises,
+  handleGetTrainings,
 }) => {
   const [loading, setLoading] = useState(false);
   const [aquecimento, setAquecimento] = useState([]);
@@ -152,6 +153,7 @@ const CreateTraining = ({
         formik.resetForm();
         setLoading(false);
         setExpanded(false);
+        handleGetTrainings();
       } catch (e) {
         console.log(e);
         setLoading(false);

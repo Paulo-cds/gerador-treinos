@@ -68,6 +68,13 @@ const Home = () => {
             >
               Treinos
             </Item>
+            <Item
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/trainingToDay")}
+              className="buttons"
+            >
+              Treino de hoje
+            </Item>
           </Stack>
         </Box>
       </Box>

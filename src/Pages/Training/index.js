@@ -41,6 +41,7 @@ import CreateCategory from "./createTraining";
 import EditCategory from "./editCategory";
 import BackdropCategory from "../../Assets/Images/backdropExercises.webp";
 import CreateTraining from "./createTraining";
+import { backdropHeaderTable } from "../../Assets/colors";
 
 const Training = () => {
   const [categories, setCategories] = useState([]);
@@ -75,7 +76,7 @@ const Training = () => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: backdropHeaderTable,
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -256,6 +257,7 @@ const Training = () => {
           exercises={exercises}
           metods={metods}
           trainings={trainings}
+          handleGetTrainings={handleGetTrainings}
         />
         {editRegister && (
           <EditCategory

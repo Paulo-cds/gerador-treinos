@@ -34,7 +34,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editMetod";
 import CreateMetods from "./createMetods";
 import EditMetod from "./editMetod";
-import BackdropMetodo from '../../Assets/Images/backdropMetodo.jpg'
+import BackdropMetodo from "../../Assets/Images/backdropMetodo.jpg";
+import { backdropHeaderTable } from "../../Assets/colors";
 
 const Metods = () => {
   const [metods, setMetods] = useState([]);
@@ -65,7 +66,7 @@ const Metods = () => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: backdropHeaderTable,
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -88,7 +89,7 @@ const Metods = () => {
   }, []);
 
   const handleGetMetods = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const newMetods = [];
       const response = await fetchMetods();
@@ -98,10 +99,10 @@ const Metods = () => {
         newMetods.push(newItem);
       });
       setMetods(newMetods);
-      setLoading(false)
+      setLoading(false);
     } catch (e) {
       console.log(e);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -231,33 +232,33 @@ const Metods = () => {
             </TableHead>
             <TableBody>
               {metods
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <DeleteForeverIcon
-                      onClick={() => handleAlertDelete(row.id)}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <EditIcon onClick={() => handleSelectEdit(row)} />
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {row.nome}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.quantidade}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <StyledTableRow key={row.name}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <DeleteForeverIcon
+                        onClick={() => handleAlertDelete(row.id)}
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <EditIcon onClick={() => handleSelectEdit(row)} />
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {row.nome}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.quantidade}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </TableBody>
           </Table>
           <TablePagination

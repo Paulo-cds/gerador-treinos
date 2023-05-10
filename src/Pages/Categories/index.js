@@ -33,6 +33,7 @@ import EditExercise from "./editCategory";
 import CreateCategory from "./createCategory";
 import EditCategory from "./editCategory";
 import BackdropCategory from "../../Assets/Images/backdropCategory.webp";
+import { backdropHeaderTable } from "../../Assets/colors";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -63,7 +64,7 @@ const Categories = () => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: backdropHeaderTable,
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {

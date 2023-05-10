@@ -27,6 +27,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import EditExercise from "./editExercise";
 import BackdropImage from "../../Assets/Images/backdropExercise.jpg";
+import { backdropHeaderTable } from "../../Assets/colors";
 
 const Exercises = () => {
   const [exercises, setExercises] = useState([]);
@@ -57,7 +58,7 @@ const Exercises = () => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: backdropHeaderTable,
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
