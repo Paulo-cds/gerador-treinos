@@ -108,8 +108,9 @@ const Training = () => {
         newItem.id = item.id;
         newTrainings.push(newItem);
       });
-
-      setTrainings(newTrainings[0]);
+      let control = newTrainings[0];
+      control.Treinos = control.Treinos.reverse();
+      setTrainings(control);
     } catch (e) {
       console.log(e);
     }
@@ -211,15 +212,15 @@ const Training = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        
       }}
       alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
     >
       <Box
         width={{ xs: "90%", sm: "90%", md: "60%" }}
-        sx={{height:'90%'}}
+        sx={{ height: "90%" }}
         ml={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}
+        className="containerIndex"
       >
         <Dialog
           open={open}
@@ -271,9 +272,12 @@ const Training = () => {
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>Data</StyledTableCell>
-                  <StyledTableCell>Método</StyledTableCell>
-                  <StyledTableCell>Aquecimento</StyledTableCell>
+                  <StyledTableCell align="center">Data</StyledTableCell>
+                  <StyledTableCell align="center">Método</StyledTableCell>
+                  <StyledTableCell align="center">Aquecimento</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Ativação Neural
+                  </StyledTableCell>
                   <StyledTableCell align="center">Exercícios</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -298,6 +302,11 @@ const Training = () => {
                       >
                         <Typography>{row.Aquecimento[0]}</Typography>
                       </CustomWidthTooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <Tooltip disableFocusListener title={row.Ativacao}>
+                        <Typography>{row.Ativacao}</Typography>
+                      </Tooltip>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th" scope="row">
                       <CustomWidthTooltip

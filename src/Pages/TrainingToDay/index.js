@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchTrainings } from "../../Services/routes";
 import { Box, Divider, Typography } from "@mui/material";
 import BackdropImage from "../../Assets/Images/backdropToDay.jpg";
-import './styleToday.css'
+import "./styleToday.css";
 
 const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
@@ -42,7 +42,7 @@ const TrainingToDay = () => {
     });
 
     if (filterToDay) {
-      console.log(filterToDay)
+      console.log(filterToDay);
       setTodayTraining(filterToDay[0]);
     }
   };
@@ -61,20 +61,19 @@ const TrainingToDay = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        p:2
+        p: 2,
       }}
-      
       alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
       <Box
-      className='container'
-        sx={{
+        className="container"
+        style={{
           height: "90%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          paddingTop:2
+          paddingTop: 2,
         }}
         width={{ xs: "90%", sm: "90%", md: "60%" }}
         mr={{ xs: 0, sm: 0, md: 4 }}
@@ -119,7 +118,7 @@ const TrainingToDay = () => {
               <Typography variant="h5">Ativação Neural</Typography>
               <Divider />
               <Box sx={{ mt: 2 }}>
-                  <Typography>{todayTraining.Ativacao}</Typography>
+                <Typography>{todayTraining.Ativacao}</Typography>
               </Box>
             </Box>
             <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
