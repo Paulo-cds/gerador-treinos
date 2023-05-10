@@ -10,6 +10,7 @@ import {
   Snackbar,
   TablePagination,
   TextField,
+  Typography,
   styled,
 } from "@mui/material";
 import Table from "@mui/material/Table";
@@ -46,6 +47,9 @@ const Exercises = () => {
   const [exerciseEdit, setExerciseEdit] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [backupExercises, setBackupExercises] = useState([]);
+  const [searchExe, setSearchExe] = useState("");
+  const [notSearch, setNotSearch] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -90,10 +94,30 @@ const Exercises = () => {
         newExercises.push(newItem);
       });
       setExercises(newExercises);
+      setBackupExercises(newExercises);
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    setNotSearch(false);
+    // console.log(searchExe);
+    if (searchExe === "") {
+      setExercises(backupExercises);
+      return;
+    }
+    const filter = backupExercises.filter((exe) =>
+      exe.nome.toLowerCase().includes(searchExe.toLocaleLowerCase())
+    );
+
+    if (filter.length > 0) {
+      setExercises(filter);
+    } else {
+      setExercises(backupExercises);
+      setNotSearch(true);
+    }
+  }, [searchExe]);
 
   const handleClose = () => {
     setLoading(false);
@@ -217,6 +241,27 @@ const Exercises = () => {
             setOpenSnack={setOpenSnack}
           />
         )}
+
+        <Box
+          sx={{
+            mb: 1,
+            mt: 2,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            width: "100%",
+          }}
+        >
+          <TextField
+            type="text"
+            label="Procurar exercício"
+            value={searchExe}
+            error={notSearch}
+            onChange={(e) => setSearchExe(e.target.value)}
+            helperText={notSearch ? "Exercício não encontrado" : ""}
+            sx={{ backgroundColor: "white" }}
+          />
+        </Box>
 
         <Player open={openPlayer} setOpen={setOpenPlayer} link={linkVideo} />
         <TableContainer component={Paper}>
