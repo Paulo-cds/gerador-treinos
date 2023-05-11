@@ -4,6 +4,8 @@ import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Backdrop from "../../Assets/Images/backdropHome.jpeg";
 import "./homeStyle.css";
+import { useContext } from "react";
+import { Context } from "../../Private";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -15,6 +17,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Home = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useContext(Context);
+
   return (
     <Box
       sx={{

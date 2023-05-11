@@ -8,6 +8,8 @@ import Training from "./Pages/Training";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightBlue } from "@mui/material/colors";
 import TrainingToDay from "./Pages/TrainingToDay";
+import Login from "./Pages/Login";
+import { Private } from "./Private";
 
 const theme = createTheme({
   palette: {
@@ -22,37 +24,52 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <Private>
+                <Home />
+              </Private>
+            }
+          />
           <Route
             path="/exercises"
             element={
-              <Template>
-                <Exercises />
-              </Template>
+              <Private>
+                <Template>
+                  <Exercises />
+                </Template>
+              </Private>
             }
           />
           <Route
             path="/categories"
             element={
-              <Template>
-                <Categories />
-              </Template>
+              <Private>
+                <Template>
+                  <Categories />
+                </Template>
+              </Private>
             }
           />
           <Route
             path="/metods"
             element={
-              <Template>
-                <Metods />
-              </Template>
+              <Private>
+                <Template>
+                  <Metods />
+                </Template>
+              </Private>
             }
           />
           <Route
             path="/trainings"
             element={
-              <Template>
-                <Training />
-              </Template>
+              <Private>
+                <Template>
+                  <Training />
+                </Template>
+              </Private>
             }
           />
           <Route
@@ -63,6 +80,7 @@ function App() {
               </Template>
             }
           />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

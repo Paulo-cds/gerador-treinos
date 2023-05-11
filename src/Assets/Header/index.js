@@ -24,14 +24,12 @@ import CategoryIcon from "@mui/icons-material/Category";
 import FormatOverlineIcon from "@mui/icons-material/FormatOverline";
 import { GiStrongMan, GiStrong } from "react-icons/gi";
 
-
 const drawerWidth = 240;
 
 function Header(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate();
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };

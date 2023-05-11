@@ -49,7 +49,6 @@ const TrainingToDay = () => {
     });
 
     if (filterToDay) {
-      console.log(filterToDay);
       setTodayTraining(filterToDay[0]);
     }
   };
