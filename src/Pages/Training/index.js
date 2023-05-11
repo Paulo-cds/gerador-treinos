@@ -299,10 +299,13 @@ const Training = () => {
                       <CustomWidthTooltip
                         disableFocusListener
                         title={row.Aquecimento.map((aqc) => (
-                          <Typography>{aqc}</Typography>
+                          <Box sx={{ display: "flex" }}>
+                            <Typography>{aqc.exercicio}/</Typography>
+                            <Typography>{aqc.reps}</Typography>
+                          </Box>
                         ))}
                       >
-                        <Typography>{row.Aquecimento[0]}</Typography>
+                        <Typography>{row.Aquecimento[0].exercicio}</Typography>
                       </CustomWidthTooltip>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th" scope="row">
@@ -314,10 +317,13 @@ const Training = () => {
                       <CustomWidthTooltip
                         disableFocusListener
                         title={row.Exercicios.map((aqc) => (
-                          <Typography>{aqc}</Typography>
+                          <Box sx={{ display: "flex" }}>
+                            <Typography>{aqc.exercicio}/</Typography>
+                            <Typography>{aqc.reps}</Typography>
+                          </Box>
                         ))}
                       >
-                        <Typography>{row.Exercicios[0]}</Typography>
+                        <Typography>{row.Exercicios[0].exercicio}</Typography>
                       </CustomWidthTooltip>
                     </StyledTableCell>
                   </StyledTableRow>

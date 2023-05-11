@@ -35,6 +35,9 @@ const CreateTraining = ({
   const [trainingGerated, setTrainingGerated] = useState();
   const [ativacao, setAtivacao] = useState("");
   const [open, setOpen] = useState(false);
+  const [gerated, setGerated] = useState(false);
+  const [roundsAqc, setRoundsAqc] = useState("0");
+  const [roundsTraining, setRoundsTraining] = useState("0");
 
   const formik = useFormik({
     initialValues: {
@@ -76,12 +79,12 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe === exercises[sortAqc].nome)
+            train.Exercicios.some((exe) => exe.nome === exercises[sortAqc].nome)
           );
-          exists = exeAqc.some((exe) => exe === exercises[sortAqc].nome);
+          exists = exeAqc.some((exe) => exe.nome === exercises[sortAqc].nome);
 
           if (!exists && exercises[sortAqc].categoria === "Aquecimento") {
-            exeAqc.push(exercises[sortAqc].nome);
+            exeAqc.push({ exercicio: exercises[sortAqc].nome, reps: "0" });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeAqc.length == formik.values.numero) {
               notAqc = false; // saia do laço quando a sentença for falsa
@@ -101,12 +104,12 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe === exercises[sortExe].nome)
+            train.Exercicios.some((exe) => exe.nome === exercises[sortExe].nome)
           );
-          exists = exeTrn.some((exe) => exe === exercises[sortExe].nome);
+          exists = exeTrn.some((exe) => exe.nome === exercises[sortExe].nome);
 
           if (!exists && exercises[sortExe].categoria !== "Aquecimento") {
-            exeTrn.push(exercises[sortExe].nome);
+            exeTrn.push({ exercicio: exercises[sortExe].nome, reps: "0" });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeTrn.length == qtdExe) {
               notExe = false; // saia do laço quando a sentença for falsa
@@ -116,18 +119,19 @@ const CreateTraining = ({
         }
         //final gerando exercicios
 
-        const newTraining = {
-          Aquecimento: aquecimento,
-          Ativacao: ativacao,
-          Data: new Date().toLocaleDateString(),
-          Exercicios: exeTreino,
-          Metodo: mtTreino,
-        };
-        if (trainings.Treinos.length >= 5) {
-          trainings.Treinos.shift();
-        }
+        // const newTraining = {
+        //   Aquecimento: aquecimento,
+        //   Ativacao: ativacao,
+        //   Data: new Date().toLocaleDateString(),
+        //   Exercicios: exeTreino,
+        //   Metodo: mtTreino,
+        // };
+        // if (trainings.Treinos.length >= 5) {
+        //   trainings.Treinos.shift();
+        // }
+        setGerated(true);
 
-        setTrainingGerated(newTraining);
+        // setTrainingGerated(newTraining);
 
         setLoading(false);
       } catch (e) {
@@ -139,18 +143,34 @@ const CreateTraining = ({
 
   const handleSaveTraining = async () => {
     setLoading(true);
+    let newTraining = [];
+    const trainingGer = {
+      RoundsAqc: roundsAqc,
+      RoundsTraining: roundsTraining,
+      Aquecimento: aquecimento,
+      Ativacao: ativacao,
+      Data: new Date().toLocaleDateString(),
+      Exercicios: exeTreino,
+      Metodo: mtTreino,
+    };
+    newTraining.push(trainingGer);
+    console.log("new ", newTraining[0]);
+    if (trainings.Treinos.length >= 5) {
+      trainings.Treinos.pop();
+    }
     const heaveTraining = trainings.Treinos.find(
-      (exe) => exe.Data === trainingGerated.Data
+      (exe) => exe.Data === newTraining[0].Data
     );
     if (heaveTraining) {
       setOpen(true);
       setLoading(false);
     } else {
       try {
-        trainings.Treinos.push(trainingGerated);
+        trainings.Treinos.push(newTraining[0]);
         await addTraining(trainings, trainings.id);
         setTrainingGerated();
         formik.resetForm();
+        setGerated(false);
         setLoading(false);
         setExpanded(false);
         handleGetTrainings();
@@ -168,6 +188,28 @@ const CreateTraining = ({
 
   const handleChange = () => {
     setExpanded(!expanded);
+  };
+
+  const changeRepsAqc = (e, index) => {
+    setAquecimento((prevState) =>
+      prevState.map((obj, i) => {
+        if (i === index) {
+          return { ...obj, reps: e.target.value };
+        }
+        return obj;
+      })
+    );
+  };
+
+  const changeRepsTraining = (e, index) => {
+    setExeTreino((prevState) =>
+      prevState.map((obj, i) => {
+        if (i === index) {
+          return { ...obj, reps: e.target.value };
+        }
+        return obj;
+      })
+    );
   };
 
   return (
@@ -222,9 +264,9 @@ const CreateTraining = ({
               }}
             >
               <Button variant="contained" type="submit">
-                {!trainingGerated ? "Gerar" : "Gerar novo"}
+                {!gerated ? "Gerar" : "Gerar novo"}
               </Button>
-              {trainingGerated && (
+              {gerated && (
                 <Button
                   variant="contained"
                   type="button"
@@ -235,7 +277,7 @@ const CreateTraining = ({
               )}
             </Box>
           </Box>
-          {trainingGerated && (
+          {gerated && (
             <Box
               sx={{
                 width: "100%",
@@ -253,12 +295,48 @@ const CreateTraining = ({
               <Typography variant="h4">Novo treino</Typography>
               <Box sx={{ borderTop: "1px solid black" }}>
                 <Typography variant="h6">Método</Typography>
-                <Typography>{trainingGerated.Metodo}</Typography>
+                <Typography>{mtTreino}</Typography>
               </Box>
               <Box sx={{ borderTop: "1px solid black" }}>
                 <Typography variant="h6">Aquecimento</Typography>
-                {trainingGerated.Aquecimento.map((exe) => (
-                  <Typography>{exe}</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    mb: 2,
+                  }}
+                >
+                  <Typography sx={{ width: "70%" }}>Rounds</Typography>
+                  <TextField
+                    sx={{ width: "30%" }}
+                    variant="standard"
+                    label="Rounds"
+                    value={roundsAqc}
+                    onChange={(e) => setRoundsAqc(e.target.value)}
+                    type="text"
+                  />
+                </Box>
+                {aquecimento.map((exe, index) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <Typography sx={{ width: "70%" }}>
+                      {exe.exercicio}
+                    </Typography>
+                    <TextField
+                      sx={{ width: "30%" }}
+                      variant="standard"
+                      label="repetições"
+                      value={exe.reps}
+                      onChange={(e) => changeRepsAqc(e, index)}
+                      type="text"
+                    />
+                  </Box>
                 ))}
               </Box>
               <Box sx={{ borderTop: "1px solid black" }}>
@@ -267,8 +345,43 @@ const CreateTraining = ({
               </Box>
               <Box sx={{ borderTop: "1px solid black" }}>
                 <Typography variant="h6">Exercícios</Typography>
-                {trainingGerated.Exercicios.map((exe) => (
-                  <Typography>{exe}</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    mb: 2,
+                  }}
+                >
+                  <Typography sx={{ width: "70%" }}>Rounds</Typography>
+                  <TextField
+                    sx={{ width: "30%" }}
+                    variant="standard"
+                    label="Rounds"
+                    value={roundsTraining}
+                    onChange={(e) => setRoundsTraining(e.target.value)}
+                    type="text"
+                  />
+                </Box>
+                {exeTreino.map((exe, index) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <Typography sx={{ width: "70%" }}>
+                      {exe.exercicio}
+                    </Typography>
+                    <TextField
+                      sx={{ width: "30%" }}
+                      variant="standard"
+                      value={exe.reps}
+                      onChange={(e) => changeRepsTraining(e, index)}
+                      type="text"
+                    />
+                  </Box>
                 ))}
               </Box>
             </Box>

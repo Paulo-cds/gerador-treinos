@@ -3,6 +3,13 @@ import { fetchTrainings } from "../../Services/routes";
 import { Box, Divider, Typography } from "@mui/material";
 import BackdropImage from "../../Assets/Images/backdropToDay.jpg";
 import "./styleToday.css";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
@@ -91,10 +98,10 @@ const TrainingToDay = () => {
               gap: 2,
               border: "1px outset black",
               borderRadius: "10px",
+              overflowY: "scroll",
               boxShadow:
                 "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
             }}
-            overflow={{ xs: "scroll", sm: "scroll", md: "hidden" }}
           >
             <Box>
               <Typography variant="h4">Treino de Hoje</Typography>
@@ -107,27 +114,75 @@ const TrainingToDay = () => {
             </Box>
             <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
               <Typography variant="h5">Aquecimento</Typography>
+              <Typography variant="h6">
+                {todayTraining.RoundsAqc} Rounds
+              </Typography>
               <Divider />
-              <Box sx={{ mt: 2 }}>
-                {todayTraining.Aquecimento.map((aqc) => (
-                  <Typography>{aqc}</Typography>
-                ))}
+              <Box sx={{ mt: 2 }} minWidth={{ sm: 300, md: 650 }}>
+                <TableContainer component={Paper}>
+                  <Table sx={{ width: "100%" }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Exercício</TableCell>
+                        <TableCell align="center">Repetições</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {todayTraining.Aquecimento.map((row) => (
+                        <TableRow
+                          key={row.name}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell align="center">{row.exercicio}</TableCell>
+                          <TableCell align="center">{row.reps}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </Box>
             </Box>
-            <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
-              <Typography variant="h5">Ativação Neural</Typography>
-              <Divider />
-              <Box sx={{ mt: 2 }}>
-                <Typography>{todayTraining.Ativacao}</Typography>
+            {todayTraining.Ativacao && (
+              <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
+                <Typography variant="h5">Ativação Neural</Typography>
+                <Divider />
+                <Box sx={{ mt: 2 }}>
+                  <Typography>{todayTraining.Ativacao}</Typography>
+                </Box>
               </Box>
-            </Box>
+            )}
             <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
-              <Typography variant="h5">Exercícios</Typography>
+              <Typography variant="h5">Treino</Typography>
+              <Typography variant="h6">
+                {todayTraining.RoundsTraining} Rounds
+              </Typography>
               <Divider />
-              <Box sx={{ mt: 2 }}>
-                {todayTraining.Exercicios.map((aqc) => (
-                  <Typography>{aqc}</Typography>
-                ))}
+              <Box sx={{ mt: 2 }} minWidth={{ sm: 300, md: 650 }}>
+                <TableContainer component={Paper}>
+                  <Table sx={{ width: "100%" }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Exercício</TableCell>
+                        <TableCell align="center">Repetições</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {todayTraining.Exercicios.map((row) => (
+                        <TableRow
+                          key={row.name}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell align="center">{row.exercicio}</TableCell>
+                          <TableCell align="center">{row.reps}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </Box>
             </Box>
           </Box>
