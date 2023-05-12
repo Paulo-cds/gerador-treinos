@@ -84,7 +84,7 @@ const CreateTraining = ({
           exists = exeAqc.some((exe) => exe.nome === exercises[sortAqc].nome);
 
           if (!exists && exercises[sortAqc].categoria === "Aquecimento") {
-            exeAqc.push({ exercicio: exercises[sortAqc].nome, reps: "0" });
+            exeAqc.push({ exercicio: exercises[sortAqc].nome, reps: "0", exemplo: exercises[sortAqc].exemplo  });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeAqc.length == formik.values.numero) {
               notAqc = false; // saia do laço quando a sentença for falsa
@@ -109,7 +109,7 @@ const CreateTraining = ({
           exists = exeTrn.some((exe) => exe.nome === exercises[sortExe].nome);
 
           if (!exists && exercises[sortExe].categoria !== "Aquecimento") {
-            exeTrn.push({ exercicio: exercises[sortExe].nome, reps: "0" });
+            exeTrn.push({ exercicio: exercises[sortExe].nome, reps: "0", exemplo: exercises[sortExe].exemplo });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeTrn.length == qtdExe) {
               notExe = false; // saia do laço quando a sentença for falsa

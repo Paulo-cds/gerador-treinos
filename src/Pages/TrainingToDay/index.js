@@ -10,6 +10,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import Player from "../../Assets/Player";
 
 const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
@@ -19,6 +21,8 @@ const TrainingToDay = () => {
   const year = date.getFullYear();
   const toDay = `${day}/${month}/${year}`;
   const [todayTraining, setTodayTraining] = useState();
+  const [openPlayer, setOpenPlayer] = useState(false);
+  const [linkVideo, setLinkVideo] = useState("");
 
   useEffect(() => {
     handleGetTrainings();
@@ -52,7 +56,11 @@ const TrainingToDay = () => {
       setTodayTraining(filterToDay[0]);
     }
   };
-  // console.log(trainings)
+
+  const handleSetVideo = (link) => {
+    setLinkVideo(link);
+    setOpenPlayer(true);
+  };
 
   return (
     <Box
@@ -118,6 +126,11 @@ const TrainingToDay = () => {
               </Typography>
               <Divider />
               <Box sx={{ mt: 2 }} minWidth={{ sm: 300, md: 650 }}>
+                <Player
+                  open={openPlayer}
+                  setOpen={setOpenPlayer}
+                  link={linkVideo}
+                />
                 <TableContainer component={Paper}>
                   <Table sx={{ width: "100%" }} aria-label="simple table">
                     <TableHead>
@@ -134,7 +147,10 @@ const TrainingToDay = () => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell align="center">{row.exercicio}</TableCell>
+                          <TableCell align="center">
+                            {row.exemplo && <HelpOutlineIcon />}
+                            {row.exercicio}
+                          </TableCell>
                           <TableCell align="center">{row.reps}</TableCell>
                         </TableRow>
                       ))}
@@ -175,7 +191,15 @@ const TrainingToDay = () => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell align="center">{row.exercicio}</TableCell>
+                          <TableCell align="center">
+                            {row.exemplo && (
+                              <HelpOutlineIcon
+                                sx={{ cursor: "pointer", mr: 2 }}
+                                onClick={() => handleSetVideo(row.exemplo)}
+                              />
+                            )}
+                            {row.exercicio}
+                          </TableCell>
                           <TableCell align="center">{row.reps}</TableCell>
                         </TableRow>
                       ))}

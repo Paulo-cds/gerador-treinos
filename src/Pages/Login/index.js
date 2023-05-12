@@ -26,7 +26,7 @@ export default function Login() {
 
   async function handleLogin(e) {
     e.preventDefault();
-
+    setLoading(true)
     if (email !== "" && password !== "") {
       await signInWithEmailAndPassword(auth, email, password)
         .then((value) => {
@@ -42,7 +42,9 @@ export default function Login() {
             alert("Senha incorreta!");
           }
         });
+        setLoading(false)
     } else {
+      setLoading(false)
       alert("Preencha todos os campos!");
     }
   }
