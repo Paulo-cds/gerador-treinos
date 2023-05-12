@@ -75,9 +75,11 @@ function App() {
           <Route
             path="/trainingToDay"
             element={
-              <Template>
-                <TrainingToDay />
-              </Template>
+              <Private>
+                <Template>
+                  <TrainingToDay />
+                </Template>
+              </Private>
             }
           />
           <Route path="/login" element={<Login />} />

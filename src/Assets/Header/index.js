@@ -23,6 +23,9 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import CategoryIcon from "@mui/icons-material/Category";
 import FormatOverlineIcon from "@mui/icons-material/FormatOverline";
 import { GiStrongMan, GiStrong } from "react-icons/gi";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { db } from "../../firebase";
 
 const drawerWidth = 240;
 
@@ -30,82 +33,126 @@ function Header(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate();
+  const auth = getAuth();
+  const [admin, setAdmin] = React.useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  React.useEffect(() => {
+    verificRole();
+  }, []);
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
+  const verificRole = async () => {
+    await onAuthStateChanged(auth, (user) => {
+      //se tem user logado
+      if (user) {
+        const userRef = db.collection("users").doc(user.uid);
+        userRef.get().then((doc) => {
+          if (doc.exists) {
+            if (doc.data().isAdmin) {
+              setAdmin(true);
+            } else setAdmin(false);
+          }
+        });
+      }
+    });
+  };
+
   const drawer = (
     <div>
-      {/* <Toolbar /> */}
+      {admin && (
+        <>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/exercises");
+                }}
+              >
+                <ListItemIcon>
+                  <FitnessCenterIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Exercícios"} />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/categories");
+                }}
+              >
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Categorias"} />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/metods");
+                }}
+              >
+                <ListItemIcon>
+                  <FormatOverlineIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Métodos"} />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/trainings");
+                }}
+              >
+                <ListItemIcon>
+                  <GiStrongMan />
+                </ListItemIcon>
+                <ListItemText primary={"Treinos"} />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/trainingToDay");
+                }}
+              >
+                <ListItemIcon>
+                  <GiStrong />
+                </ListItemIcon>
+                <ListItemText primary={"Treino de hoje"} />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </>
+      )}
       <Divider />
       <List>
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/exercises");
+              logout();
             }}
           >
             <ListItemIcon>
-              <FitnessCenterIcon />
+              <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary={"Exercícios"} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/categories");
-            }}
-          >
-            <ListItemIcon>
-              <CategoryIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Categorias"} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/metods");
-            }}
-          >
-            <ListItemIcon>
-              <FormatOverlineIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Métodos"} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/trainings");
-            }}
-          >
-            <ListItemIcon>
-              <GiStrongMan />
-            </ListItemIcon>
-            <ListItemText primary={"Treinos"} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              mobileOpen && handleDrawerToggle();
-              navigate("/trainingToDay");
-            }}
-          >
-            <ListItemIcon>
-              <GiStrong />
-            </ListItemIcon>
-            <ListItemText primary={"Treino de hoje"} />
+            <ListItemText primary={"Sair"} />
           </ListItemButton>
         </ListItem>
       </List>

@@ -23,9 +23,18 @@ const TrainingToDay = () => {
   const [todayTraining, setTodayTraining] = useState();
   const [openPlayer, setOpenPlayer] = useState(false);
   const [linkVideo, setLinkVideo] = useState("");
+  const [weekDay, setWeekDay] = useState(false);
 
   useEffect(() => {
     handleGetTrainings();
+
+    const hoje = new Date();
+    const diaSemana = hoje.getDay();
+    if (diaSemana >= 1 && diaSemana <= 5) {
+      setWeekDay(true);
+    } else {
+      setWeekDay(false);
+    }
   }, []);
 
   const handleGetTrainings = async () => {
@@ -68,7 +77,11 @@ const TrainingToDay = () => {
         width: "100%",
         height: "100%",
         // overflowY: "scroll",
-        backgroundImage: `url(${BackdropImage})`,
+        backgroundImage: todayTraining
+          ? `url(${BackdropImage})`
+          : weekDay
+          ? `url(https://img.ahazou.com/tr:iodpr-2.0,oh-380,ow-380,oiar-1-1,w-380,oi-full-watermark-1x_SpmxT34_Q.png,oit-true/ahz-posts/a617814c-42b6-476d-a408-beeb5e3c8109/midia/post-19ccbc56-74ce-4d00-89a9-bef7dbc5aa6b.png)`
+          : `url(https://outside360.com.br/wp-content/uploads/2020/05/Melhores-redes-de-descanso.jpg)`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
@@ -92,7 +105,7 @@ const TrainingToDay = () => {
         width={{ xs: "90%", sm: "90%", md: "60%" }}
         mt={{ xs: 3, sm: 3, md: 0 }}
       >
-        {todayTraining && (
+        {todayTraining ? (
           <Box
             sx={{
               display: "flex",
@@ -209,6 +222,8 @@ const TrainingToDay = () => {
               </Box>
             </Box>
           </Box>
+        ) : (
+          <></>
         )}
       </Box>
     </Box>
