@@ -208,3 +208,23 @@ export const changeMetod = async (data, id) => {
     });
   return response;
 };
+
+/******Função que adiciona usuário******/
+export const addUser = async (email, uid, nome, isAdmin) => {
+  const response = await db
+    .collection("users")
+    .doc(uid)
+    .set({
+      email: email,
+      nome: nome,
+      isAdmin,
+    })
+    .then((doc) => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+
+  return response;
+};

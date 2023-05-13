@@ -138,6 +138,20 @@ function Header(props) {
                 <ListItemText primary={"Treino de hoje"} />
               </ListItemButton>
             </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/users");
+                }}
+              >
+                <ListItemIcon>
+                  <GiStrong />
+                </ListItemIcon>
+                <ListItemText primary={"Usuários"} />
+              </ListItemButton>
+            </ListItem>
           </List>
         </>
       )}

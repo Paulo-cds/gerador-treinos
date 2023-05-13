@@ -10,6 +10,7 @@ import { lightBlue } from "@mui/material/colors";
 import TrainingToDay from "./Pages/TrainingToDay";
 import Login from "./Pages/Login";
 import { Private } from "./Private";
+import Users from "./Pages/Users";
 
 const theme = createTheme({
   palette: {
@@ -78,6 +79,16 @@ function App() {
               <Private>
                 <Template>
                   <TrainingToDay />
+                </Template>
+              </Private>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <Private>
+                <Template>
+                  <Users />
                 </Template>
               </Private>
             }
