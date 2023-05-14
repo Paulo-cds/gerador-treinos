@@ -11,6 +11,7 @@ function Private({ children }) {
   const [loading, setLoading] = useState(true);
   const [signed, setSigned] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userData, setUserData] = useState()
   const auth = getAuth();
   const navigate = useNavigate();
 
@@ -22,16 +23,20 @@ function Private({ children }) {
     await onAuthStateChanged(auth, (user) => {
       //se tem user logado
       if (user) {
-        const userData = {
+        
+        const userValues = {
           uid: user.uid,
           email: user.email,
         };
 
-        localStorage.setItem("@detailUser", JSON.stringify(userData));
+        localStorage.setItem("@detailUser", JSON.stringify(userValues));
 
         const userRef = db.collection("users").doc(user.uid);
         userRef.get().then((doc) => {
           if (doc.exists) {
+            let data = doc.data()
+            data.id = user.uid
+            setUserData(data)
             setIsAdmin(doc.data().isAdmin);
             if (!doc.data().isAdmin) {
               navigate("/trainingToDay");
@@ -70,7 +75,7 @@ function Private({ children }) {
   // if (signed && !isAdmin) {
   //   return <Navigate to="/trainingToDay" />;
   // }
-  return <Context.Provider value={{ isAdmin }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ isAdmin, userData }}>{children}</Context.Provider>;
 }
 
 export { Context, Private };

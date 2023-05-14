@@ -13,7 +13,7 @@ import {
 import "./styleLogin.css";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("@correndodosofa.com.br");
   const [password, setPassword] = useState("");
   const auth = getAuth();
   const [loading, setLoading] = useState(false);

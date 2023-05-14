@@ -21,12 +21,7 @@ import { useEffect, useState } from "react";
 import { addExercise, addUser, fetchCategories } from "../../Services/routes";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
-const CreateUser = ({
-  handleGetExercises,
-  expanded,
-  setExpanded,
-  exercises,
-}) => {
+const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
@@ -77,17 +72,19 @@ const CreateUser = ({
       formik.values.isAdmin
     );
     if (response.status === 200) {
-      console.log("Cadastrado com sucesso!");
+      setLoading(false);
+      setExpanded(false);
+      handleGetUsers();
       // setAlert(true)
       // setStatus('success')
       // setRegisterUser(!registerUser)
       // setForm(initialState)
       // getUsers()
     } else {
+      setLoading(false);
       // setTitle("Erro ao cadastrar, verifique os dados e tente novamente.")
       // setAlert(true)
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -129,7 +126,7 @@ const CreateUser = ({
         </Alert>
       </Snackbar>
       <Accordion
-        expanded={true}
+        expanded={expanded}
         onChange={handleChange}
         sx={{ mb: 2, width: "100%" }}
       >

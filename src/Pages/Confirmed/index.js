@@ -5,12 +5,9 @@ import {
   TablePagination,
   styled,
 } from "@mui/material";
-import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import * as yup from "yup";
-import CreateUser from "./createUser";
-import BackgroundImage from "../../Assets/Images/backgroundUsers.jpg";
-import { fetchUsers } from "../../Services/routes";
+import BackgroundImage from "../../Assets/Images/backgroundConfirm.jpg";
+import { fetchAllConfirm } from "../../Services/routes";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -20,12 +17,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { backdropHeaderTable } from "../../Assets/colors";
 
-const Users = () => {
+const Confirmed = () => {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState();
+  const [confirmeds, setConfirmeds] = useState();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openCreate, setOpenCreate] = useState(false);
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  const toDay = `${day}/${month}/${year}`;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -56,44 +57,29 @@ const Users = () => {
     },
   }));
 
-  const formik = useFormik({
-    initialValues: {
-      nome: "",
-      categoria: "",
-      exemplo: "",
-    },
-    validationSchema: yup.object({
-      nome: yup.string().required("O campo é obrigatório."),
-      categoria: yup.string().required("O campo é obrigatório."),
-      exemplo: yup.string(),
-    }),
-    onSubmit: async (values) => {
-      setLoading(true);
-    },
-  });
-
   useEffect(() => {
-    handleGetUsers();
+    handleGetConfirmed();
   }, []);
 
-  const handleGetUsers = async () => {
+  const handleGetConfirmed = async () => {
     setLoading(true);
     try {
-      const newUser = [];
-      const response = await fetchUsers();
+      const newConfirm = [];
+      const response = await fetchAllConfirm();
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
-        newUser.push(newItem);
+        if (newItem.data === toDay) {
+          newConfirm.push(newItem);
+        }
       });
-      let control = newUser;
-      setUsers(control);
+      setConfirmeds(newConfirm);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
   };
-
+ 
   const handleClose = () => {
     setLoading(false);
   };
@@ -112,7 +98,7 @@ const Users = () => {
         flexDirection: "column",
         justifyContent: "center",
       }}
-      alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
+      alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
       <Box
         sx={{
@@ -123,25 +109,19 @@ const Users = () => {
           justifyContent: "center",
         }}
         width={{ xs: "90%", sm: "90%", md: "60%" }}
-        ml={{ xs: 0, sm: 0, md: 4 }}
+        mr={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}
       >
-        <CreateUser
-          expanded={openCreate}
-          setExpanded={setOpenCreate}
-          handleGetUsers={handleGetUsers}
-        />
-        {users && (
+        {confirmeds && (
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <Table sx={{ minWidth: 300 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
                   <StyledTableCell align="center">Nome</StyledTableCell>
-                  <StyledTableCell align="center">Email</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users
+                {confirmeds
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(
                     (row) =>
@@ -154,13 +134,6 @@ const Users = () => {
                           >
                             {row.nome}
                           </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            component="th"
-                            scope="row"
-                          >
-                            {row.email}
-                          </StyledTableCell>
                         </StyledTableRow>
                       )
                   )}
@@ -169,7 +142,7 @@ const Users = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={users.length}
+              count={confirmeds.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -189,4 +162,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Confirmed;

@@ -44,6 +44,27 @@ export const fetchTrainings = async () => {
   return response;
 };
 
+/******Função que faz o Get dos usuarios******/
+export const fetchUsers = async () => {
+  const data = db.collection("users");
+  const response = await data.get();
+  return response;
+};
+
+/******Função que faz o Get da confirmação do usuario logado******/
+export const fetchConfirm = async (id) => {
+  const data = db.collection("Confirmacao").doc(id);
+  const response = await data.get();
+  return response;
+};
+
+/******Função que faz o Get da confirmação de todos usuarios******/
+export const fetchAllConfirm = async (id) => {
+  const data = db.collection("Confirmacao");
+  const response = await data.get();
+  return response;
+};
+
 /******Função que adiciona exercicio******/
 export const addExercise = async (form) => {
   const response = await db
@@ -218,6 +239,26 @@ export const addUser = async (email, uid, nome, isAdmin) => {
       email: email,
       nome: nome,
       isAdmin,
+    })
+    .then((doc) => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+
+  return response;
+};
+
+/******Função de confirmação de ir ao treino******/
+export const confirmTraining = async (data) => {
+  const response = await db
+    .collection("Confirmacao")
+    .doc(data.uid)
+    .set({
+      nome: data.nome,
+      data: data.data,
+      confirm: data.confirm
     })
     .then((doc) => {
       return { data: doc, status: 200 };

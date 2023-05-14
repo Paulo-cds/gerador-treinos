@@ -26,6 +26,8 @@ import { GiStrongMan, GiStrong } from "react-icons/gi";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { db } from "../../firebase";
+import GroupIcon from "@mui/icons-material/Group";
+import CheckIcon from "@mui/icons-material/Check";
 
 const drawerWidth = 240;
 
@@ -124,20 +126,7 @@ function Header(props) {
                 <ListItemText primary={"Treinos"} />
               </ListItemButton>
             </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  mobileOpen && handleDrawerToggle();
-                  navigate("/trainingToDay");
-                }}
-              >
-                <ListItemIcon>
-                  <GiStrong />
-                </ListItemIcon>
-                <ListItemText primary={"Treino de hoje"} />
-              </ListItemButton>
-            </ListItem>
+
             <Divider />
             <ListItem disablePadding>
               <ListItemButton
@@ -147,7 +136,7 @@ function Header(props) {
                 }}
               >
                 <ListItemIcon>
-                  <GiStrong />
+                  <GroupIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Usuários"} />
               </ListItemButton>
@@ -157,6 +146,34 @@ function Header(props) {
       )}
       <Divider />
       <List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/trainingToDay");
+            }}
+          >
+            <ListItemIcon>
+              <GiStrong />
+            </ListItemIcon>
+            <ListItemText primary={"Treino de hoje"} />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              mobileOpen && handleDrawerToggle();
+              navigate("/confirmeds");
+            }}
+          >
+            <ListItemIcon>
+              <CheckIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Confirmados"} />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
