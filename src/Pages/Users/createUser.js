@@ -30,17 +30,19 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
   const formik = useFormik({
     initialValues: {
       nome: "",
+      password:'',
       email: "@correndodosofa.com.br",
       isAdmin: false,
     },
     validationSchema: yup.object({
       email: yup.string().required("O campo é obrigatório."),
       nome: yup.string().required("O campo é obrigatório."),
+      password: yup.string().required("O campo é obrigatório."),
       isAdmin: yup.boolean().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, formik.values.email, 123456)
+      await createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password)
         .then((value) => {
           handleUser(value.user.uid);
         })
@@ -161,7 +163,13 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
               label="Email"
               onChange={formik.handleChange}
             />
-
+            <TextField
+              name="password"
+              value={formik.values.password}
+              label="Senha"
+              type="password"
+              onChange={formik.handleChange}
+            />
             <Button variant="contained" type="submit">
               Salvar
             </Button>
