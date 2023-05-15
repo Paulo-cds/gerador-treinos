@@ -21,7 +21,7 @@ const Confirmed = () => {
   const [loading, setLoading] = useState(false);
   const [confirmeds, setConfirmeds] = useState();
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -79,7 +79,7 @@ const Confirmed = () => {
     }
     setLoading(false);
   };
- 
+
   const handleClose = () => {
     setLoading(false);
   };
@@ -131,6 +131,9 @@ const Confirmed = () => {
                             align="center"
                             component="th"
                             scope="row"
+                            style={{
+                              backgroundColor: row.confirm ? "green" : "red",
+                            }}
                           >
                             {row.nome}
                           </StyledTableCell>
@@ -140,7 +143,7 @@ const Confirmed = () => {
               </TableBody>
             </Table>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25]}
               component="div"
               count={confirmeds.length}
               rowsPerPage={rowsPerPage}
