@@ -39,9 +39,12 @@ const TrainingToDay = () => {
   const [linkVideo, setLinkVideo] = useState("");
   const [weekDay, setWeekDay] = useState(false);
   const { userData } = useContext(Context);
-  const [controlConfirm, setControlConfirm] = useState();
+  const [controlConfirm, setControlConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
+  const horaAtual = new Date(); // Obtém a hora atual
+  const horaLimite = new Date(); // Cria um objeto de data/hora para a hora limite
+  horaLimite.setHours(18, 30, 0);
 
   useEffect(() => {
     handleGetTrainings();
@@ -187,30 +190,36 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {!hasConfirmed ? (
-                <Box>
-                  <Typography>Você vai treinar hoje?</Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
-                    <Box sx={{ flexDirection: "column", display: "flex" }}>
-                      <Checkbox onClick={() => handleConfirm(true)} />
-                      Sim
-                    </Box>
-                    <Box sx={{ flexDirection: "column", display: "flex" }}>
-                      <Checkbox onClick={() => handleConfirm(false)} />
-                      Não
+              {horaAtual < horaLimite ? (
+                !hasConfirmed ? (
+                  <Box>
+                    <Typography>Você vai treinar hoje?</Typography>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-evenly" }}
+                    >
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(true)} />
+                        Sim
+                      </Box>
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(false)} />
+                        Não
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              ) : controlConfirm.confirm ? (
-                <img
-                  style={{ width: "50px" }}
-                  src="https://www.pngmart.com/files/15/Happy-Emoji-PNG.png"
-                />
+                ) : controlConfirm.confirm ? (
+                  <img
+                    style={{ width: "50px" }}
+                    src="https://www.pngmart.com/files/15/Happy-Emoji-PNG.png"
+                  />
+                ) : (
+                  <img
+                    style={{ width: "50px" }}
+                    src="https://cdn.pixabay.com/photo/2020/09/22/14/55/sad-emoji-5593352_1280.png"
+                  />
+                )
               ) : (
-                <img
-                  style={{ width: "50px" }}
-                  src="https://cdn.pixabay.com/photo/2020/09/22/14/55/sad-emoji-5593352_1280.png"
-                />
+                <></>
               )}
               <Box>
                 <Typography variant="h4">Treino de Hoje</Typography>
@@ -313,50 +322,56 @@ const TrainingToDay = () => {
             </Box>
           ) : (
             <Box
-            sx={{
-              display: "flex",
-              width:'70%',
-              height:300,
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              backgroundColor: "white",
-              p: 3,
-              gap: 2,
-              border: "1px outset black",
-              borderRadius: "10px",
-              boxShadow:
-                "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
-            }}
+              sx={{
+                display: "flex",
+                width: "70%",
+                height: 300,
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                backgroundColor: "white",
+                p: 3,
+                gap: 2,
+                border: "1px outset black",
+                borderRadius: "10px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
+              }}
             >
-              {!hasConfirmed ? (
-                <Box>
-                  <Typography>Você vai treinar hoje?</Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
-                    <Box sx={{ flexDirection: "column", display: "flex" }}>
-                      <Checkbox onClick={() => handleConfirm(true)} />
-                      Sim
-                    </Box>
-                    <Box sx={{ flexDirection: "column", display: "flex" }}>
-                      <Checkbox onClick={() => handleConfirm(false)} />
-                      Não
+              {horaAtual < horaLimite ? (
+                !hasConfirmed ? (
+                  <Box>
+                    <Typography>Você vai treinar hoje?</Typography>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-evenly" }}
+                    >
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(true)} />
+                        Sim
+                      </Box>
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(false)} />
+                        Não
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              ) : controlConfirm.confirm ? (
-                <Box>
-                <img
-                  style={{ width: "150px" }}
-                  src="https://www.pngmart.com/files/15/Happy-Emoji-PNG.png"
-                />
-                <Typography>Logo o treino será gerado!</Typography>
-                </Box>
+                ) : controlConfirm.confirm ? (
+                  <Box>
+                    <img
+                      style={{ width: "150px" }}
+                      src="https://www.pngmart.com/files/15/Happy-Emoji-PNG.png"
+                    />
+                    <Typography>Logo o treino será gerado!</Typography>
+                  </Box>
+                ) : (
+                  <img
+                    style={{ width: "150px" }}
+                    src="https://cdn.pixabay.com/photo/2020/09/22/14/55/sad-emoji-5593352_1280.png"
+                  />
+                )
               ) : (
-                <img
-                  style={{ width: "150px" }}
-                  src="https://cdn.pixabay.com/photo/2020/09/22/14/55/sad-emoji-5593352_1280.png"
-                />
+                <></>
               )}
             </Box>
           )}
