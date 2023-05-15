@@ -259,7 +259,12 @@ const TrainingToDay = () => {
                             }}
                           >
                             <TableCell align="center">
-                              {row.exemplo && <HelpOutlineIcon />}
+                              {row.exemplo && (
+                                <HelpOutlineIcon
+                                  sx={{ cursor: "pointer", mr: 2 }}
+                                  onClick={() => handleSetVideo(row.exemplo)}
+                                />
+                              )}
                               {row.exercicio}
                             </TableCell>
                             <TableCell align="center">{row.reps}</TableCell>

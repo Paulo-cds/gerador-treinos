@@ -67,6 +67,7 @@ function Header(props) {
 
   const drawer = (
     <div>
+      <Toolbar />
       {admin && (
         <>
           <Divider />
