@@ -41,15 +41,18 @@ const CreateTraining = ({
   const [roundsAqc, setRoundsAqc] = useState("0");
   const [roundsTraining, setRoundsTraining] = useState("0");
   const [optionsChange, setOptionsChange] = useState([]);
+  const options = { timeZone: "America/Sao_Paulo" };
 
   const formik = useFormik({
     initialValues: {
       numero: "",
       ativacao: "",
+      data: new Date().toLocaleDateString("pt-BR"),
     },
     validationSchema: yup.object({
       numero: yup.number().required("O campo é obrigatório."),
       ativacao: yup.string(),
+      data: yup.date().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
@@ -140,13 +143,16 @@ const CreateTraining = ({
 
   const handleSaveTraining = async () => {
     setLoading(true);
+    const prev = new Date(formik.values.data);
+    prev.setDate(prev.getDate() + 1);
+    const viewData = prev.toLocaleDateString("pt-BR", options);
     let newTraining = [];
     const trainingGer = {
       RoundsAqc: roundsAqc,
       RoundsTraining: roundsTraining,
       Aquecimento: aquecimento,
       Ativacao: ativacao,
-      Data: new Date().toLocaleDateString("pt-BR"),
+      Data: viewData,
       Exercicios: exeTreino,
       Metodo: mtTreino,
     };
@@ -294,6 +300,13 @@ const CreateTraining = ({
                 justifyContent: "space-evenly",
               }}
             >
+              <TextField
+                name="data"
+                value={formik.values.data}
+                label="Data"
+                type="date"
+                onChange={formik.handleChange}
+              />
               <Button variant="contained" type="submit">
                 {!gerated ? "Gerar" : "Gerar novo"}
               </Button>

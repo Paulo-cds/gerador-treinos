@@ -81,7 +81,7 @@ const Corrida = () => {
   const handleClose = () => {
     setLoading(false);
   };
-  console.log(trainings);
+
   return (
     <Box>
       <CreateRunning expanded={expanded} setExpanded={setExpanded} />

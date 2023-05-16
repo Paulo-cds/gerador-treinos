@@ -46,6 +46,7 @@ import BackdropCategory from "../../Assets/Images/backdropExercises.webp";
 import CreateTraining from "./createTraining";
 import { backdropHeaderTable } from "../../Assets/colors";
 import Corrida from "./Corrida";
+import "./styleTraining.css";
 
 const Training = () => {
   const [categories, setCategories] = useState([]);
@@ -115,7 +116,12 @@ const Training = () => {
         newTrainings.push(newItem);
       });
       let control = newTrainings[0];
-      control.Treinos = control.Treinos.reverse();
+      control.Treinos = control.Treinos.sort((a, b) => {
+        const dataA = new Date(a.Data.split("/").reverse().join("/"));
+        const dataB = new Date(b.Data.split("/").reverse().join("/"));
+        return dataB - dataA;
+      });
+      console.log("cat ", control);
       setTrainings(control);
     } catch (e) {
       console.log(e);
@@ -263,7 +269,7 @@ const Training = () => {
         sx={{ height: "90%" }}
         ml={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}
-        className="containerIndex"
+        className="containerIndexTraining"
       >
         <Dialog
           open={open}

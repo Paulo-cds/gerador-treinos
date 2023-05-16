@@ -16,7 +16,7 @@ import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { addRunningTraining } from "../../../Services/routes";
-import "./styleTraining.css";
+import "./styleTrainingRunning.css";
 
 const CreateRunning = ({ expanded, setExpanded }) => {
   const [loading, setLoading] = useState(false);

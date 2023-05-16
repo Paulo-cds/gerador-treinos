@@ -14,16 +14,16 @@
 }
 
 
-.containerIndex {
-    overflow: scroll;
+.containerIndexTraining {
+    overflow-y: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
     display:flex;
     flex-direction: column;
-    justify-content:center;
+    justify-content:flex-start;
 }
 
 
-.containerIndex::-webkit-scrollbar {
+.containerIndexTraining::-webkit-scrollbar {
     display: none;
 }
