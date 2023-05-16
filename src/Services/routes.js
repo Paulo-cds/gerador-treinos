@@ -44,6 +44,13 @@ export const fetchTrainings = async () => {
   return response;
 };
 
+/******Função que faz o Get dos treinos de corrida******/
+export const fetchRunningTrainings = async () => {
+  const data = db.collection("Corrida");
+  const response = await data.get();
+  return response;
+};
+
 /******Função que faz o Get dos usuarios******/
 export const fetchUsers = async () => {
   const data = db.collection("users");
@@ -133,6 +140,20 @@ export const addTraining = async (data, id) => {
     .update(data)
     .then(() => {
       return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
+/******Função que adiciona treino da corrida******/
+export const addRunningTraining = async (data, id) => {
+  const response = await db
+    .collection("Corrida")
+    .add(data)
+    .then(() => {
+      return { data: doc, status: 200 };
     })
     .catch((err) => {
       return { status: 400 };
@@ -258,7 +279,7 @@ export const confirmTraining = async (data) => {
     .set({
       nome: data.nome,
       data: data.data,
-      confirm: data.confirm
+      confirm: data.confirm,
     })
     .then((doc) => {
       return { data: doc, status: 200 };

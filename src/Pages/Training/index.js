@@ -10,7 +10,9 @@ import {
   List,
   ListItem,
   Snackbar,
+  Tab,
   TablePagination,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -25,6 +27,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
   deleteCategory,
   deleteRenter,
@@ -42,6 +45,7 @@ import EditCategory from "./editCategory";
 import BackdropCategory from "../../Assets/Images/backdropExercises.webp";
 import CreateTraining from "./createTraining";
 import { backdropHeaderTable } from "../../Assets/colors";
+import Corrida from "./Corrida";
 
 const Training = () => {
   const [categories, setCategories] = useState([]);
@@ -64,6 +68,7 @@ const Training = () => {
   const [metods, setMetods] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [trainings, setTrainings] = useState();
+  const [typeTraining, setTypeTraining] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -201,6 +206,43 @@ const Training = () => {
     },
   });
 
+  const handleChange = (event, newValue) => {
+    setTypeTraining(newValue);
+  };
+
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+
   return (
     <Box
       sx={{
@@ -251,96 +293,146 @@ const Training = () => {
             {title}
           </Alert>
         </Snackbar>
-        <CreateTraining
-          expanded={newRegister}
-          setExpanded={setNewRegister}
-          exercises={exercises}
-          metods={metods}
-          trainings={trainings}
-          handleGetTrainings={handleGetTrainings}
-        />
-        {editRegister && (
-          <EditCategory
-            exerciseEdit={exerciseEdit}
-            expanded={editRegister}
-            setExpanded={setEditRegister}
-            setTitle={setTitle}
-            setSeverity={setSeverity}
-            setOpenSnack={setOpenSnack}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+            m: 2,
+          }}
+        >
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              backgroundColor: "white",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <Tabs
+              value={typeTraining}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="Funcional" {...a11yProps(0)} />
+              <Tab label="Corrida" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+        </Box>
+        <TabPanel value={typeTraining} index={0}>
+          <CreateTraining
+            expanded={newRegister}
+            setExpanded={setNewRegister}
+            exercises={exercises}
+            metods={metods}
+            trainings={trainings}
+            handleGetTrainings={handleGetTrainings}
           />
-        )}
-        {trainings && (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="center">Data</StyledTableCell>
-                  <StyledTableCell align="center">Método</StyledTableCell>
-                  <StyledTableCell align="center">Aquecimento</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Ativação Neural
-                  </StyledTableCell>
-                  <StyledTableCell align="center">Exercícios</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {trainings.Treinos.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                ).map((row) => (
-                  <StyledTableRow key={row.Nome}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.Data}
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row">
-                      {row.Metodo}
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      <CustomWidthTooltip
-                        disableFocusListener
-                        title={row.Aquecimento.map((aqc) => (
-                          <Box sx={{ display: "flex" }}>
-                            <Typography>{aqc.exercicio}/</Typography>
-                            <Typography>{aqc.reps}</Typography>
-                          </Box>
-                        ))}
-                      >
-                        <Typography>{row.Aquecimento[0].exercicio}</Typography>
-                      </CustomWidthTooltip>
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      <Tooltip disableFocusListener title={row.Ativacao}>
-                        <Typography>{row.Ativacao}</Typography>
-                      </Tooltip>
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      <CustomWidthTooltip
-                        disableFocusListener
-                        title={row.Exercicios.map((aqc) => (
-                          <Box sx={{ display: "flex" }}>
-                            <Typography>{aqc.exercicio}/</Typography>
-                            <Typography>{aqc.reps}</Typography>
-                          </Box>
-                        ))}
-                      >
-                        <Typography>{row.Exercicios[0].exercicio}</Typography>
-                      </CustomWidthTooltip>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={trainings.Treinos.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+          {editRegister && (
+            <EditCategory
+              exerciseEdit={exerciseEdit}
+              expanded={editRegister}
+              setExpanded={setEditRegister}
+              setTitle={setTitle}
+              setSeverity={setSeverity}
+              setOpenSnack={setOpenSnack}
             />
-          </TableContainer>
-        )}
+          )}
+          {trainings && (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell align="center">Data</StyledTableCell>
+                    <StyledTableCell align="center">Método</StyledTableCell>
+                    <StyledTableCell align="center">
+                      Aquecimento
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      Ativação Neural
+                    </StyledTableCell>
+                    <StyledTableCell align="center">Exercícios</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {trainings.Treinos.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  ).map((row) => (
+                    <StyledTableRow key={row.Nome}>
+                      <StyledTableCell component="th" scope="row">
+                        {row.Data}
+                      </StyledTableCell>
+                      <StyledTableCell component="th" scope="row">
+                        {row.Metodo}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        <CustomWidthTooltip
+                          disableFocusListener
+                          title={row.Aquecimento.map((aqc) => (
+                            <Box sx={{ display: "flex" }}>
+                              <Typography>{aqc.exercicio}/</Typography>
+                              <Typography>{aqc.reps}</Typography>
+                            </Box>
+                          ))}
+                        >
+                          <Typography>
+                            {row.Aquecimento[0].exercicio}
+                          </Typography>
+                        </CustomWidthTooltip>
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        <Tooltip disableFocusListener title={row.Ativacao}>
+                          <Typography>{row.Ativacao}</Typography>
+                        </Tooltip>
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
+                        <CustomWidthTooltip
+                          disableFocusListener
+                          title={row.Exercicios.map((aqc) => (
+                            <Box sx={{ display: "flex" }}>
+                              <Typography>{aqc.exercicio}/</Typography>
+                              <Typography>{aqc.reps}</Typography>
+                            </Box>
+                          ))}
+                        >
+                          <Typography>{row.Exercicios[0].exercicio}</Typography>
+                        </CustomWidthTooltip>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={trainings.Treinos.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableContainer>
+          )}
+        </TabPanel>
+        <TabPanel value={typeTraining} index={1}>
+          <Corrida />
+        </TabPanel>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}

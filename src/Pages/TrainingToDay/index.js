@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   confirmTraining,
   fetchConfirm,
+  fetchRunningTrainings,
   fetchTrainings,
 } from "../../Services/routes";
 import {
@@ -14,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import BackdropImage from "../../Assets/Images/backdropToDay.jpg";
+import BackdropRunning from "../../Assets/Images/backdropRunning.jpeg";
 import "./styleToday.css";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -31,10 +33,12 @@ const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
   const date = new Date();
   const day = date.getDate();
-  const month = date.getMonth() + 1;
+  const verificday = date.getMonth() + 1;
+  const month = verificday < 10 ? "0" + verificday : verificday;
   const year = date.getFullYear();
   const toDay = `${day}/${month}/${year}`;
   const [todayTraining, setTodayTraining] = useState();
+  const [todayRunningTraining, setTodayRunningTraining] = useState();
   const [openPlayer, setOpenPlayer] = useState(false);
   const [linkVideo, setLinkVideo] = useState("");
   const [weekDay, setWeekDay] = useState(false);
@@ -48,6 +52,7 @@ const TrainingToDay = () => {
 
   useEffect(() => {
     handleGetTrainings();
+    handleGetRunningTrainings();
 
     const hoje = new Date();
     const diaSemana = hoje.getDay();
@@ -82,14 +87,60 @@ const TrainingToDay = () => {
   };
 
   const filterTrainingToDay = (training) => {
-    const filterToDay = training.Treinos.filter((item) => {
-      return (
-        new Date(item.Data).toLocaleString() == new Date(toDay).toLocaleString()
-      );
+    // const filterToDay = training.Treinos.filter((item) => {
+    //   console.log(new Date(item.Data).toLocaleDateString("pt-BR"));
+    //   return (
+    //     new Date(item.Data).toLocaleDateString("pt-BR") ===
+    //     new Date(toDay).toLocaleDateString("pt-BR")
+    //   );
+    // });
+
+    let filterToDay;
+    training.Treinos.forEach((item) => {
+      if (item.Data === toDay) {
+        filterToDay = item;
+      }
     });
 
     if (filterToDay) {
-      setTodayTraining(filterToDay[0]);
+      setTodayTraining(filterToDay);
+    }
+  };
+
+  const handleGetRunningTrainings = async () => {
+    try {
+      const newTrainings = [];
+      const response = await fetchRunningTrainings();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newTrainings.push(newItem);
+      });
+
+      filterRunningTrainingToDay(newTrainings);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const filterRunningTrainingToDay = (training) => {
+    // const filterToDay = training.Treinos.filter((item) => {
+    //   console.log(new Date(item.Data).toLocaleDateString("pt-BR"));
+    //   return (
+    //     new Date(item.Data).toLocaleDateString("pt-BR") ===
+    //     new Date(toDay).toLocaleDateString("pt-BR")
+    //   );
+    // });
+
+    let filterToDay;
+    training.forEach((item) => {
+      if (item.Data === toDay) {
+        filterToDay = item;
+      }
+    });
+
+    if (filterToDay) {
+      setTodayRunningTraining(filterToDay);
     }
   };
 
@@ -145,6 +196,8 @@ const TrainingToDay = () => {
         // overflowY: "scroll",
         backgroundImage: todayTraining
           ? `url(${BackdropImage})`
+          : todayRunningTraining
+          ? `url(${BackdropRunning})`
           : weekDay
           ? `url(https://img.ahazou.com/tr:iodpr-2.0,oh-380,ow-380,oiar-1-1,w-380,oi-full-watermark-1x_SpmxT34_Q.png,oit-true/ahz-posts/a617814c-42b6-476d-a408-beeb5e3c8109/midia/post-19ccbc56-74ce-4d00-89a9-bef7dbc5aa6b.png)`
           : `url(https://outside360.com.br/wp-content/uploads/2020/05/Melhores-redes-de-descanso.jpg)`,
@@ -323,6 +376,65 @@ const TrainingToDay = () => {
                     </Table>
                   </TableContainer>
                 </Box>
+              </Box>
+            </Box>
+          ) : todayRunningTraining ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                textAlign: "center",
+                backgroundColor: "white",
+                p: 3,
+                gap: 2,
+                border: "1px outset black",
+                borderRadius: "10px",
+                overflowY: "scroll",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
+              }}
+            >
+              {horaAtual < horaLimite ? (
+                !hasConfirmed ? (
+                  <Box>
+                    <Typography>Você vai treinar hoje?</Typography>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-evenly" }}
+                    >
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(true)} />
+                        Sim
+                      </Box>
+                      <Box sx={{ flexDirection: "column", display: "flex" }}>
+                        <Checkbox onClick={() => handleConfirm(false)} />
+                        Não
+                      </Box>
+                    </Box>
+                  </Box>
+                ) : controlConfirm.confirm ? (
+                  <img
+                    style={{ width: "50px" }}
+                    src="https://www.pngmart.com/files/15/Happy-Emoji-PNG.png"
+                  />
+                ) : (
+                  <img
+                    style={{ width: "50px" }}
+                    src="https://cdn.pixabay.com/photo/2020/09/22/14/55/sad-emoji-5593352_1280.png"
+                  />
+                )
+              ) : (
+                <></>
+              )}
+              <Box>
+                <Typography variant="h4">Treino de Hoje</Typography>
+                <Typography>{toDay}</Typography>
+              </Box>
+              <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
+                <Typography sx={{ mt: 2 }}>
+                  {todayRunningTraining.Treino}
+                </Typography>
               </Box>
             </Box>
           ) : (
