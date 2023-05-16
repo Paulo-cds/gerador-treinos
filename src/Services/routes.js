@@ -118,21 +118,6 @@ export const addMetod = async (form) => {
 };
 
 /******Função que adiciona treino******/
-// export const addTraining = async (form) => {
-//   const response = await db
-//     .collection("Treinos")
-//     .add(form)
-//     .then((doc) => {
-//       return { data: doc, status: 200 };
-//     })
-//     .catch((err) => {
-//       return { status: 400 };
-//     });
-
-//   return response;
-// };
-
-/******Função que adiciona treino******/
 export const addTraining = async (data, id) => {
   const response = await db
     .collection("Treinos")

@@ -7,10 +7,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Snackbar,
   TextField,
   Typography,
@@ -19,25 +15,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import {
-  addCategory,
-  addRunningTraining,
-  addTraining,
-} from "../../../Services/routes";
+import { addRunningTraining } from "../../../Services/routes";
 import "./styleTraining.css";
 
 const CreateRunning = ({ expanded, setExpanded }) => {
   const [loading, setLoading] = useState(false);
-  const [aquecimento, setAquecimento] = useState([]);
-  const [mtTreino, setMtTreino] = useState("");
-  const [exeTreino, setExeTreino] = useState([]);
-  const [trainingGerated, setTrainingGerated] = useState();
-  const [ativacao, setAtivacao] = useState("");
   const [open, setOpen] = useState(false);
-  const [gerated, setGerated] = useState(false);
-  const [roundsAqc, setRoundsAqc] = useState("0");
-  const [roundsTraining, setRoundsTraining] = useState("0");
-  const [optionsChange, setOptionsChange] = useState([]);
   const options = { timeZone: "America/Sao_Paulo" };
 
   const formik = useFormik({
