@@ -42,7 +42,7 @@ const CreateTraining = ({
   const [roundsTraining, setRoundsTraining] = useState("0");
   const [optionsChange, setOptionsChange] = useState([]);
   const options = { timeZone: "America/Sao_Paulo" };
-
+  
   const formik = useFormik({
     initialValues: {
       numero: "",
@@ -64,7 +64,7 @@ const CreateTraining = ({
         while (notMetod) {
           let sortMet = Math.floor(Math.random() * metods.length);
           const verificMet = trainings.Treinos.find(
-            (tr) => tr.metodo === metods[sortMet].nome
+            (tr) => tr.Metodo === metods[sortMet].nome
           );
 
           if (!verificMet) {
@@ -85,11 +85,11 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe.nome === exercises[sortAqc].nome)
+            train.Exercicios.some((exe) => exe.exercicio === exercises[sortAqc].nome)
           );
-          exists = exeAqc.some((exe) => exe.nome === exercises[sortAqc].nome);
+          let sorted = exeAqc.some((exe) => exe.exercicio === exercises[sortAqc].nome);
 
-          if (!exists && exercises[sortAqc].categoria === "Aquecimento") {
+          if (!exists && !sorted && exercises[sortAqc].categoria === "Aquecimento") {
             exeAqc.push({
               exercicio: exercises[sortAqc].nome,
               reps: "0",
@@ -114,11 +114,11 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe.nome === exercises[sortExe].nome)
+            train.Exercicios.some((exe) => exe.exercicio === exercises[sortExe].nome)
           );
-          exists = exeTrn.some((exe) => exe.nome === exercises[sortExe].nome);
+          let sorted = exeTrn.some((exe) => exe.exercicio === exercises[sortExe].nome);
 
-          if (!exists && exercises[sortExe].categoria !== "Aquecimento") {
+          if (!exists && !sorted && exercises[sortExe].categoria !== "Aquecimento") {
             exeTrn.push({
               exercicio: exercises[sortExe].nome,
               reps: "0",
@@ -193,11 +193,16 @@ const CreateTraining = ({
       let existsExe = trainings.Treinos.some((train) =>
         train.Exercicios.some(
           (exe) =>
-            exe.exercicio === element.nome ||
-            train.Aquecimento.some((exe) => exe.exercicio === element.nome)
+            exe.exercicio === element.nome
         )
       );
-      if (!existsExe) {
+      let existsAqc = trainings.Treinos.some((aqc) =>
+        aqc.Aquecimento.some(
+          (exe) =>
+            exe.exercicio === element.nome
+        )
+      );
+      if (!existsExe & !existsAqc) {        
         options.push(element);
       }
     });

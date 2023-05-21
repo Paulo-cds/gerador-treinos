@@ -120,8 +120,7 @@ const Training = () => {
         const dataA = new Date(a.Data.split("/").reverse().join("/"));
         const dataB = new Date(b.Data.split("/").reverse().join("/"));
         return dataB - dataA;
-      });
-      console.log("cat ", control);
+      });      
       setTrainings(control);
     } catch (e) {
       console.log(e);

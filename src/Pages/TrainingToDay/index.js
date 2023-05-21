@@ -436,6 +436,17 @@ const TrainingToDay = () => {
                   {todayRunningTraining.Treino}
                 </Typography>
               </Box>
+              {
+                todayRunningTraining.Encontro &&
+                <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
+                  <Typography>
+                    Ponto de encontro:
+                  </Typography>
+                <Typography sx={{ mt: 2 }}>
+                  {todayRunningTraining.Encontro}
+                </Typography>
+              </Box>
+              }
             </Box>
           ) : (
             <Box

@@ -84,7 +84,7 @@ const Corrida = () => {
 
   return (
     <Box>
-      <CreateRunning expanded={expanded} setExpanded={setExpanded} />
+      <CreateRunning expanded={expanded} setExpanded={setExpanded} handleGetTrainings={handleGetTrainings} />
       {trainings && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 300 }} aria-label="customized table">

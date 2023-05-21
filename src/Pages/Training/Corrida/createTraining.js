@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { addRunningTraining } from "../../../Services/routes";
 import "./styleTrainingRunning.css";
 
-const CreateRunning = ({ expanded, setExpanded }) => {
+const CreateRunning = ({ expanded, setExpanded, handleGetTrainings }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const options = { timeZone: "America/Sao_Paulo" };
@@ -27,10 +27,12 @@ const CreateRunning = ({ expanded, setExpanded }) => {
     initialValues: {
       data: new Date().toLocaleDateString("pt-BR"),
       training: "",
+      point: ''
     },
     validationSchema: yup.object({
       training: yup.string().required("O campo é obrigatório."),
       data: yup.date().required("O campo é obrigatório."),
+      point: yup.string().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
@@ -41,10 +43,12 @@ const CreateRunning = ({ expanded, setExpanded }) => {
         const data = {
           Data: viewData,
           Treino: values.training,
+          Encontro:values.point
         };
         await addRunningTraining(data);
 
         setLoading(false);
+        handleGetTrainings()
         setExpanded(false);
         formik.resetForm();
       } catch (e) {
@@ -106,6 +110,12 @@ const CreateRunning = ({ expanded, setExpanded }) => {
               name="training"
               value={formik.values.training}
               label="Descrição"
+              onChange={formik.handleChange}
+            />
+            <TextField
+              name="point"
+              value={formik.values.point}
+              label="Ponto de encontro"
               onChange={formik.handleChange}
             />
             <Button type="submit" variant="contained">
