@@ -70,7 +70,8 @@ const Corrida = () => {
         newTrainings.push(newItem);
       });
       let control = newTrainings;
-      control = control.reverse();
+
+      // control = control.reverse();
       setTrainings(control);
     } catch (e) {
       console.log(e);
@@ -84,7 +85,11 @@ const Corrida = () => {
 
   return (
     <Box>
-      <CreateRunning expanded={expanded} setExpanded={setExpanded} handleGetTrainings={handleGetTrainings} />
+      <CreateRunning
+        expanded={expanded}
+        setExpanded={setExpanded}
+        handleGetTrainings={handleGetTrainings}
+      />
       {trainings && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 300 }} aria-label="customized table">

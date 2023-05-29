@@ -42,7 +42,7 @@ const CreateTraining = ({
   const [roundsTraining, setRoundsTraining] = useState("0");
   const [optionsChange, setOptionsChange] = useState([]);
   const options = { timeZone: "America/Sao_Paulo" };
-  
+
   const formik = useFormik({
     initialValues: {
       numero: "",
@@ -85,11 +85,19 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe.exercicio === exercises[sortAqc].nome)
+            train.Exercicios.some(
+              (exe) => exe.exercicio === exercises[sortAqc].nome
+            )
           );
-          let sorted = exeAqc.some((exe) => exe.exercicio === exercises[sortAqc].nome);
+          let sorted = exeAqc.some(
+            (exe) => exe.exercicio === exercises[sortAqc].nome
+          );
 
-          if (!exists && !sorted && exercises[sortAqc].categoria === "Aquecimento") {
+          if (
+            !exists &&
+            !sorted &&
+            exercises[sortAqc].categoria === "Aquecimento"
+          ) {
             exeAqc.push({
               exercicio: exercises[sortAqc].nome,
               reps: "0",
@@ -114,11 +122,19 @@ const CreateTraining = ({
           // );
 
           let exists = trainings.Treinos.some((train) =>
-            train.Exercicios.some((exe) => exe.exercicio === exercises[sortExe].nome)
+            train.Exercicios.some(
+              (exe) => exe.exercicio === exercises[sortExe].nome
+            )
           );
-          let sorted = exeTrn.some((exe) => exe.exercicio === exercises[sortExe].nome);
+          let sorted = exeTrn.some(
+            (exe) => exe.exercicio === exercises[sortExe].nome
+          );
 
-          if (!exists && !sorted && exercises[sortExe].categoria !== "Aquecimento") {
+          if (
+            !exists &&
+            !sorted &&
+            exercises[sortExe].categoria !== "Aquecimento"
+          ) {
             exeTrn.push({
               exercicio: exercises[sortExe].nome,
               reps: "0",
@@ -191,18 +207,12 @@ const CreateTraining = ({
     let options = [];
     exercises.forEach((element, index) => {
       let existsExe = trainings.Treinos.some((train) =>
-        train.Exercicios.some(
-          (exe) =>
-            exe.exercicio === element.nome
-        )
+        train.Exercicios.some((exe) => exe.exercicio === element.nome)
       );
       let existsAqc = trainings.Treinos.some((aqc) =>
-        aqc.Aquecimento.some(
-          (exe) =>
-            exe.exercicio === element.nome
-        )
+        aqc.Aquecimento.some((exe) => exe.exercicio === element.nome)
       );
-      if (!existsExe & !existsAqc) {        
+      if (!existsExe & !existsAqc) {
         options.push(element);
       }
     });
@@ -303,6 +313,14 @@ const CreateTraining = ({
                 width: "100%",
                 display: "flex",
                 justifyContent: "space-evenly",
+                gap: 2,
+              }}
+              flexDirection={{
+                xs: "column",
+                sm: "column",
+                md: "column",
+                lg: "row",
+                xl: "row",
               }}
             >
               <TextField
@@ -312,18 +330,26 @@ const CreateTraining = ({
                 type="date"
                 onChange={formik.handleChange}
               />
-              <Button variant="contained" type="submit">
-                {!gerated ? "Gerar" : "Gerar novo"}
-              </Button>
-              {gerated && (
-                <Button
-                  variant="contained"
-                  type="button"
-                  onClick={() => handleSaveTraining()}
-                >
-                  Salvar
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  gap: 2,
+                }}
+              >
+                <Button variant="contained" type="submit">
+                  {!gerated ? "Gerar" : "Gerar novo"}
                 </Button>
-              )}
+                {gerated && (
+                  <Button
+                    variant="contained"
+                    type="button"
+                    onClick={() => handleSaveTraining()}
+                  >
+                    Salvar
+                  </Button>
+                )}
+              </Box>
             </Box>
           </Box>
           {gerated && (
