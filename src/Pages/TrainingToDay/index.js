@@ -32,7 +32,8 @@ import { Context } from "../../Private";
 const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
   const date = new Date();
-  const day = date.getDate();
+  const verificToDay = date.getDate();
+  const day = verificToDay < 10 ? "0" + verificToDay : verificToDay;
   const verificday = date.getMonth() + 1;
   const month = verificday < 10 ? "0" + verificday : verificday;
   const year = date.getFullYear();
@@ -243,7 +244,7 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {horaAtual < horaLimite & userData.nome !== 'visitante' ? (
+              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
@@ -396,7 +397,7 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {horaAtual < horaLimite & userData.nome !== 'visitante' ? (
+              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
@@ -436,17 +437,14 @@ const TrainingToDay = () => {
                   {todayRunningTraining.Treino}
                 </Typography>
               </Box>
-              {
-                todayRunningTraining.Encontro &&
+              {todayRunningTraining.Encontro && (
                 <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
-                  <Typography>
-                    Ponto de encontro:
+                  <Typography>Ponto de encontro:</Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    {todayRunningTraining.Encontro}
                   </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  {todayRunningTraining.Encontro}
-                </Typography>
-              </Box>
-              }
+                </Box>
+              )}
             </Box>
           ) : (
             <Box
@@ -467,7 +465,7 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {horaAtual < horaLimite & userData.nome !== 'visitante' ? (
+              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
