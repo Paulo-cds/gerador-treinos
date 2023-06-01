@@ -23,7 +23,8 @@ const Confirmed = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const date = new Date();
-  const day = date.getDate();
+  const verificToDay = date.getDate();
+  const day = verificToDay < 10 ? "0" + verificToDay : verificToDay;
   const verificday = date.getMonth() + 1;
   const month = verificday < 10 ? "0" + verificday : verificday;
   const year = date.getFullYear();
