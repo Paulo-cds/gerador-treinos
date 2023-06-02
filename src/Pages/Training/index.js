@@ -47,6 +47,7 @@ import CreateTraining from "./createTraining";
 import { backdropHeaderTable } from "../../Assets/colors";
 import Corrida from "./Corrida";
 import "./styleTraining.css";
+import EditTraining from "./editTraining";
 
 const Training = () => {
   const [categories, setCategories] = useState([]);
@@ -70,6 +71,8 @@ const Training = () => {
   const [exercises, setExercises] = useState([]);
   const [trainings, setTrainings] = useState();
   const [typeTraining, setTypeTraining] = useState("");
+  const [trainingEdit, setTrainingEdit] = useState();
+  const [formTraining, setFormTraining] = useState("create");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -107,6 +110,7 @@ const Training = () => {
   }, []);
 
   const handleGetTrainings = async () => {
+    setLoading(true);
     try {
       const newTrainings = [];
       const response = await fetchTrainings();
@@ -120,11 +124,12 @@ const Training = () => {
         const dataA = new Date(a.Data.split("/").reverse().join("/"));
         const dataB = new Date(b.Data.split("/").reverse().join("/"));
         return dataB - dataA;
-      });      
+      });
       setTrainings(control);
     } catch (e) {
       console.log(e);
     }
+    setLoading(false);
   };
 
   const handleGetExercises = async () => {
@@ -248,6 +253,12 @@ const Training = () => {
     };
   }
 
+  const handleSelectTrainingEdit = (training, index) => {
+    setTrainingEdit(index);
+    setFormTraining("edit");
+    setNewRegister(true);
+  };
+
   return (
     <Box
       sx={{
@@ -288,13 +299,8 @@ const Training = () => {
           open={openSnack}
           autoHideDuration={3000}
           onClose={handleClose}
-          message={title}
         >
-          <Alert
-            onClose={handleClose}
-            severity={severity}
-            sx={{ width: "100%" }}
-          >
+          <Alert severity={severity} sx={{ width: "100%" }}>
             {title}
           </Alert>
         </Snackbar>
@@ -328,14 +334,28 @@ const Training = () => {
           </Box>
         </Box>
         <TabPanel value={typeTraining} index={0}>
-          <CreateTraining
-            expanded={newRegister}
-            setExpanded={setNewRegister}
-            exercises={exercises}
-            metods={metods}
-            trainings={trainings}
-            handleGetTrainings={handleGetTrainings}
-          />
+          {formTraining === "create" ? (
+            <CreateTraining
+              expanded={newRegister}
+              setExpanded={setNewRegister}
+              exercises={exercises}
+              metods={metods}
+              trainings={trainings}
+              handleGetTrainings={handleGetTrainings}
+            />
+          ) : (
+            <EditTraining
+              expanded={newRegister}
+              setExpanded={setNewRegister}
+              trainingEdit={trainingEdit}
+              setFormTraining={setFormTraining}
+              trainings={trainings}
+              handleGetTrainings={handleGetTrainings}
+              setTitle={setTitle}
+              setOpenSnack={setOpenSnack}
+              setSeverity={setSeverity}
+            />
+          )}
           {editRegister && (
             <EditCategory
               exerciseEdit={exerciseEdit}
@@ -351,6 +371,7 @@ const Training = () => {
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
+                    <StyledTableCell align="center"></StyledTableCell>
                     <StyledTableCell align="center">Data</StyledTableCell>
                     <StyledTableCell align="center">Método</StyledTableCell>
                     <StyledTableCell align="center">
@@ -366,8 +387,17 @@ const Training = () => {
                   {trainings.Treinos.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
-                  ).map((row) => (
+                  ).map((row, index) => (
                     <StyledTableRow key={row.Nome}>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <EditIcon
+                          onClick={() => handleSelectTrainingEdit(row, index)}
+                        />
+                      </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         {row.Data}
                       </StyledTableCell>

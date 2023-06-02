@@ -236,6 +236,21 @@ export const changeMetod = async (data, id) => {
   return response;
 };
 
+/******Função que edita data do treino******/
+export const changeTrainingData = async (data, id) => {
+  const response = await db
+    .collection("Treinos")
+    .doc(id)
+    .set({ Treinos: data })
+    .then(() => {
+      return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
 /******Função que adiciona usuário******/
 export const addUser = async (email, uid, nome, isAdmin) => {
   const response = await db
