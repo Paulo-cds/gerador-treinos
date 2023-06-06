@@ -14,6 +14,7 @@ import { useState } from "react";
 import * as yup from "yup";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { changeTrainingData } from "../../Services/routes";
+import moment from "moment";
 
 const EditTraining = ({
   expanded,
@@ -27,7 +28,6 @@ const EditTraining = ({
   setSeverity,
 }) => {
   const [loading, setLoading] = useState(false);
-  const moment = require("moment");
   const options = { timeZone: "America/Sao_Paulo" };
 
   const formik = useFormik({
