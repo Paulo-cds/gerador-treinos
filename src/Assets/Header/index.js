@@ -29,14 +29,14 @@ import { db } from "../../firebase";
 import GroupIcon from "@mui/icons-material/Group";
 import CheckIcon from "@mui/icons-material/Check";
 import { useContext } from "react";
-import { Context } from "../../Private"
-import {CgGym} from "react-icons/cg"
-import { lightBlue } from "@mui/material/colors"
+import { Context } from "../../Private";
+import { CgGym } from "react-icons/cg";
+import { lightBlue } from "@mui/material/colors";
 
 const drawerWidth = 240;
 
 function Header(props, theme) {
-  const { userData } = useContext(Context)
+  const { userData } = useContext(Context);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ function Header(props, theme) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
- 
+
   React.useEffect(() => {
     verificRole();
   }, []);
@@ -72,19 +72,25 @@ function Header(props, theme) {
 
   const drawer = (
     <div>
-      
-      <Toolbar sx={{display:'flex', justifyContent:'space-between', alignItems:'center', backgroundColor:lightBlue[500]}}>
-      {
-        userData ?
-        <>
-        <CgGym size='2rem'/>
-        <Typography variant="h5">
-          {userData.nome}
-        </Typography>
-        <CgGym size='2rem'/>
-        </>
-        : <></>
-      }
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: lightBlue[500],
+        }}
+      >
+        {userData ? (
+          <>
+            <CgGym size="2rem" />
+            <Typography variant="h5" sx={{ textAlign: "center" }}>
+              {userData.nome}
+            </Typography>
+            <CgGym size="2rem" />
+          </>
+        ) : (
+          <></>
+        )}
       </Toolbar>
       {admin && (
         <>
