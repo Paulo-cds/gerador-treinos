@@ -21,6 +21,7 @@ import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { addCategory, addTraining } from "../../Services/routes";
 import "./styleTraining.css";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const CreateTraining = ({
   expanded,
@@ -102,6 +103,7 @@ const CreateTraining = ({
               exercicio: exercises[sortAqc].nome,
               reps: "0",
               exemplo: exercises[sortAqc].exemplo,
+              id: exercises[sortAqc].id,
             });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeAqc.length == formik.values.numero) {
@@ -139,6 +141,7 @@ const CreateTraining = ({
               exercicio: exercises[sortExe].nome,
               reps: "0",
               exemplo: exercises[sortExe].exemplo,
+              id: exercises[sortExe].id,
             });
             // qtdExe = metods[sortAqc].quantidade;
             if (exeTrn.length == qtdExe) {
@@ -262,6 +265,10 @@ const CreateTraining = ({
     newAqc[index].exercicio = e.target.value.nome;
     newAqc[index].exemplo = e.target.value.exemplo;
     setExeTreino(newAqc);
+  };
+
+  const onDragEnd = (result) => {
+    console.log(result);
   };
 
   return (
@@ -392,47 +399,84 @@ const CreateTraining = ({
                     type="text"
                   />
                 </Box>
-                {aquecimento.length > 0 &&
-                  aquecimento.map((exe, index) => (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                        m: 1,
-                      }}
-                    >
-                      <Box sx={{ width: "60%" }}>
-                        <FormControl variant="standard" sx={{ width: "100%" }}>
-                          <InputLabel id="demo-simple-select-label">
-                            {exe.exercicio}
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-standard-label"
-                            id="demo-simple-select-standard"
-                            onChange={(e) => handleChangeAqc(e, index)}
-                            value={exe.exercicio}
-                            label={exe.exercicio}
-                          >
-                            {optionsChange.map(
-                              (opt) =>
-                                opt.categoria === "Aquecimento" && (
-                                  <MenuItem value={opt}>{opt.nome}</MenuItem>
-                                )
-                            )}
-                          </Select>
-                        </FormControl>
-                      </Box>
-                      <TextField
-                        sx={{ width: "30%" }}
-                        variant="standard"
-                        label="repetições"
-                        value={exe.reps}
-                        onChange={(e) => changeRepsAqc(e, index)}
-                        type="text"
-                      />
-                    </Box>
-                  ))}
+                {aquecimento.length > 0 && (
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="characters">
+                      {(provided) => (
+                        <Box
+                          className="characters"
+                          {...provided.droppableProps}
+                          innerRef={provided.innerRef}
+                          provided={provided}
+                        >
+                          {aquecimento.map((exe, index) => (
+                            <Draggable
+                              key={exe.id}
+                              draggableId={exe.id}
+                              index={index}
+                            >
+                              {(provided) => {
+                                return (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-evenly",
+                                      m: 1,
+                                    }}
+                                    innerRef={provided.innerRef}
+                                    provided={provided}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                  >
+                                    <Box sx={{ width: "60%" }}>
+                                      <FormControl
+                                        variant="standard"
+                                        sx={{ width: "100%" }}
+                                      >
+                                        <InputLabel id="demo-simple-select-label">
+                                          {exe.exercicio}
+                                        </InputLabel>
+                                        <Select
+                                          labelId="demo-simple-select-standard-label"
+                                          id="demo-simple-select-standard"
+                                          onChange={(e) =>
+                                            handleChangeAqc(e, index)
+                                          }
+                                          value={exe.exercicio}
+                                          label={exe.exercicio}
+                                        >
+                                          {optionsChange.map(
+                                            (opt) =>
+                                              opt.categoria ===
+                                                "Aquecimento" && (
+                                                <MenuItem value={opt}>
+                                                  {opt.nome}
+                                                </MenuItem>
+                                              )
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    </Box>
+                                    <TextField
+                                      sx={{ width: "30%" }}
+                                      variant="standard"
+                                      label="repetições"
+                                      value={exe.reps}
+                                      onChange={(e) => changeRepsAqc(e, index)}
+                                      type="text"
+                                    />
+                                    {provided.placeholder}
+                                  </Box>
+                                );
+                              }}
+                            </Draggable>
+                          ))}
+                        </Box>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                )}
               </Box>
               <Box sx={{ borderTop: "1px solid black" }}>
                 <Typography variant="h6">Ativação Neural</Typography>
