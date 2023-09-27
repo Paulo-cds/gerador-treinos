@@ -70,10 +70,15 @@ const TrainingToDay = () => {
     }
   }, [userData]);
 
+
   const handleGetTrainings = async () => {
     try {
       const newTrainings = [];
-      const response = await fetchTrainings();
+      const response = await fetchTrainings(
+        userData.tipo !== "personal"
+          ? "Treinos"
+          : userData.nome.replace(" ", "")
+      );
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
@@ -188,7 +193,7 @@ const TrainingToDay = () => {
   const handleClose = () => {
     setLoading(false);
   };
-
+  
   return (
     <Box
       sx={{
@@ -222,8 +227,9 @@ const TrainingToDay = () => {
             justifyContent: "flex-start",
             overflowY: "hidden",
             pb: 2,
+            height: "100%",
           }}
-          width={{ xs: "90%", sm: "90%", md: "60%" }}
+          width={{ xs: "100%", sm: "100%", md: "60%" }}
           mt={{ xs: 3, sm: 3, md: 0 }}
         >
           {todayTraining ? (
@@ -240,11 +246,15 @@ const TrainingToDay = () => {
                 border: "1px outset black",
                 borderRadius: "10px",
                 overflowY: "scroll",
+
                 boxShadow:
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
+              className="containerToday"
             >
-              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
+              {(horaAtual < horaLimite) &
+              (userData.nome !== "visitante") &
+              (userData.tipo !== "personal") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
@@ -397,7 +407,9 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
+              {(horaAtual < horaLimite) &
+              (userData.nome !== "visitante") &
+              (userData.tipo !== "personal") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
@@ -465,7 +477,9 @@ const TrainingToDay = () => {
                   "rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
               }}
             >
-              {(horaAtual < horaLimite) & (userData.nome !== "visitante") ? (
+              {(horaAtual < horaLimite) &
+              (userData.nome !== "visitante") &
+              (userData.tipo !== "personal") ? (
                 !hasConfirmed ? (
                   <Box>
                     <Typography>Você vai treinar hoje?</Typography>
@@ -497,7 +511,7 @@ const TrainingToDay = () => {
                   />
                 )
               ) : (
-                <></>
+                <Typography>Seu treino ainda não foi gerado</Typography>
               )}
             </Box>
           )}

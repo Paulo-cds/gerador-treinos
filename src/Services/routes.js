@@ -38,8 +38,8 @@ export const fetchMetods = async () => {
 };
 
 /******Função que faz o Get dos treinos******/
-export const fetchTrainings = async () => {
-  const data = db.collection("Treinos");
+export const fetchTrainings = async (training) => {
+  const data = db.collection(training);
   const response = await data.get();
   return response;
 };
@@ -252,13 +252,14 @@ export const changeTrainingData = async (data, id) => {
 };
 
 /******Função que adiciona usuário******/
-export const addUser = async (email, uid, nome, isAdmin) => {
+export const addUser = async (email, uid, nome, isAdmin, tipo) => {
   const response = await db
     .collection("users")
     .doc(uid)
     .set({
       email: email,
       nome: nome,
+      tipo: tipo,
       isAdmin,
     })
     .then((doc) => {
@@ -288,5 +289,48 @@ export const confirmTraining = async (data) => {
       return { status: 400 };
     });
 
+  return response;
+};
+
+
+
+/****Personal ******/
+
+
+/******Função que cria Bd para personal******/
+export const createPersonalTraining = async (data, name) => {
+  const bdPersonal = name.replace(" ","")
+  const response = await db
+    .collection(bdPersonal)
+    .add(data)
+    .then(() => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
+/******Função que adiciona treino para personal******/
+export const addPersonalTraining = async (data, name, id) => {
+  const bdPersonal = name.replace(" ","")
+  const response = await db
+    .collection(bdPersonal)
+    .doc(data.id)
+    .update(data)
+    .then(() => {
+      return { data: doc, status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
+/******Função que faz o Get dos treinos do aluno******/
+export const fetchTrainingsPersonal = async (colect) => {
+  const data = db.collection(colect);
+  const response = await data.get();
   return response;
 };

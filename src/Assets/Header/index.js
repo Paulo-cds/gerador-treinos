@@ -32,6 +32,7 @@ import { useContext } from "react";
 import { Context } from "../../Private";
 import { CgGym } from "react-icons/cg";
 import { lightBlue } from "@mui/material/colors";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 const drawerWidth = 240;
 
@@ -151,7 +152,20 @@ function Header(props, theme) {
                 <ListItemText primary={"Treinos"} />
               </ListItemButton>
             </ListItem>
-
+            <Divider />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/newTraining");
+                }}
+              >
+                <ListItemIcon>
+                  <GiStrongMan />
+                </ListItemIcon>
+                <ListItemText primary={"Novo treino"} />
+              </ListItemButton>
+            </ListItem>
             <Divider />
             <ListItem disablePadding>
               <ListItemButton
@@ -219,14 +233,14 @@ function Header(props, theme) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box >
       <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          // width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          display: { sm: "block", md: "none" },
+          // display: { sm: "block", md: "none" },
         }}
       >
         <Toolbar>
@@ -235,18 +249,30 @@ function Header(props, theme) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: userData.tipo !== "personal" ? "block" :'none' }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Correndo do Sofá
           </Typography>
+          {userData.tipo === "personal" && (
+        <ExitToAppIcon
+          sx={{
+            color: "white",
+            cursor: "pointer",
+            fontSize:30
+          }}
+          onClick={() => {
+            logout();
+          }}
+        />
+      )}
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        // sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -269,7 +295,7 @@ function Header(props, theme) {
           {drawer}
         </Drawer>
         <Drawer
-          variant="permanent"
+          variant="temporary"
           sx={{
             display: { xs: "none", sm: "block" },
             "& .MuiDrawer-paper": {
@@ -277,7 +303,8 @@ function Header(props, theme) {
               width: drawerWidth,
             },
           }}
-          open
+          onClose={handleDrawerToggle}
+          open={mobileOpen}
         >
           {drawer}
         </Drawer>

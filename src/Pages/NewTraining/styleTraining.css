@@ -1,0 +1,30 @@
+.containerGerate {
+    overflow: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    max-height: 85%;
+    margin-top: 10px
+}
+
+
+.containerGerate::-webkit-scrollbar {
+    display: none;
+}
+
+
+.containerGerateTraining {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+}
+
+
+.containerGerateTraining::-webkit-scrollbar {
+    display: none;
+}

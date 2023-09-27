@@ -1,9 +1,11 @@
-.container {
+.containerToday {
     overflow: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    max-height:'90%';
+    width:'100%'
 }
 
-.container::-webkit-scrollbar {
+.containerToday::-webkit-scrollbar {
     display: none;
 }

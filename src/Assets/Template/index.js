@@ -3,7 +3,7 @@ import Header from "../Header";
 
 const Template = ({ children }) => {
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height:'100vh', }}>
       <Header />
       <Box
         sx={{
@@ -15,8 +15,8 @@ const Template = ({ children }) => {
           // minHeight: "100vh",
         }}
         // width={{ xs: "90%", sm: "90%", md: "100%" }}
-        height={{ xs: "95vh", sm: "95vh", md: "100vh" }}
-        mt={{ xs: 6, sm: 6, md: 0 }}
+        // height={{ xs: "95vh", sm: "95vh", md: "100vh" }}
+        mt={{ xs: 7, sm: 7, md: 8 }}
       >
         {children}
       </Box>

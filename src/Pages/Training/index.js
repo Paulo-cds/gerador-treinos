@@ -7,8 +7,12 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
+  MenuItem,
+  Select,
   Snackbar,
   Tab,
   TablePagination,
@@ -35,6 +39,7 @@ import {
   fetchExercises,
   fetchMetods,
   fetchTrainings,
+  fetchUsers,
 } from "../../Services/routes";
 import Player from "../../Assets/Player";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -66,13 +71,15 @@ const Training = () => {
   const [exerciseEdit, setExerciseEdit] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [metods, setMetods] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [trainings, setTrainings] = useState();
   const [typeTraining, setTypeTraining] = useState("");
   const [trainingEdit, setTrainingEdit] = useState();
   const [formTraining, setFormTraining] = useState("create");
+  const [users, setUsers] = useState([]);
+  const [typeUser, setTypeUser] = useState("");
+  const [personalSelected, setPersonalSelected] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -106,14 +113,15 @@ const Training = () => {
   useEffect(() => {
     handleGetMetods();
     handleGetExercises();
-    handleGetTrainings();
+    // handleGetTrainings();
+    handleGetUsers();
   }, []);
 
-  const handleGetTrainings = async () => {
+  const handleGetTrainings = async (type) => {
     setLoading(true);
     try {
       const newTrainings = [];
-      const response = await fetchTrainings();
+      const response = await fetchTrainings(type);
       response.docs.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
@@ -127,6 +135,9 @@ const Training = () => {
       });
       setTrainings(control);
     } catch (e) {
+      setOpenSnack(true);
+      setSeverity("error");
+      setTitle("Ainda não existem treinos para o aluno selecionado!");
       console.log(e);
     }
     setLoading(false);
@@ -163,6 +174,24 @@ const Training = () => {
       console.log(e);
       setLoading(false);
     }
+  };
+
+  const handleGetUsers = async () => {
+    setLoading(true);
+    try {
+      const newUser = [];
+      const response = await fetchUsers();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newUser.push(newItem);
+      });
+      let control = newUser;
+      setUsers(control);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
   };
 
   const handleClose = () => {
@@ -334,14 +363,16 @@ const Training = () => {
           </Box>
         </Box>
         <TabPanel value={typeTraining} index={0}>
-          {formTraining === "create" ? (
+          {/* {formTraining === "create" ? (
             <CreateTraining
               expanded={newRegister}
               setExpanded={setNewRegister}
               exercises={exercises}
               metods={metods}
               trainings={trainings}
+              setTrainings={setTrainings}
               handleGetTrainings={handleGetTrainings}
+              users={users}
             />
           ) : (
             <EditTraining
@@ -365,7 +396,59 @@ const Training = () => {
               setSeverity={setSeverity}
               setOpenSnack={setOpenSnack}
             />
-          )}
+          )} */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={typeUser}
+                label="type"
+                name="type"
+                onChange={(e) => setTypeUser(e.target.value)}
+                sx={{ backgroundColor: "white" }}
+              >
+                <MenuItem value={"turma"}>Turma</MenuItem>
+                <MenuItem value={"personal"}>Personal</MenuItem>
+              </Select>
+            </FormControl>
+            {typeUser === "personal" && (
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={personalSelected}
+                  label="personal"
+                  name="personal"
+                  onChange={(e) => setPersonalSelected(e.target.value)}
+                  sx={{ backgroundColor: "white" }}
+                >
+                  {users.map(
+                    (user, index) =>
+                      user.tipo === "personal" && (
+                        <MenuItem key={index} value={user.nome}>
+                          {user.nome}
+                        </MenuItem>
+                      )
+                  )}
+                </Select>
+              </FormControl>
+            )}
+            <Button
+              variant="contained"
+              onClick={() =>
+                handleGetTrainings(
+                  typeUser === "turma"
+                    ? "Treinos"
+                    : personalSelected.replace(" ", "")
+                )
+              }
+            >
+              Buscar
+            </Button>
+          </Box>
           {trainings && (
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">

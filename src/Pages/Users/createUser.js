@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  FormControl,
   InputLabel,
   MenuItem,
   Select,
@@ -27,41 +28,36 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
   const [open, setOpen] = useState(false);
   const auth = getAuth();
 
+  const typeUsers = ["aluno", "personal"];
+
   const formik = useFormik({
     initialValues: {
       nome: "",
-      password:'',
+      password: "",
       email: "@correndodosofa.com.br",
       isAdmin: false,
+      type: "",
     },
     validationSchema: yup.object({
       email: yup.string().required("O campo é obrigatório."),
       nome: yup.string().required("O campo é obrigatório."),
       password: yup.string().required("O campo é obrigatório."),
       isAdmin: yup.boolean().required("O campo é obrigatório."),
+      type: yup.string().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password)
+      await createUserWithEmailAndPassword(
+        auth,
+        formik.values.email,
+        formik.values.password,
+      )
         .then((value) => {
           handleUser(value.user.uid);
         })
         .catch((error) => {
           console.log("Erro ao cadastrar: " + error);
           setLoading(false);
-          // if(error.code === 'auth/weak-password'){
-          //   setTitle('Senha precisa ter pelo menos 6 caracteres!')
-          //   setAlert(true)
-          //   setLoading(false)
-          // } else if(error.code === 'auth/email-already-in-use'){
-          //   setTitle('Email já existe!')
-          //   setAlert(true)
-          //   setLoading(false)
-          // } else if(error.code === 'auth/invalid-email'){
-          //   setTitle('Email inválido!')
-          //   setAlert(true)
-          //   setLoading(false)
-          // }
         });
     },
   });
@@ -71,17 +67,13 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
       formik.values.email,
       uid,
       formik.values.nome,
-      formik.values.isAdmin
+      formik.values.isAdmin,
+      formik.values.type,
     );
     if (response.status === 200) {
       setLoading(false);
       setExpanded(false);
       handleGetUsers();
-      // setAlert(true)
-      // setStatus('success')
-      // setRegisterUser(!registerUser)
-      // setForm(initialState)
-      // getUsers()
     } else {
       setLoading(false);
       // setTitle("Erro ao cadastrar, verifique os dados e tente novamente.")
@@ -119,7 +111,7 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
       setLoading(false);
     }
   };
-
+  
   return (
     <>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
@@ -157,6 +149,23 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
               label="Nome"
               onChange={formik.handleChange}
             />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={formik.values.type}
+                label="type"
+                name='type'
+                onChange={formik.handleChange}
+              >
+                {
+                  typeUsers.map((type,index)=>(
+                    <MenuItem key={index} value={type}>{type}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
             <TextField
               name="email"
               value={formik.values.email}

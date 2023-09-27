@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   Snackbar,
   TextField,
@@ -24,21 +25,16 @@ import {
   addPersonalTraining,
   addTraining,
   createPersonalTraining,
+  fetchExercises,
+  fetchMetods,
+  fetchTrainings,
   fetchTrainingsPersonal,
+  fetchUsers,
 } from "../../Services/routes";
 import "./styleTraining.css";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-const CreateTraining = ({
-  expanded,
-  setExpanded,
-  metods,
-  trainings,
-  setTrainings,
-  exercises,
-  handleGetTrainings,
-  users,
-}) => {
+const NewTraining = () => {
   const [loading, setLoading] = useState(false);
   const [aquecimento, setAquecimento] = useState([]);
   const [mtTreino, setMtTreino] = useState("");
@@ -50,6 +46,10 @@ const CreateTraining = ({
   const [roundsAqc, setRoundsAqc] = useState("0");
   const [roundsTraining, setRoundsTraining] = useState("0");
   const [optionsChange, setOptionsChange] = useState([]);
+  const [users, setUsers] = useState();
+  const [trainings, setTrainings] = useState();
+  const [exercises, setExercises] = useState([]);
+  const [metods, setMetods] = useState([]);
   const options = { timeZone: "America/Sao_Paulo" };
 
   const formik = useFormik({
@@ -82,7 +82,7 @@ const CreateTraining = ({
 
             if (!verificMet) {
               setMtTreino(metods[sortMet].nome);
-              qtdExe = metods[sortMet].quantidade;              
+              qtdExe = metods[sortMet].quantidade;
               notMetod = false; // saia do laço quando a sentença for falsa
             }
           }
@@ -92,7 +92,7 @@ const CreateTraining = ({
           setMtTreino(metods[sortMet].nome);
         }
         // final gerando método
-       
+
         //gerando aquecimento
         let notAqc = true;
         let exeAqc = [];
@@ -151,7 +151,7 @@ const CreateTraining = ({
           }
         }
         //final gerando aquecimento
-        
+
         //gerando exercicios
         let notExe = true;
         let exeTrn = [];
@@ -219,6 +219,87 @@ const CreateTraining = ({
     },
   });
 
+  const handleGetExercises = async () => {
+    try {
+      const newExercises = [];
+      const response = await fetchExercises();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newExercises.push(newItem);
+      });
+      setExercises(newExercises);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleGetMetods = async () => {
+    setLoading(true);
+    try {
+      const newMetods = [];
+      const response = await fetchMetods();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newMetods.push(newItem);
+      });
+      setMetods(newMetods);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
+  };
+
+  const handleGetUsers = async () => {
+    setLoading(true);
+    try {
+      const newUser = [];
+      const response = await fetchUsers();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newUser.push(newItem);
+      });
+      let control = newUser;
+      setUsers(control);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
+  const handleGetTrainings = async () => {
+    setLoading(true);
+    try {
+      const newTrainings = [];
+      const response = await fetchTrainings("Treinos");
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newTrainings.push(newItem);
+      });
+      let control = newTrainings[0];
+      control.Treinos = control.Treinos.sort((a, b) => {
+        const dataA = new Date(a.Data.split("/").reverse().join("/"));
+        const dataB = new Date(b.Data.split("/").reverse().join("/"));
+        return dataB - dataA;
+      });
+      setTrainings(control);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    handleGetUsers();
+    handleGetMetods();
+    handleGetExercises();
+    handleGetTrainings();
+  }, []);
+
   const handleSaveTraining = async () => {
     setLoading(true);
     const prev = new Date(formik.values.data);
@@ -235,52 +316,75 @@ const CreateTraining = ({
       Metodo: mtTreino,
     };
     newTraining.push(trainingGer);
-    let heaveTraining = false
-    if(trainings){
-      if (trainings.Treinos.length >= 5) {
-        trainings.Treinos.pop();
-      }
-      heaveTraining = trainings.Treinos.find(
-        (exe) => exe.Data === newTraining[0].Data
-      );
-
-    }
-    if (heaveTraining) {
-      setOpen(true);
-      setLoading(false);
-    } else {
-      try {
-        const trainings = {'Treinos':[newTraining[0]]}
-        console.log('train ', trainings)
-        if(formik.values.type === 'turma'){
-          await addTraining(trainings, trainings.id);
-        } else{
-          if(trainings.id){
-            await addPersonalTraining(trainings, formik.values.personal)
-          }else{
-            await createPersonalTraining(trainings, formik.values.personal)
-          }
+    let heaveTraining = false;
+    if (formik.values.type === "turma") {
+      if (trainings) {
+        if (trainings.Treinos.length >= 5) {
+          trainings.Treinos.pop();
         }
-        setTrainingGerated();
-        formik.resetForm();
-        setGerated(false);
+        heaveTraining = trainings.Treinos.find(
+          (exe) => exe.Data === newTraining[0].Data
+        );
+      }
+      if (heaveTraining) {
+        setOpen(true);
         setLoading(false);
-        setExpanded(false);
-        handleGetTrainings();
-      } catch (e) {
-        console.log(e);
+      } else {
+        try {
+          trainings.Treinos.push(newTraining[0]);
+          await addTraining(trainings, trainings.id);
+          setTrainingGerated();
+          formik.resetForm();
+          setGerated(false);
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
+          setLoading(false);
+        }
+      }
+    } else {
+      if (trainings) {
+        heaveTraining = trainings.Treinos.find(
+          (exe) => exe.Data === newTraining[0].Data
+        );
+      }
+      if (heaveTraining) {
+        setOpen(true);
         setLoading(false);
+      } else {
+        try {
+          if (trainings) {
+            trainings.Treinos.push(newTraining[0]);
+            await addPersonalTraining(
+              trainings,
+              formik.values.personal,
+              trainings.id
+            );
+          } else {
+            const trainings = { Treinos: [newTraining[0]] };
+            await createPersonalTraining(trainings, formik.values.personal);
+            console.log("create ", trainings);
+          }
+
+          setTrainingGerated();
+          formik.resetForm();
+          setGerated(false);
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
+          setLoading(false);
+        }
       }
     }
   };
-  console.log(formik.values)
+
   useEffect(() => {
     const handleGetTrainingPersonal = async () => {
       setLoading(true);
       try {
         const newTrainings = [];
-        const data = formik.values.personal.replace(" ", "")
-        const response = await fetchTrainingsPersonal(data);
+        const data = formik.values.personal.replace(" ", "");
+        const response = await fetchTrainings(data);
         response.docs.forEach((item) => {
           let newItem = item.data();
           newItem.id = item.id;
@@ -300,46 +404,16 @@ const CreateTraining = ({
       setLoading(false);
     };
 
-    if (formik.values.type === "personal" & formik.values.personal !== "") {
+    if ((formik.values.type === "personal") & (formik.values.personal !== "")) {
       handleGetTrainingPersonal();
+    } else if (formik.values.type === "turma") {
+      handleGetTrainings();
     }
   }, [formik.values.personal]);
-  
-  useEffect(() => {
-    setOptions();
-  }, [trainings]);
-
-  useEffect(()=>{
-    if(formik.values.type === "turma"){
-      handleGetTrainings()
-    }
-  },[formik.values.type])
-
-  const setOptions = () => {
-    if (trainings) {
-      let options = [];
-      exercises.forEach((element, index) => {
-        let existsExe = trainings.Treinos.some((train) =>
-          train.Exercicios.some((exe) => exe.exercicio === element.nome)
-        );
-        let existsAqc = trainings.Treinos.some((aqc) =>
-          aqc.Aquecimento.some((exe) => exe.exercicio === element.nome)
-        );
-        if (!existsExe & !existsAqc) {
-          options.push(element);
-        }
-      });
-      setOptionsChange(options);
-    }
-  };
 
   const handleClose = () => {
     setLoading(false);
     setOpen(false);
-  };
-
-  const handleChange = () => {
-    setExpanded(!expanded);
   };
 
   const changeRepsAqc = (e, index) => {
@@ -383,28 +457,36 @@ const CreateTraining = ({
   };
 
   return (
-    <>
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          O treino de hoje já foi gerado!
-        </Alert>
-      </Snackbar>
-      <Accordion
-        expanded={expanded}
-        onChange={handleChange}
-        sx={{ mb: 2 }}
-        className="container"
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        backgroundImage: `url(https://blog.oficialfarma.com.br/wp-content/uploads/2018/11/238397-x-passos-para-conciliar-trabalho-e-academia.jpg)`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+      alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
+    >
+      <Box
+        width={{ xs: "90%", sm: "90%", md: "50%" }}
+        sx={{ height: "100%" }}
+        ml={{ xs: 0, sm: 0, md: 4 }}
+        mt={{ xs: 3, sm: 3, md: 0 }}
+        // className="containerGerateTraining"
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            O treino de hoje já foi gerado!
+          </Alert>
+        </Snackbar>
+        <Paper sx={{ mb: 2, p:2 }} className="containerGerate">
           <Typography sx={{ width: 1, flexShrink: 0 }}>
             Gerar novo treino
           </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
           <Box
             component="form"
             onSubmit={formik.handleSubmit}
@@ -412,6 +494,7 @@ const CreateTraining = ({
               display: "flex",
               flexDirection: "column",
               gap: 2,
+              mt:2
             }}
           >
             <FormControl fullWidth>
@@ -692,17 +775,17 @@ const CreateTraining = ({
               </Box>
             </Box>
           )}
-        </AccordionDetails>
-      </Accordion>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-        onClick={handleClose}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </>
+        </Paper>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+          onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </Box>
+    </Box>
   );
 };
 
-export default CreateTraining;
+export default NewTraining;

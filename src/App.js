@@ -12,6 +12,7 @@ import Login from "./Pages/Login";
 import { Private } from "./Private";
 import Users from "./Pages/Users";
 import Confirmed from "./Pages/Confirmed";
+import NewTraining from "./Pages/NewTraining";
 
 const theme = createTheme({
   palette: {
@@ -100,6 +101,16 @@ function App() {
               <Private>
                 <Template>
                   <Confirmed />
+                </Template>
+              </Private>
+            }
+          />
+          <Route
+            path="/newTraining"
+            element={
+              <Private>
+                <Template>
+                  <NewTraining />
                 </Template>
               </Private>
             }
