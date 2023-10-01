@@ -70,7 +70,6 @@ const TrainingToDay = () => {
     }
   }, [userData]);
 
-
   const handleGetTrainings = async () => {
     try {
       const newTrainings = [];
@@ -193,7 +192,7 @@ const TrainingToDay = () => {
   const handleClose = () => {
     setLoading(false);
   };
-  
+
   return (
     <Box
       sx={{
@@ -218,7 +217,7 @@ const TrainingToDay = () => {
       justifyContent={{ xs: "flex-start", sm: "flex-start", md: "center" }}
       alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
-      {weekDay && (
+      {!weekDay && (
         <Box
           sx={{
             display: "flex",
@@ -388,6 +387,15 @@ const TrainingToDay = () => {
                   </TableContainer>
                 </Box>
               </Box>
+              {todayTraining.Observacao && (
+                <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
+                  <Typography variant="h5">Observação</Typography>
+                  <Divider />
+                  <Box sx={{ mt: 2 }}>
+                    <Typography>{todayTraining.Observacao}</Typography>
+                  </Box>
+                </Box>
+              )}
             </Box>
           ) : todayRunningTraining ? (
             <Box
