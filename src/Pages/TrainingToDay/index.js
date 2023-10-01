@@ -4,6 +4,7 @@ import {
   fetchConfirm,
   fetchRunningTrainings,
   fetchTrainings,
+  fetchUsers,
 } from "../../Services/routes";
 import {
   Backdrop,
@@ -12,6 +13,10 @@ import {
   Checkbox,
   CircularProgress,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
 import BackdropImage from "../../Assets/Images/backdropToDay.jpg";
@@ -47,6 +52,9 @@ const TrainingToDay = () => {
   const [controlConfirm, setControlConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
+  const [userType, setUserType] = useState();
+  const [personalSelected, setPersonalSelected] = useState("");
+  const [users, setUsers] = useState();
   const horaAtual = new Date(); // Obtém a hora atual
   const horaLimite = new Date(); // Cria um objeto de data/hora para a hora limite
   horaLimite.setHours(18, 30, 0);
@@ -54,6 +62,7 @@ const TrainingToDay = () => {
   useEffect(() => {
     handleGetTrainings();
     handleGetRunningTrainings();
+    handleGetUsers();
 
     const hoje = new Date();
     const diaSemana = hoje.getDay();
@@ -70,11 +79,37 @@ const TrainingToDay = () => {
     }
   }, [userData]);
 
-  const handleGetTrainings = async () => {
+  useEffect(() => {
+    if (userType === "turma") {
+      handleGetTrainings("Treinos");
+    }
+  }, [userType]);
+
+  const handleGetUsers = async () => {
+    setLoading(true);
+    try {
+      const newUser = [];
+      const response = await fetchUsers();
+      response.docs.forEach((item) => {
+        let newItem = item.data();
+        newItem.id = item.id;
+        newUser.push(newItem);
+      });
+      let control = newUser;
+      setUsers(control);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
+  const handleGetTrainings = async (personalUser) => {
     try {
       const newTrainings = [];
       const response = await fetchTrainings(
-        userData.tipo !== "personal"
+        personalUser
+          ? personalUser
+          : userData.tipo !== "personal"
           ? "Treinos"
           : userData.nome.replace(" ", "")
       );
@@ -192,12 +227,12 @@ const TrainingToDay = () => {
   const handleClose = () => {
     setLoading(false);
   };
-
+ 
   return (
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        minHeight: "100%",
         // overflowY: "scroll",
         backgroundImage: todayTraining
           ? `url(${BackdropImage})`
@@ -217,7 +252,62 @@ const TrainingToDay = () => {
       justifyContent={{ xs: "flex-start", sm: "flex-start", md: "center" }}
       alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
-      {!weekDay && (
+      {userData.isAdmin && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            mb: 4,
+            gap: 1,
+            p: 2,
+            backgroundColor: "white",
+          }}
+          width={{ xs: "100%", sm: "100%", md: "60%" }}
+        >
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={userType}
+              label="type"
+              name="type"
+              onChange={(e) => setUserType(e.target.value)}
+            >
+              <MenuItem value={"turma"}>Turma</MenuItem>
+              <MenuItem value={"personal"}>Personal</MenuItem>
+            </Select>
+          </FormControl>
+          {userType === "personal" && (
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={personalSelected}
+                label="personal"
+                name="personal"
+                onChange={(e) => {
+                  handleGetTrainings(e.target.value.replace(" ", ""));
+                    setPersonalSelected(e.target.value);
+                }}
+              >
+                {users.map(
+                  (user, index) =>
+                    user.tipo === "personal" && (
+                      <MenuItem key={index} value={user.nome}>
+                        {user.nome}
+                      </MenuItem>
+                    )
+                )}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
+      )}
+      {weekDay && (
         <Box
           sx={{
             display: "flex",
