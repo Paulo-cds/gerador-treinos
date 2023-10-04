@@ -13,10 +13,14 @@ import {
   Paper,
   Select,
   Snackbar,
+  TablePagination,
   TextField,
+  Tooltip,
   Typography,
+  styled,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
@@ -32,7 +36,16 @@ import {
   fetchUsers,
 } from "../../Services/routes";
 import "./styleTraining.css";
+import { tooltipClasses } from "@mui/material/Tooltip";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { backdropHeaderTable } from "../../Assets/colors";
+import Player from "../../Assets/Player";
 
 const NewTraining = () => {
   const [loading, setLoading] = useState(false);
@@ -51,7 +64,48 @@ const NewTraining = () => {
   const [exercises, setExercises] = useState([]);
   const [metods, setMetods] = useState([]);
   const options = { timeZone: "America/Sao_Paulo" };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [openPlayer, setOpenPlayer] = useState(false);
+  const [linkVideo, setLinkVideo] = useState("");
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: backdropHeaderTable,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
+  const CustomWidthTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 500,
+    },
+  });
+  
   const formik = useFormik({
     initialValues: {
       numero: "",
@@ -59,7 +113,7 @@ const NewTraining = () => {
       data: new Date().toLocaleDateString("pt-BR"),
       type: "",
       personal: "",
-      observation: ""
+      observation: "",
     },
     validationSchema: yup.object({
       numero: yup.number().required("O campo é obrigatório."),
@@ -105,19 +159,27 @@ const NewTraining = () => {
             //   (tr) => tr.aquecimento === exercises[sortAqc].nome
             // );
 
-            let exists = trainings.Treinos.some((train) =>
-              train.Exercicios.some(
-                (exe) => exe.exercicio === exercises[sortAqc].nome
-              )
+            let exists = trainings.Treinos.some(
+              (train, index) =>
+                index <= 4 &&
+                train.Exercicios.some(
+                  (exe) => exe.exercicio === exercises[sortAqc].nome
+                )
             );
+
+            // let exists = trainings.Treinos.some((train) =>
+            //   train.Exercicios.some(
+            //     (exe) => exe.exercicio === exercises[sortAqc].nome
+            //   )
+            // );
             let sorted = exeAqc.some(
               (exe) => exe.exercicio === exercises[sortAqc].nome
             );
 
             if (
-              !exists &&
-              !sorted &&
-              exercises[sortAqc].categoria === "Aquecimento"
+              !exists &
+              !sorted &
+              (exercises[sortAqc].categoria === "Aquecimento")
             ) {
               exeAqc.push({
                 exercicio: exercises[sortAqc].nome,
@@ -138,7 +200,7 @@ const NewTraining = () => {
             let sorted = exeAqc.some(
               (exe) => exe.exercicio === exercises[sortAqc].nome
             );
-            if (!sorted && exercises[sortAqc].categoria === "Aquecimento") {
+            if (!sorted & (exercises[sortAqc].categoria === "Aquecimento")) {
               exeAqc.push({
                 exercicio: exercises[sortAqc].nome,
                 reps: "0",
@@ -164,19 +226,27 @@ const NewTraining = () => {
             //   (tr) => tr.aquecimento === exercises[sortAqc].nome
             // );
 
-            let exists = trainings.Treinos.some((train) =>
-              train.Exercicios.some(
-                (exe) => exe.exercicio === exercises[sortExe].nome
-              )
+            let exists = trainings.Treinos.some(
+              (train, index) =>
+                index <= 5 &&
+                train.Exercicios.some(
+                  (exe) => exe.exercicio === exercises[sortExe].nome
+                )
             );
+
+            // let exists = trainings.Treinos.some((train) =>
+            //   train.Exercicios.some(
+            //     (exe) => exe.exercicio === exercises[sortExe].nome
+            //   )
+            // );
             let sorted = exeTrn.some(
               (exe) => exe.exercicio === exercises[sortExe].nome
             );
 
             if (
-              !exists &&
-              !sorted &&
-              exercises[sortExe].categoria !== "Aquecimento"
+              !exists &
+              !sorted &
+              (exercises[sortExe].categoria !== "Aquecimento")
             ) {
               exeTrn.push({
                 exercicio: exercises[sortExe].nome,
@@ -197,7 +267,7 @@ const NewTraining = () => {
             let sorted = exeTrn.some(
               (exe) => exe.exercicio === exercises[sortExe].nome
             );
-            if (!sorted && exercises[sortExe].categoria !== "Aquecimento") {
+            if (!sorted & (exercises[sortExe].categoria !== "Aquecimento")) {
               exeTrn.push({
                 exercicio: exercises[sortExe].nome,
                 reps: "0",
@@ -231,6 +301,9 @@ const NewTraining = () => {
         newExercises.push(newItem);
       });
       setExercises(newExercises);
+      setOptionsChange(
+        newExercises.sort((a, b) => a.nome.localeCompare(b.nome))
+      );
     } catch (e) {
       console.log(e);
     }
@@ -316,7 +389,7 @@ const NewTraining = () => {
       Data: viewData,
       Exercicios: exeTreino,
       Metodo: mtTreino,
-      Observacao: formik.values.observation
+      Observacao: formik.values.observation,
     };
     newTraining.push(trainingGer);
     let heaveTraining = false;
@@ -379,6 +452,7 @@ const NewTraining = () => {
         }
       }
     }
+    handleGetTrainings();
   };
 
   useEffect(() => {
@@ -412,7 +486,7 @@ const NewTraining = () => {
     } else if (formik.values.type === "turma") {
       handleGetTrainings();
     }
-  }, [formik.values.personal]);
+  }, [formik.values.personal, formik.values.type]);
 
   const handleClose = () => {
     setLoading(false);
@@ -459,6 +533,11 @@ const NewTraining = () => {
     console.log(result);
   };
 
+  const handleSetVideo = (link) => {
+    setLinkVideo(link);
+    setOpenPlayer(true);
+  };
+
   return (
     <Box
       sx={{
@@ -471,9 +550,12 @@ const NewTraining = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        overflowY: "scroll",
+        pb: 3,
       }}
       alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
     >
+      <Player open={openPlayer} setOpen={setOpenPlayer} link={linkVideo} />
       <Box
         width={{ xs: "90%", sm: "90%", md: "50%" }}
         sx={{ height: "100%" }}
@@ -486,7 +568,7 @@ const NewTraining = () => {
             O treino de hoje já foi gerado!
           </Alert>
         </Snackbar>
-        <Paper sx={{ mb: 2, p:2 }} className="containerGerate">
+        <Paper sx={{ mb: 2, p: 2 }} className="containerGerate">
           <Typography sx={{ width: 1, flexShrink: 0 }}>
             Gerar novo treino
           </Typography>
@@ -497,7 +579,7 @@ const NewTraining = () => {
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              mt:2
+              mt: 2,
             }}
           >
             <FormControl fullWidth>
@@ -592,7 +674,7 @@ const NewTraining = () => {
               </Box>
             </Box>
           </Box>
-          {gerated && ( 
+          {gerated && (
             <>
               <Box
                 sx={{
@@ -663,7 +745,22 @@ const NewTraining = () => {
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                     >
-                                      <Box sx={{ width: "60%" }}>
+                                      <Box
+                                        sx={{ width: "60%", display: "flex" }}
+                                      >
+                                        <Box>
+                                          {exe.exemplo && (
+                                            <HelpOutlineIcon
+                                              sx={{
+                                                cursor: "pointer",
+                                                fontSize: "20px",
+                                              }}
+                                              onClick={() =>
+                                                handleSetVideo(exe.exemplo)
+                                              }
+                                            />
+                                          )}
+                                        </Box>
                                         <FormControl
                                           variant="standard"
                                           sx={{ width: "100%" }}
@@ -677,17 +774,46 @@ const NewTraining = () => {
                                             onChange={(e) =>
                                               handleChangeAqc(e, index)
                                             }
-                                            value={exe.exercicio}
+                                            // value={exe.exercicio}
                                             label={exe.exercicio}
                                           >
-                                            {optionsChange.map(
-                                              (opt) =>
-                                                opt.categoria ===
-                                                  "Aquecimento" && (
-                                                  <MenuItem value={opt}>
-                                                    {opt.nome}
-                                                  </MenuItem>
-                                                )
+                                            {optionsChange.map((opt) =>
+                                              trainings
+                                                ? opt.categoria ===
+                                                    "Aquecimento" &&
+                                                  !trainings.Treinos.some(
+                                                    (train, index) =>
+                                                      index <= 4 &&
+                                                      train.Aquecimento.some(
+                                                        (exe) =>
+                                                          exe.exercicio ===
+                                                          opt.nome
+                                                      )
+                                                  ) && (
+                                                    <MenuItem
+                                                      value={opt}
+                                                      sx={{
+                                                        display: "flex",
+                                                        gap: 1,
+                                                        position: "relative",
+                                                      }}
+                                                    >
+                                                      {opt.nome}
+                                                    </MenuItem>
+                                                  )
+                                                : opt.categoria ===
+                                                    "Aquecimento" && (
+                                                    <MenuItem
+                                                      value={opt}
+                                                      sx={{
+                                                        display: "flex",
+                                                        gap: 1,
+                                                        position: "relative",
+                                                      }}
+                                                    >
+                                                      {opt.nome}
+                                                    </MenuItem>
+                                                  )
                                             )}
                                           </Select>
                                         </FormControl>
@@ -697,7 +823,9 @@ const NewTraining = () => {
                                         variant="standard"
                                         label="repetições"
                                         value={exe.reps}
-                                        onChange={(e) => changeRepsAqc(e, index)}
+                                        onChange={(e) =>
+                                          changeRepsAqc(e, index)
+                                        }
                                         type="text"
                                       />
                                       {provided.placeholder}
@@ -745,7 +873,18 @@ const NewTraining = () => {
                         m: 1,
                       }}
                     >
-                      <Box sx={{ width: "60%" }}>
+                      <Box sx={{ width: "60%", display: "flex" }}>
+                        <Box>
+                          {exe.exemplo && (
+                            <HelpOutlineIcon
+                              sx={{
+                                cursor: "pointer",
+                                fontSize: "20px",
+                              }}
+                              onClick={() => handleSetVideo(exe.exemplo)}
+                            />
+                          )}
+                        </Box>
                         <FormControl variant="standard" sx={{ width: "100%" }}>
                           <InputLabel
                             variant="standard"
@@ -755,14 +894,24 @@ const NewTraining = () => {
                           </InputLabel>
                           <Select
                             onChange={(e) => handleChangeTraining(e, index)}
-                            value={exe.exercicio}
+                            // value={exe.exercicio}
                             label={exe.exercicio}
                           >
-                            {optionsChange.map(
-                              (opt) =>
-                                opt.categoria !== "Aquecimento" && (
-                                  <MenuItem value={opt}>{opt.nome}</MenuItem>
-                                )
+                            {optionsChange.map((opt) =>
+                              trainings
+                                ? opt.categoria !== "Aquecimento" &&
+                                  !trainings.Treinos.some(
+                                    (train, index) =>
+                                      index <= 4 &&
+                                      train.Exercicios.some(
+                                        (exe) => exe.exercicio === opt.nome
+                                      )
+                                  ) && (
+                                    <MenuItem value={opt}>{opt.nome}</MenuItem>
+                                  )
+                                : opt.categoria !== "Aquecimento" && (
+                                    <MenuItem value={opt}>{opt.nome}</MenuItem>
+                                  )
                             )}
                           </Select>
                         </FormControl>
@@ -779,15 +928,97 @@ const NewTraining = () => {
                 </Box>
               </Box>
               <TextField
-              name="observation"
-              value={formik.values.observation}
-              label="Observação"
-              onChange={formik.handleChange}
-              sx={{mt:2}}
-            />
+                name="observation"
+                value={formik.values.observation}
+                label="Observação"
+                onChange={formik.handleChange}
+                sx={{ mt: 2 }}
+              />
             </>
           )}
         </Paper>
+        {trainings && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell align="center">Data</StyledTableCell>
+                  <StyledTableCell align="center">Método</StyledTableCell>
+                  <StyledTableCell align="center">Aquecimento</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Ativação Neural
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Exercícios</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {trainings.Treinos.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                ).map((row, index) => (
+                  <StyledTableRow key={row.Nome}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      sx={{ cursor: "pointer" }}
+                    >
+                      {/* <EditIcon
+                          onClick={() => handleSelectTrainingEdit(row, index)}
+                        /> */}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {row.Data}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {row.Metodo}
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <CustomWidthTooltip
+                        disableFocusListener
+                        title={row.Aquecimento.map((aqc) => (
+                          <Box sx={{ display: "flex" }}>
+                            <Typography>{aqc.exercicio}/</Typography>
+                            <Typography>{aqc.reps}</Typography>
+                          </Box>
+                        ))}
+                      >
+                        <Typography>{row.Aquecimento[0].exercicio}</Typography>
+                      </CustomWidthTooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <Tooltip disableFocusListener title={row.Ativacao}>
+                        <Typography>{row.Ativacao}</Typography>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <CustomWidthTooltip
+                        disableFocusListener
+                        title={row.Exercicios.map((aqc) => (
+                          <Box sx={{ display: "flex" }}>
+                            <Typography>{aqc.exercicio}/</Typography>
+                            <Typography>{aqc.reps}</Typography>
+                          </Box>
+                        ))}
+                      >
+                        <Typography>{row.Exercicios[0].exercicio}</Typography>
+                      </CustomWidthTooltip>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={trainings.Treinos.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        )}
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
