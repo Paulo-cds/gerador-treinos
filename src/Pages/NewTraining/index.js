@@ -130,23 +130,26 @@ const NewTraining = () => {
         let notMetod = true;
         let qtdExe = 0;
         if (trainings) {
+          let controlLength = 0
           while (notMetod) {
             let sortMet = Math.floor(Math.random() * metods.length);
             const verificMet = trainings.Treinos.find(
               (tr) => tr.Metodo === metods[sortMet].nome
             );
-
-            if (!verificMet) {
+              console.log(controlLength, metods.length)
+            if (!verificMet || controlLength >= metods.length) {
               setMtTreino(metods[sortMet].nome);
               qtdExe = metods[sortMet].quantidade;
               notMetod = false; // saia do laço quando a sentença for falsa
             }
+            controlLength++
           }
         } else {
           let sortMet = Math.floor(Math.random() * metods.length);
           qtdExe = metods[sortMet].quantidade;
           setMtTreino(metods[sortMet].nome);
         }
+
         // final gerando método
 
         //gerando aquecimento
@@ -290,7 +293,7 @@ const NewTraining = () => {
       }
     },
   });
-
+  
   const handleGetExercises = async () => {
     try {
       const newExercises = [];
