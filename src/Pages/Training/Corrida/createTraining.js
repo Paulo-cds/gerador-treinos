@@ -32,7 +32,7 @@ const CreateRunning = ({ expanded, setExpanded, handleGetTrainings }) => {
     validationSchema: yup.object({
       training: yup.string().required("O campo é obrigatório."),
       data: yup.date().required("O campo é obrigatório."),
-      point: yup.string().required("O campo é obrigatório."),
+      // point: yup.string().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
