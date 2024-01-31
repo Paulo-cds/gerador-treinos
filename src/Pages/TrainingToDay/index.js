@@ -33,6 +33,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Player from "../../Assets/Player";
 import { useContext } from "react";
 import { Context } from "../../Private";
+import TabataTimer from "../../Assets/Components/tabataTimer";
 
 const TrainingToDay = () => {
   const [trainings, setTrainings] = useState([]);
@@ -227,13 +228,14 @@ const TrainingToDay = () => {
   const handleClose = () => {
     setLoading(false);
   };
- 
+
   return (
     <Box
       sx={{
         width: "100%",
         minHeight: "100%",
-        // overflowY: "scroll",
+        maxHeight:'100vh',
+        overflowY: "scroll",
         backgroundImage: todayTraining
           ? `url(${BackdropImage})`
           : todayRunningTraining
@@ -252,6 +254,7 @@ const TrainingToDay = () => {
       justifyContent={{ xs: "flex-start", sm: "flex-start", md: "center" }}
       alignItems={{ xs: "center", sm: "center", md: "flex-end" }}
     >
+      
       {userData.isAdmin && (
         <Box
           sx={{
@@ -291,7 +294,7 @@ const TrainingToDay = () => {
                 name="personal"
                 onChange={(e) => {
                   handleGetTrainings(e.target.value.replace(" ", ""));
-                    setPersonalSelected(e.target.value);
+                  setPersonalSelected(e.target.value);
                 }}
               >
                 {users.map(
@@ -307,6 +310,7 @@ const TrainingToDay = () => {
           )}
         </Box>
       )}
+      
       {weekDay && (
         <Box
           sx={{
@@ -316,6 +320,7 @@ const TrainingToDay = () => {
             justifyContent: "flex-start",
             overflowY: "hidden",
             pb: 2,
+            minHeight:'400px',
             height: "100%",
           }}
           width={{ xs: "100%", sm: "100%", md: "60%" }}
@@ -615,7 +620,7 @@ const TrainingToDay = () => {
           )}
         </Box>
       )}
-
+      {todayTraining && todayTraining.Metodo === "Tabata" && <TabataTimer />}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}

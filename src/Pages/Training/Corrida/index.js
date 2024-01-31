@@ -72,7 +72,12 @@ const Corrida = () => {
       let control = newTrainings;
 
       // control = control.reverse();
-      setTrainings(control);
+      control = control.sort((a, b) => {
+        const dataA = new Date(a.Data.split("/").reverse().join("/"));
+        const dataB = new Date(b.Data.split("/").reverse().join("/"));
+        return dataB - dataA;
+      });
+      setTrainings(control)
     } catch (e) {
       console.log(e);
     }
@@ -82,7 +87,7 @@ const Corrida = () => {
   const handleClose = () => {
     setLoading(false);
   };
-
+  
   return (
     <Box>
       <CreateRunning
