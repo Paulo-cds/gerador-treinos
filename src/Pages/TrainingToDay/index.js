@@ -346,7 +346,7 @@ const TrainingToDay = () => {
               }}
               className="containerToday"
             >
-              {(horaAtual < horaLimite) &
+              {/* {(horaAtual < horaLimite) &
               (userData.nome !== "visitante") &
               (userData.tipo !== "personal") ? (
                 !hasConfirmed ? (
@@ -378,7 +378,7 @@ const TrainingToDay = () => {
                 )
               ) : (
                 <></>
-              )}
+              )} */}
               <Box>
                 <Typography variant="h4">Treino de Hoje</Typography>
                 <Typography>{toDay}</Typography>

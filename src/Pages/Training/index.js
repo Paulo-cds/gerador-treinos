@@ -76,7 +76,7 @@ const Training = () => {
   const [trainings, setTrainings] = useState();
   const [typeTraining, setTypeTraining] = useState("");
   const [trainingEdit, setTrainingEdit] = useState();
-  const [formTraining, setFormTraining] = useState("create");
+  const [formTraining, setFormTraining] = useState("");
   const [users, setUsers] = useState([]);
   const [typeUser, setTypeUser] = useState("");
   const [personalSelected, setPersonalSelected] = useState("");
@@ -363,7 +363,7 @@ const Training = () => {
           </Box>
         </Box>
         <TabPanel value={typeTraining} index={0}>
-          {/* {formTraining === "create" ? (
+          {formTraining === "create" && (
             <CreateTraining
               expanded={newRegister}
               setExpanded={setNewRegister}
@@ -374,7 +374,8 @@ const Training = () => {
               handleGetTrainings={handleGetTrainings}
               users={users}
             />
-          ) : (
+          )} 
+          {formTraining === "edit" && (
             <EditTraining
               expanded={newRegister}
               setExpanded={setNewRegister}
@@ -396,7 +397,7 @@ const Training = () => {
               setSeverity={setSeverity}
               setOpenSnack={setOpenSnack}
             />
-          )} */}
+          )}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Tipo</InputLabel>

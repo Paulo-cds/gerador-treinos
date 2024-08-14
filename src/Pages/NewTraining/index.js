@@ -136,7 +136,7 @@ const NewTraining = () => {
             const verificMet = trainings.Treinos.find(
               (tr) => tr.Metodo === metods[sortMet].nome
             );
-              console.log(controlLength, metods.length)
+              
             if (!verificMet || controlLength >= metods.length) {
               setMtTreino(metods[sortMet].nome);
               qtdExe = metods[sortMet].quantidade;
@@ -293,7 +293,7 @@ const NewTraining = () => {
       }
     },
   });
-  
+  // console.log('tr ', trainings.Treinos)
   const handleGetExercises = async () => {
     try {
       const newExercises = [];
@@ -783,16 +783,7 @@ const NewTraining = () => {
                                             {optionsChange.map((opt) =>
                                               trainings
                                                 ? opt.categoria ===
-                                                    "Aquecimento" &&
-                                                  !trainings.Treinos.some(
-                                                    (train, index) =>
-                                                      index <= 4 &&
-                                                      train.Aquecimento.some(
-                                                        (exe) =>
-                                                          exe.exercicio ===
-                                                          opt.nome
-                                                      )
-                                                  ) && (
+                                                    "Aquecimento" && (
                                                     <MenuItem
                                                       value={opt}
                                                       sx={{
@@ -902,14 +893,7 @@ const NewTraining = () => {
                           >
                             {optionsChange.map((opt) =>
                               trainings
-                                ? opt.categoria !== "Aquecimento" &&
-                                  !trainings.Treinos.some(
-                                    (train, index) =>
-                                      index <= 4 &&
-                                      train.Exercicios.some(
-                                        (exe) => exe.exercicio === opt.nome
-                                      )
-                                  ) && (
+                                ? opt.categoria !== "Aquecimento" && (
                                     <MenuItem value={opt}>{opt.nome}</MenuItem>
                                   )
                                 : opt.categoria !== "Aquecimento" && (
