@@ -128,13 +128,6 @@ const TrainingToDay = () => {
   };
 
   const filterTrainingToDay = (training) => {
-    // const filterToDay = training.Treinos.filter((item) => {
-    //   console.log(new Date(item.Data).toLocaleDateString("pt-BR"));
-    //   return (
-    //     new Date(item.Data).toLocaleDateString("pt-BR") ===
-    //     new Date(toDay).toLocaleDateString("pt-BR")
-    //   );
-    // });
 
     let filterToDay;
     training.Treinos.forEach((item) => {
@@ -145,6 +138,13 @@ const TrainingToDay = () => {
 
     if (filterToDay) {
       setTodayTraining(filterToDay);
+    } else{
+      const itemMaisRecente = training.Treinos.sort((a, b) => {
+        const dataA = new Date(a.Data.split('/').reverse().join('-'));
+        const dataB = new Date(b.Data.split('/').reverse().join('-'));
+        return dataB - dataA;
+      })[0];
+      setTodayTraining(itemMaisRecente)
     }
   };
 
