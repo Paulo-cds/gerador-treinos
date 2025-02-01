@@ -13,8 +13,91 @@ import {
   listAll,
   getDownloadURL,
   deleteObject,
+  uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
+
+
+
+
+/******Função que faz o upload do vídeo******/
+export const uploadVideo = async (file) => {
+  const storage = getStorage();
+  // const storageRef = ref(storage);
+  // uploadBytes(storageRef, file).then((snapshot) => {
+  //   console.log('Uploaded a blob or file! ',snapshot);
+  // });
+
+  const storageRef = ref(storage, `/videos/${file.name}`);
+  const uploadTask = uploadBytesResumable(storageRef, file);
+
+  uploadTask.on(
+    "state_changed",
+    (snapshot) => {
+      const percent = Math.round(
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+      );
+      console.log(`Upload is ${percent}% done`);
+    },
+    (error) => console.log(error),
+    () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        console.log("File available at", url);
+      });
+    }
+  );
+};
+
+// export const uploadVideo = (file) => {
+//   const storage = getStorage();
+  
+//   const storageRef = ref(storage, file.name);
+//     const uploadTask = uploadBytesResumable(storageRef, file);
+
+//     // Listen for state changes, errors, and completion of the upload.
+//     uploadTask.on('state_changed',
+//       (snapshot) => {
+//         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//         // setUploadProgress(progress)          
+//         switch (snapshot.state) {
+//           case 'paused':
+//             console.log('Upload is paused');
+//             break;
+//           case 'running':
+//             console.log('Upload is running');
+//             break;
+//         }
+//       },
+//       (error) => {
+//         // A full list of error codes is available at
+//         // https://firebase.google.com/docs/storage/web/handle-errors
+//         switch (error.code) {
+//           case 'storage/unauthorized':
+//             // User doesn't have permission to access the object
+//             break;
+//           case 'storage/canceled':
+//             // User canceled the upload
+//             break;
+
+//           // ...
+
+//           case 'storage/unknown':
+//             // Unknown error occurred, inspect error.serverResponse
+//             break;
+//         }
+//       },
+//       () => {
+//         // Upload completed successfully, now we can get the download URL
+//         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {    
+//           console.log('downloadURL ',downloadURL)        
+//           // setUploadProgress()
+//         });
+//       } 
+//     )     
+// } 
+
+
 
 /******Função que faz o Get dos exercicios******/
 export const fetchExercises = async () => {
@@ -299,7 +382,7 @@ export const confirmTraining = async (data) => {
 
 /******Função que cria Bd para personal******/
 export const createPersonalTraining = async (data, name) => {
-  const bdPersonal = name.replace(" ","")
+  const bdPersonal = name.replace(" ", "")
   const response = await db
     .collection(bdPersonal)
     .add(data)
@@ -314,7 +397,7 @@ export const createPersonalTraining = async (data, name) => {
 
 /******Função que adiciona treino para personal******/
 export const addPersonalTraining = async (data, name, id) => {
-  const bdPersonal = name.replace(" ","")
+  const bdPersonal = name.replace(" ", "")
   const response = await db
     .collection(bdPersonal)
     .doc(data.id)

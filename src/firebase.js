@@ -11,6 +11,7 @@ import { initializeApp } from "firebase/app";
 const firebaseConfig = {
   apiKey: "AIzaSyB9QhUdm0DGfK7Cjbj1QPBc73iBQsmAL24",
   authDomain: "gerador-treinos.firebaseapp.com",
+  databaseURL: "https://gerador-treinos-default-rtdb.firebaseio.com",
   projectId: "gerador-treinos",
   storageBucket: "gerador-treinos.appspot.com",
   messagingSenderId: "212023744594",

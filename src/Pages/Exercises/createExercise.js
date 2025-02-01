@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -18,7 +19,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
-import { addExercise, fetchCategories } from "../../Services/routes";
+import { addExercise, fetchCategories, uploadVideo } from "../../Services/routes";
 
 const CreateExercise = ({
   handleGetExercises,
@@ -29,6 +30,8 @@ const CreateExercise = ({
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
+  const [upload, setUpload] = useState(false)
+  const [fileUpload, setFileUpload] = useState()
 
   const formik = useFormik({
     initialValues: {
@@ -95,6 +98,13 @@ const CreateExercise = ({
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if(upload){
+      const response = await uploadVideo(fileUpload)
+    }else formik.handleSubmit()
+  }
+
   return (
     <>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
@@ -119,7 +129,7 @@ const CreateExercise = ({
         <AccordionDetails>
           <Box
             component="form"
-            onSubmit={formik.handleSubmit}
+            onSubmit={handleSubmit}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -144,12 +154,31 @@ const CreateExercise = ({
                 <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
               ))}
             </Select>
-            <TextField
-              name="exemplo"
-              value={formik.values.exemplo}
-              label="Exemplo"
-              onChange={formik.handleChange}
-            />
+            {
+              upload ?
+                <input
+                  type="file"
+                  accept="video/mp4,video/mkv, video/x-m4v,video/*"
+                  required
+                  onChange={(e)=>setFileUpload(e.target.files[0])}
+               />
+                :
+                <TextField
+                  name="exemplo"
+                  value={formik.values.exemplo}
+                  label="Exemplo"
+                  onChange={formik.handleChange}
+                />
+            }
+            {
+              upload && fileUpload &&
+              <video width="320" height="240" controls>
+                <source src={URL.createObjectURL(fileUpload)} />
+              </video>
+            }
+            <Button onClick={() => {setUpload(!upload);fileUpload && setFileUpload()}} >
+              {!upload ? 'Inserir vídeo' : "Inserir link"}
+            </Button>
             <Button variant="contained" type="submit">
               Salvar
             </Button>
