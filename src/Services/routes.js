@@ -21,32 +21,54 @@ import {
 
 
 /******Função que faz o upload do vídeo******/
-export const uploadVideo = async (file) => {
-  const storage = getStorage();
-  // const storageRef = ref(storage);
-  // uploadBytes(storageRef, file).then((snapshot) => {
-  //   console.log('Uploaded a blob or file! ',snapshot);
-  // });
+// export const uploadVideo = async (file) => {
+//   const storage = getStorage();
+//   // const storageRef = ref(storage);
+//   // uploadBytes(storageRef, file).then((snapshot) => {
+//   //   console.log('Uploaded a blob or file! ',snapshot);
+//   // });
 
-  const storageRef = ref(storage, `/videos/${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
+//   const storageRef = ref(storage, `videos/${file.name}`);
+//   // const uploadTask = uploadBytesResumable(storageRef, file);
 
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      const percent = Math.round(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      );
-      console.log(`Upload is ${percent}% done`);
-    },
-    (error) => console.log(error),
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-        console.log("File available at", url);
-      });
-    }
-  );
-};
+//   try {
+//     // 📌 Fazendo o upload do vídeo
+//     const snapshot = await uploadBytes(storageRef, file);
+//     console.log("Upload concluído!");
+
+//     // 📌 Obtendo a URL correta do arquivo enviado
+//     const url = await getDownloadURL(snapshot.ref);
+//     console.log("URL do vídeo:", url);
+
+//     return url;
+//   } catch (error) {
+//     console.error("Erro ao fazer upload do vídeo:", error);
+//   }
+
+//   // getDownloadURL(storageRef)
+//   // .then((url) => {
+//   //   console.log("URL correta do vídeo:", url);
+//   // })
+//   // .catch((error) => {
+//   //   console.error("Erro ao obter a URL do vídeo:", error);
+//   // });
+
+//   // uploadTask.on(
+//   //   "state_changed",
+//   //   (snapshot) => {
+//   //     const percent = Math.round(
+//   //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+//   //     );
+//   //     console.log(`Upload is ${percent}% done`);
+//   //   },
+//   //   (error) => console.log(error),
+//   //   () => {
+//   //     getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+//   //       console.log("File available at", url);
+//   //     });
+//   //   }
+//   // );
+// };
 
 // export const uploadVideo = (file) => {
 //   const storage = getStorage();
@@ -97,7 +119,24 @@ export const uploadVideo = async (file) => {
 //     )     
 // } 
 
+export const uploadVideo = async (file) => {
+  console.log("file ",file)
+  const storage = getStorage();
+  console.log('storage ',storage)
+  const storageRef = ref(storage, `videos/${file.name}`);
+  console.log('storageRef ',storageRef)
 
+  try {
+    const snapshot = await uploadBytes(storageRef, file);
+    console.log("Upload concluído!");
+    const url = await getDownloadURL(snapshot.ref);
+    console.log("URL do vídeo:", url); 
+
+    return url;
+  } catch (error) {
+    console.error("Erro ao fazer upload do vídeo:", error);
+  }
+};
 
 /******Função que faz o Get dos exercicios******/
 export const fetchExercises = async () => {

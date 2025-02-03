@@ -9,13 +9,13 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB9QhUdm0DGfK7Cjbj1QPBc73iBQsmAL24",
-  authDomain: "gerador-treinos.firebaseapp.com",
-  databaseURL: "https://gerador-treinos-default-rtdb.firebaseio.com",
-  projectId: "gerador-treinos",
-  storageBucket: "gerador-treinos.appspot.com",
-  messagingSenderId: "212023744594",
-  appId: "1:212023744594:web:294ae199e9c5ea022be78b",
+  apiKey: process.env.REACT_APP_APIKEY,
+  authDomain: process.env.REACT_APP_AUTHDOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASEURL,
+  projectId: process.env.REACT_APP_PROJECTID,
+  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
+  appId: process.env.REACT_APP_APPID,
 };
 
 // const app = initializeApp(firebaseConfig);
