@@ -18,7 +18,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addExercise, fetchCategories, uploadVideo } from "../../Services/routes";
 
 const CreateExercise = ({
@@ -32,6 +32,9 @@ const CreateExercise = ({
   const [open, setOpen] = useState(false);
   const [upload, setUpload] = useState(false)
   const [fileUpload, setFileUpload] = useState()
+  const [severity, setSeverity] = useState('success')
+  const [title, setTitle] = useState("")
+  const fileInputRef = useRef();
 
   const formik = useFormik({
     initialValues: {
@@ -50,11 +53,16 @@ const CreateExercise = ({
         (exe) => exe.nome.toLowerCase() === formik.values.nome.toLowerCase()
       );
       if (heaveExercise) {
+        setSeverity('error')
+        setTitle("Esse exercicio já foi cadastrado!")
         setOpen(true);
         setLoading(false);
       } else {
         try {
           await addExercise(values);
+          setSeverity('success')
+          setTitle("Exercicio cadastrado com sucesso!")
+          setOpen(true);
           setLoading(false);
           formik.resetForm();
           setExpanded(false);
@@ -100,16 +108,26 @@ const CreateExercise = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(upload){
+    setLoading(true);
+    if (upload) {
       const response = await uploadVideo(fileUpload)
-    }else formik.handleSubmit()
+      if (response.status === 'success') {
+        formik.values.exemplo = response.url
+        formik.handleSubmit()
+      } else {
+        setSeverity('error')
+        setTitle("Erro ao subir vídeo, tente novamente.")
+        setOpen(true);
+        setLoading(false);
+      }
+    } else formik.handleSubmit()
   }
 
   return (
     <>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Esse exercicio já foi cadastrado!
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+          {title}
         </Alert>
       </Snackbar>
       <Accordion
@@ -154,34 +172,67 @@ const CreateExercise = ({
                 <MenuItem value={category.Nome}>{category.Nome}</MenuItem>
               ))}
             </Select>
-            {
-              upload ?
-                <input
-                  type="file"
-                  accept="video/mp4,video/mkv, video/x-m4v,video/*"
-                  required
-                  onChange={(e)=>setFileUpload(e.target.files[0])}
-               />
-                :
-                <TextField
-                  name="exemplo"
-                  value={formik.values.exemplo}
-                  label="Exemplo"
-                  onChange={formik.handleChange}
-                />
-            }
-            {
-              upload && fileUpload &&
-              <video width="320" height="240" controls>
-                <source src={URL.createObjectURL(fileUpload)} />
-              </video>
-            }
-            <Button onClick={() => {setUpload(!upload);fileUpload && setFileUpload()}} >
-              {!upload ? 'Inserir vídeo' : "Inserir link"}
-            </Button>
-            <Button variant="contained" type="submit">
-              Salvar
-            </Button>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column'
+              }}
+            >
+
+              {
+                upload && fileUpload &&
+                <video width="320" height="240" controls>
+                  <source src={URL.createObjectURL(fileUpload)} />
+                </video>
+              }
+              {
+                upload ?
+                  <Box>
+                    <input
+                      type="file"
+                      accept="video/mp4,video/mkv, video/x-m4v,video/*"
+                      id="arquivo"
+                      required
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={(e) => setFileUpload(e.target.files[0])}
+                    />
+
+                    <Button
+                      onClick={e => fileInputRef.current.click()}
+                      variant="outlined"
+                    >
+                      {fileUpload ? "Alterar vídeo" : "Inserir vídeo"}
+                      </Button>
+                  </Box>
+                  :
+                  <TextField
+                    name="exemplo"
+                    value={formik.values.exemplo}
+                    label="Exemplo"
+                    onChange={formik.handleChange}
+                    fullWidth
+                  />
+              }
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Button onClick={() => { setUpload(!upload); fileUpload && setFileUpload() }} variant="outlined" >
+                {!upload ? 'Vídeo' : "Link"}
+              </Button>
+              <Button variant="contained" type="submit">
+                Salvar
+              </Button>
+            </Box>
           </Box>
         </AccordionDetails>
       </Accordion>

@@ -17,9 +17,8 @@ const Player = ({ open, setOpen, link }) => {
       <ReactPlayer
         url={link}
         controls="controls"
-        className="playerVideo"
-        width="100%"
-        height="100%"
+        style={{overflow:'hidden',maxWidth:'100%'}}
+        width="520px" 
       />
     </Dialog>
   );
