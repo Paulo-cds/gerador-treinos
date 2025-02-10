@@ -381,11 +381,14 @@ const TrainingToDay = () => {
               <Typography variant="h4">Treino de Hoje</Typography>
               <Typography>{toDay}</Typography>
             </Box>
-            <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
-              <Typography variant="h5">Método</Typography>
-              <Divider />
-              <Typography sx={{ mt: 2 }}>{todayTraining.Metodo}</Typography>
-            </Box>
+            {
+              todayTraining.Metodo &&
+              <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
+                <Typography variant="h5">Método</Typography>
+                <Divider />
+                <Typography sx={{ mt: 2 }}>{todayTraining.Metodo}</Typography>
+              </Box>
+            }
             <Box sx={{ borderTop: "1px solid black", pt: 2 }}>
               <Typography variant="h5">Aquecimento</Typography>
               <Typography variant="h6">

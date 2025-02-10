@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Alert,
   Backdrop,
   Box,
@@ -50,7 +47,7 @@ import Player from "../../Assets/Player";
 const NewTraining = () => {
   const [loading, setLoading] = useState(false);
   const [aquecimento, setAquecimento] = useState([]);
-  const [mtTreino, setMtTreino] = useState("");
+  // const [mtTreino, setMtTreino] = useState("");
   const [exeTreino, setExeTreino] = useState([]);
   const [trainingGerated, setTrainingGerated] = useState();
   const [ativacao, setAtivacao] = useState("");
@@ -105,18 +102,21 @@ const NewTraining = () => {
       maxWidth: 500,
     },
   });
-  
+
   const formik = useFormik({
     initialValues: {
       numero: "",
+      qtdExercicios: "",
       ativacao: "",
       data: new Date().toLocaleDateString("pt-BR"),
       type: "",
       personal: "",
       observation: "",
+      // metodo: "",
     },
     validationSchema: yup.object({
       numero: yup.number().required("O campo é obrigatório."),
+      qtdExercicios: yup.number().required("O campo é obrigatório."),
       ativacao: yup.string(),
       observation: yup.string(),
       data: yup.date().required("O campo é obrigatório."),
@@ -127,28 +127,28 @@ const NewTraining = () => {
       try {
         //gerando método
         setAtivacao(formik.values.ativacao);
-        let notMetod = true;
-        let qtdExe = 0;
-        if (trainings) {
-          let controlLength = 0
-          while (notMetod) {
-            let sortMet = Math.floor(Math.random() * metods.length);
-            const verificMet = trainings.Treinos.find(
-              (tr) => tr.Metodo === metods[sortMet].nome
-            );
-              
-            if (!verificMet || controlLength >= metods.length) {
-              setMtTreino(metods[sortMet].nome);
-              qtdExe = metods[sortMet].quantidade;
-              notMetod = false; // saia do laço quando a sentença for falsa
-            }
-            controlLength++
-          }
-        } else {
-          let sortMet = Math.floor(Math.random() * metods.length);
-          qtdExe = metods[sortMet].quantidade;
-          setMtTreino(metods[sortMet].nome);
-        }
+        // let notMetod = true;
+        // let qtdExe = 0;
+        // if (trainings) {
+        //   let controlLength = 0
+        //   while (notMetod) {
+        //     let sortMet = Math.floor(Math.random() * metods.length);
+        //     const verificMet = trainings.Treinos.find(
+        //       (tr) => tr.Metodo === metods[sortMet].nome
+        //     );
+
+        //     if (!verificMet || controlLength >= metods.length) {
+        //       setMtTreino(metods[sortMet].nome);
+        //       qtdExe = metods[sortMet].quantidade;
+        //       notMetod = false; // saia do laço quando a sentença for falsa
+        //     }
+        //     controlLength++
+        //   }
+        // } else {
+        //   let sortMet = Math.floor(Math.random() * metods.length);
+        //   qtdExe = metods[sortMet].quantidade;
+        //   setMtTreino(metods[sortMet].nome);
+        // }
 
         // final gerando método
 
@@ -158,9 +158,6 @@ const NewTraining = () => {
         if (trainings) {
           while (notAqc) {
             let sortAqc = Math.floor(Math.random() * exercises.length);
-            // const verificAqc = trainings.find(
-            //   (tr) => tr.aquecimento === exercises[sortAqc].nome
-            // );
 
             let exists = trainings.Treinos.some(
               (train, index) =>
@@ -170,11 +167,6 @@ const NewTraining = () => {
                 )
             );
 
-            // let exists = trainings.Treinos.some((train) =>
-            //   train.Exercicios.some(
-            //     (exe) => exe.exercicio === exercises[sortAqc].nome
-            //   )
-            // );
             let sorted = exeAqc.some(
               (exe) => exe.exercicio === exercises[sortAqc].nome
             );
@@ -225,9 +217,6 @@ const NewTraining = () => {
         if (trainings) {
           while (notExe) {
             let sortExe = Math.floor(Math.random() * exercises.length);
-            // const verificAqc = trainings.find(
-            //   (tr) => tr.aquecimento === exercises[sortAqc].nome
-            // );
 
             let exists = trainings.Treinos.some(
               (train, index) =>
@@ -237,11 +226,7 @@ const NewTraining = () => {
                 )
             );
 
-            // let exists = trainings.Treinos.some((train) =>
-            //   train.Exercicios.some(
-            //     (exe) => exe.exercicio === exercises[sortExe].nome
-            //   )
-            // );
+
             let sorted = exeTrn.some(
               (exe) => exe.exercicio === exercises[sortExe].nome
             );
@@ -258,7 +243,7 @@ const NewTraining = () => {
                 id: exercises[sortExe].id,
               });
               // qtdExe = metods[sortAqc].quantidade;
-              if (exeTrn.length == qtdExe) {
+              if (exeTrn.length == parseInt(formik.values.qtdExercicios)) {
                 notExe = false; // saia do laço quando a sentença for falsa
                 setExeTreino(exeTrn);
               }
@@ -277,8 +262,8 @@ const NewTraining = () => {
                 exemplo: exercises[sortExe].exemplo,
                 id: exercises[sortExe].id,
               });
-              // qtdExe = metods[sortAqc].quantidade;
-              if (exeTrn.length == qtdExe) {
+
+              if (exeTrn.length == parseInt(formik.values.qtdExercicios)) {
                 notExe = false; // saia do laço quando a sentença for falsa
                 setExeTreino(exeTrn);
               }
@@ -293,7 +278,7 @@ const NewTraining = () => {
       }
     },
   });
-  // console.log('tr ', trainings.Treinos)
+
   const handleGetExercises = async () => {
     try {
       const newExercises = [];
@@ -391,7 +376,7 @@ const NewTraining = () => {
       Ativacao: ativacao,
       Data: viewData,
       Exercicios: exeTreino,
-      Metodo: mtTreino,
+      // Metodo: formik.values.metodo,
       Observacao: formik.values.observation,
     };
     newTraining.push(trainingGer);
@@ -564,7 +549,7 @@ const NewTraining = () => {
         sx={{ height: "100%" }}
         ml={{ xs: 0, sm: 0, md: 4 }}
         mt={{ xs: 3, sm: 3, md: 0 }}
-        // className="containerGerateTraining"
+      // className="containerGerateTraining"
       >
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
@@ -609,6 +594,24 @@ const NewTraining = () => {
                   label="personal"
                   name="personal"
                   onChange={formik.handleChange}
+                  displayEmpty
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 200,
+                        overflowY: "auto",
+                      },
+                    },
+                    getContentAnchorEl: null,
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left",
+                    },
+                    transformOrigin: {
+                      vertical: "top",
+                      horizontal: "left",
+                    },
+                  }}
                 >
                   {users.map(
                     (user, index) =>
@@ -631,6 +634,12 @@ const NewTraining = () => {
               name="ativacao"
               value={formik.values.ativacao}
               label="Ativação neural"
+              onChange={formik.handleChange}
+            />
+            <TextField
+              name="qtdExercicios"
+              value={formik.values.qtdExercicios}
+              label="Qtd exercícios treino"
               onChange={formik.handleChange}
             />
             <Box
@@ -694,10 +703,14 @@ const NewTraining = () => {
                 }}
               >
                 <Typography variant="h4">Novo treino</Typography>
-                <Box sx={{ borderTop: "1px solid black" }}>
+                {/* <Box sx={{ borderTop: "1px solid black" }}>
                   <Typography variant="h6">Método</Typography>
-                  <Typography>{mtTreino}</Typography>
-                </Box>
+                  <TextField
+                    value={formik.values.metodo}
+                    name='metodo'
+                    onChange={formik.handleChange()}
+                  />
+                </Box> */}
                 <Box sx={{ borderTop: "1px solid black" }}>
                   <Typography variant="h6">Aquecimento</Typography>
                   <Box
@@ -779,35 +792,53 @@ const NewTraining = () => {
                                             }
                                             // value={exe.exercicio}
                                             label={exe.exercicio}
+                                            displayEmpty
+                                            MenuProps={{
+                                              PaperProps: {
+                                                style: {
+                                                  maxHeight: 200,
+                                                  overflowY: "auto",
+                                                },
+                                              },
+                                              getContentAnchorEl: null,
+                                              anchorOrigin: {
+                                                vertical: "bottom",
+                                                horizontal: "left",
+                                              },
+                                              transformOrigin: {
+                                                vertical: "top",
+                                                horizontal: "left",
+                                              },
+                                            }}
                                           >
                                             {optionsChange.map((opt) =>
                                               trainings
                                                 ? opt.categoria ===
-                                                    "Aquecimento" && (
-                                                    <MenuItem
-                                                      value={opt}
-                                                      sx={{
-                                                        display: "flex",
-                                                        gap: 1,
-                                                        position: "relative",
-                                                      }}
-                                                    >
-                                                      {opt.nome}
-                                                    </MenuItem>
-                                                  )
+                                                "Aquecimento" && (
+                                                  <MenuItem
+                                                    value={opt}
+                                                    sx={{
+                                                      display: "flex",
+                                                      gap: 1,
+                                                      position: "relative",
+                                                    }}
+                                                  >
+                                                    {opt.nome}
+                                                  </MenuItem>
+                                                )
                                                 : opt.categoria ===
-                                                    "Aquecimento" && (
-                                                    <MenuItem
-                                                      value={opt}
-                                                      sx={{
-                                                        display: "flex",
-                                                        gap: 1,
-                                                        position: "relative",
-                                                      }}
-                                                    >
-                                                      {opt.nome}
-                                                    </MenuItem>
-                                                  )
+                                                "Aquecimento" && (
+                                                  <MenuItem
+                                                    value={opt}
+                                                    sx={{
+                                                      display: "flex",
+                                                      gap: 1,
+                                                      position: "relative",
+                                                    }}
+                                                  >
+                                                    {opt.nome}
+                                                  </MenuItem>
+                                                )
                                             )}
                                           </Select>
                                         </FormControl>
@@ -879,6 +910,8 @@ const NewTraining = () => {
                             />
                           )}
                         </Box>
+
+
                         <FormControl variant="standard" sx={{ width: "100%" }}>
                           <InputLabel
                             variant="standard"
@@ -886,22 +919,45 @@ const NewTraining = () => {
                           >
                             {exe.exercicio}
                           </InputLabel>
+
                           <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
                             onChange={(e) => handleChangeTraining(e, index)}
-                            // value={exe.exercicio}
                             label={exe.exercicio}
+
+                            displayEmpty
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  maxHeight: 200,
+                                  overflowY: "auto",
+                                },
+                              },
+                              getContentAnchorEl: null,
+                              anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left",
+                              },
+                              transformOrigin: {
+                                vertical: "top",
+                                horizontal: "left",
+                              },
+                            }}
                           >
                             {optionsChange.map((opt) =>
                               trainings
                                 ? opt.categoria !== "Aquecimento" && (
-                                    <MenuItem value={opt}>{opt.nome}</MenuItem>
-                                  )
+                                  <MenuItem value={opt}>{opt.nome}</MenuItem>
+                                )
                                 : opt.categoria !== "Aquecimento" && (
-                                    <MenuItem value={opt}>{opt.nome}</MenuItem>
-                                  )
+                                  <MenuItem value={opt}>{opt.nome}</MenuItem>
+                                )
                             )}
                           </Select>
                         </FormControl>
+
+
                       </Box>
                       <TextField
                         sx={{ width: "30%" }}
