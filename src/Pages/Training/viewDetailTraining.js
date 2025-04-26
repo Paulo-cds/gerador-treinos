@@ -60,6 +60,11 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
             maxWidth: "90%",
             p: 2,
             borderRadius: "20px",
+            maxHeight: "95%",
+            overflowY: "scroll",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
           }}
         >
           {trainingView.Tipo === "corrida" ? (
