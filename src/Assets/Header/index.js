@@ -70,7 +70,7 @@ function Header(props, theme) {
       }
     });
   };
-
+  
   const drawer = (
     <div>
       <Toolbar
@@ -185,6 +185,24 @@ function Header(props, theme) {
       )}
       <Divider />
       <List>
+        {!admin && (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  mobileOpen && handleDrawerToggle();
+                  navigate("/myTrainings");
+                }}
+              >
+                <ListItemIcon>
+                  <GiStrong />
+                </ListItemIcon>
+                <ListItemText primary={"Meus treinos"} />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+          </>
+        )}
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -199,7 +217,7 @@ function Header(props, theme) {
           </ListItemButton>
         </ListItem>
         <Divider />
-        <ListItem disablePadding>
+        {/* <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
               mobileOpen && handleDrawerToggle();
@@ -212,7 +230,7 @@ function Header(props, theme) {
             <ListItemText primary={"Confirmados"} />
           </ListItemButton>
         </ListItem>
-        <Divider />
+        <Divider /> */}
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -233,7 +251,7 @@ function Header(props, theme) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box >
+    <Box>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -244,30 +262,32 @@ function Header(props, theme) {
         }}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: userData.tipo !== "personal" ? "block" :'none' }}
-          >
-            <MenuIcon />
-          </IconButton>
+          {((userData.tipo && userData.tipo !== "turma") || admin) && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Correndo do Sofá
           </Typography>
-          {userData.tipo === "personal" && (
-        <ExitToAppIcon
-          sx={{
-            color: "white",
-            cursor: "pointer",
-            fontSize:30
-          }}
-          onClick={() => {
-            logout();
-          }}
-        />
-      )}
+          {userData.tipo !== "admin" && (
+            <ExitToAppIcon
+              sx={{
+                color: "white",
+                cursor: "pointer",
+                fontSize: 30,
+              }}
+              onClick={() => {
+                logout();
+              }}
+            />
+          )}
         </Toolbar>
       </AppBar>
       <Box

@@ -37,6 +37,7 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
       email: "@correndodosofa.com.br",
       isAdmin: false,
       type: "",
+      active: true
     },
     validationSchema: yup.object({
       email: yup.string().required("O campo é obrigatório."),
@@ -69,6 +70,7 @@ const CreateUser = ({ expanded, setExpanded, handleGetUsers }) => {
       formik.values.nome,
       formik.values.isAdmin,
       formik.values.type,
+      formik.values.active,
     );
     if (response.status === 200) {
       setLoading(false);

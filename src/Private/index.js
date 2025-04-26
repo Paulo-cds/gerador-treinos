@@ -21,7 +21,7 @@ function Private({ children }) {
 
   const checkLogin = async () => {
     await onAuthStateChanged(auth, (user) => {
-      //se tem user logado
+      //se tem user logado      
       if (user) {
         const userValues = {
           uid: user.uid,
@@ -37,9 +37,9 @@ function Private({ children }) {
             data.id = user.uid;
             setUserData(data);
             setIsAdmin(doc.data().isAdmin);
-            if (!doc.data().isAdmin) {
-              navigate("/trainingToDay");
-            }
+            // if (!doc.data().isAdmin) {
+            //   navigate("/trainingToDay");
+            // }
           }
         });
 

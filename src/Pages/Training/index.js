@@ -1,28 +1,18 @@
 import {
   Alert,
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogTitle,
   FormControl,
   InputLabel,
-  List,
-  ListItem,
   MenuItem,
   Select,
   Snackbar,
-  Tab,
   TablePagination,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography,
   styled,
 } from "@mui/material";
-import { tooltipClasses } from "@mui/material/Tooltip";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -31,55 +21,44 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
-  deleteCategory,
-  deleteRenter,
-  fetchCategories,
-  fetchExercises,
-  fetchMetods,
+  deleteTraining,
   fetchTrainings,
   fetchUsers,
 } from "../../Services/routes";
-import Player from "../../Assets/Player";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
-import EditExercise from "./editCategory";
-import CreateCategory from "./createTraining";
-import EditCategory from "./editCategory";
+import DeleteIcon from "@mui/icons-material/Delete";
 import BackdropCategory from "../../Assets/Images/backdropExercises.webp";
-import CreateTraining from "./createTraining";
 import { backdropHeaderTable } from "../../Assets/colors";
-import Corrida from "./Corrida";
 import "./styleTraining.css";
-import EditTraining from "./editTraining";
+import EditFunctionalTraining from "./editfunctionalTraining";
+import LoadingDefault from "../../Assets/Components/loadingDefault";
+import EditRunTraining from "./editRunTraining";
+import AlertFeedBack from "../../Assets/Components/alertFeedBack";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import ViewDetailTraining from "./viewDetailTraining";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CopyTraining from "./copyTraining";
 
 const Training = () => {
-  const [categories, setCategories] = useState([]);
-  const [newRegister, setNewRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openPlayer, setOpenPlayer] = useState(false);
-  const [linkVideo, setLinkVideo] = useState("");
   const [idDelete, setIdDelete] = useState("");
-  const [textButton, setTextButton] = useState("");
-  const [functionExecute, setFunctionExecute] = useState();
   const [openSnack, setOpenSnack] = useState(false);
   const [severity, setSeverity] = useState("");
   const [title, setTitle] = useState("");
-  const [editRegister, setEditRegister] = useState(false);
-  const [exerciseEdit, setExerciseEdit] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [metods, setMetods] = useState([]);
-  const [exercises, setExercises] = useState([]);
   const [trainings, setTrainings] = useState();
-  const [typeTraining, setTypeTraining] = useState("");
   const [trainingEdit, setTrainingEdit] = useState();
-  const [formTraining, setFormTraining] = useState("");
   const [users, setUsers] = useState([]);
   const [typeUser, setTypeUser] = useState("");
   const [personalSelected, setPersonalSelected] = useState("");
+  const [openEditFuncional, setOpenEditFuncional] = useState(false);
+  const [openEditCorrida, setOpenEditCorrida] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [viewDetail, setViewDetail] = useState(false);
+  const [alertCopy, setAlertCopy] = useState(false)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -111,9 +90,6 @@ const Training = () => {
   }));
 
   useEffect(() => {
-    handleGetMetods();
-    handleGetExercises();
-    // handleGetTrainings();
     handleGetUsers();
   }, []);
 
@@ -121,14 +97,16 @@ const Training = () => {
     setLoading(true);
     try {
       const newTrainings = [];
-      const response = await fetchTrainings(type);
-      response.docs.forEach((item) => {
+      const response = await fetchTrainings(
+        typeUser === "turma" ? "turma" : personalSelected
+      );
+      response.forEach((item) => {
         let newItem = item.data();
         newItem.id = item.id;
         newTrainings.push(newItem);
       });
-      let control = newTrainings[0];
-      control.Treinos = control.Treinos.sort((a, b) => {
+      let control = newTrainings;
+      control = control.sort((a, b) => {
         const dataA = new Date(a.Data.split("/").reverse().join("/"));
         const dataB = new Date(b.Data.split("/").reverse().join("/"));
         return dataB - dataA;
@@ -141,39 +119,6 @@ const Training = () => {
       console.log(e);
     }
     setLoading(false);
-  };
-
-  const handleGetExercises = async () => {
-    try {
-      const newExercises = [];
-      const response = await fetchExercises();
-      response.docs.forEach((item) => {
-        let newItem = item.data();
-        newItem.id = item.id;
-        newExercises.push(newItem);
-      });
-      setExercises(newExercises);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleGetMetods = async () => {
-    setLoading(true);
-    try {
-      const newMetods = [];
-      const response = await fetchMetods();
-      response.docs.forEach((item) => {
-        let newItem = item.data();
-        newItem.id = item.id;
-        newMetods.push(newItem);
-      });
-      setMetods(newMetods);
-      setLoading(false);
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-    }
   };
 
   const handleGetUsers = async () => {
@@ -198,94 +143,36 @@ const Training = () => {
     setLoading(false);
     setOpenSnack(false);
     setOpen(false);
+    setIdDelete();
   };
 
-  const handleAlertDelete = (id) => {
-    setIdDelete(id);
-    setTextButton("Ok");
-    setTitle("Tem certeza que deseja excluir essa categoria?");
-    setFunctionExecute("delete");
-    setOpen(true);
-  };
-
-  const handleOk = () => {
-    setOpen(false);
-    if (functionExecute === "delete") {
-      deleteCategoria();
-    }
-  };
-
-  const deleteCategoria = async () => {
+  const handleDeleteTraining = async () => {
     setLoading(true);
     try {
-      await deleteCategory(idDelete);
-      setTitle("Categoria deletada com sucesso!");
+      await deleteTraining(idDelete);
+      setOpen(false);
       setSeverity("success");
-      setOpenSnack(true);
-      setLoading(false);
+      setTitle("Treino deletado com sucesso!");
+      setOpenAlert(true);
+      handleGetTrainings();
     } catch (e) {
       console.log(e);
-      setTitle("Erro ao deletar, tente novamente");
       setSeverity("error");
-      setOpenSnack(true);
-      setLoading(false);
+      setTitle("Erro ao deletar treino, tente novamente.");
+      setOpenAlert(true);
     }
+    setLoading(false);
   };
 
-  const handleSelectEdit = (item) => {
-    setExerciseEdit(item);
-    setEditRegister(true);
+  const handleSelectTrainingEdit = (id, type) => {
+    setTrainingEdit(id);
+    if (type === "funcional") setOpenEditFuncional(true);
+    if (type === "corrida") setOpenEditCorrida(true);
   };
 
-  const CustomWidthTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))({
-    [`& .${tooltipClasses.tooltip}`]: {
-      maxWidth: 500,
-    },
-  });
-
-  const handleChange = (event, newValue) => {
-    setTypeTraining(newValue);
-  };
-
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-  };
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
-
-  const handleSelectTrainingEdit = (training, index) => {
-    setTrainingEdit(index);
-    setFormTraining("edit");
-    setNewRegister(true);
+  const handleSelectTrainingDelete = (id) => {
+    setIdDelete(id);
+    setOpen(true);
   };
 
   return (
@@ -312,16 +199,16 @@ const Training = () => {
       >
         <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={() => setOpen(false)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            Tem certeza que deseja excluir esse treino?
+          </DialogTitle>
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
-            <Button onClick={() => handleOk()} autoFocus>
-              {textButton}
-            </Button>
+            <Button onClick={() => handleDeleteTraining()}>Excluir</Button>
           </DialogActions>
         </Dialog>
         <Snackbar
@@ -333,233 +220,162 @@ const Training = () => {
             {title}
           </Alert>
         </Snackbar>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-            m: 2,
-          }}
-        >
-          <Box
-            sx={{
-              borderBottom: 1,
-              borderColor: "divider",
-              backgroundColor: "white",
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <Tabs
-              value={typeTraining}
-              onChange={handleChange}
-              aria-label="basic tabs example"
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={typeUser}
+              label="type"
+              name="type"
+              onChange={(e) => setTypeUser(e.target.value)}
+              sx={{ backgroundColor: "white" }}
             >
-              <Tab label="Funcional" {...a11yProps(0)} />
-              <Tab label="Corrida" {...a11yProps(1)} />
-            </Tabs>
-          </Box>
-        </Box>
-        <TabPanel value={typeTraining} index={0}>
-          {formTraining === "create" && (
-            <CreateTraining
-              expanded={newRegister}
-              setExpanded={setNewRegister}
-              exercises={exercises}
-              metods={metods}
-              trainings={trainings}
-              setTrainings={setTrainings}
-              handleGetTrainings={handleGetTrainings}
-              users={users}
-            />
-          )} 
-          {formTraining === "edit" && (
-            <EditTraining
-              expanded={newRegister}
-              setExpanded={setNewRegister}
-              trainingEdit={trainingEdit}
-              setFormTraining={setFormTraining}
-              trainings={trainings}
-              handleGetTrainings={handleGetTrainings}
-              setTitle={setTitle}
-              setOpenSnack={setOpenSnack}
-              setSeverity={setSeverity}
-            />
-          )}
-          {editRegister && (
-            <EditCategory
-              exerciseEdit={exerciseEdit}
-              expanded={editRegister}
-              setExpanded={setEditRegister}
-              setTitle={setTitle}
-              setSeverity={setSeverity}
-              setOpenSnack={setOpenSnack}
-            />
-          )}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
+              <MenuItem value={"turma"}>Turma</MenuItem>
+              <MenuItem value={"personal"}>Personal</MenuItem>
+            </Select>
+          </FormControl>
+          {typeUser === "personal" && (
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+              <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={typeUser}
-                label="type"
-                name="type"
-                onChange={(e) => setTypeUser(e.target.value)}
+                value={personalSelected}
+                label="personal"
+                name="personal"
+                onChange={(e) => setPersonalSelected(e.target.value)}
                 sx={{ backgroundColor: "white" }}
               >
-                <MenuItem value={"turma"}>Turma</MenuItem>
-                <MenuItem value={"personal"}>Personal</MenuItem>
+                {users.map(
+                  (user, index) =>
+                    user.tipo === "personal" && (
+                      <MenuItem key={index} value={user.id}>
+                        {user.nome}
+                      </MenuItem>
+                    )
+                )}
               </Select>
             </FormControl>
-            {typeUser === "personal" && (
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={personalSelected}
-                  label="personal"
-                  name="personal"
-                  onChange={(e) => setPersonalSelected(e.target.value)}
-                  sx={{ backgroundColor: "white" }}
-                >
-                  {users.map(
-                    (user, index) =>
-                      user.tipo === "personal" && (
-                        <MenuItem key={index} value={user.nome}>
-                          {user.nome}
-                        </MenuItem>
-                      )
-                  )}
-                </Select>
-              </FormControl>
-            )}
-            <Button
-              variant="contained"
-              onClick={() =>
-                handleGetTrainings(
-                  typeUser === "turma"
-                    ? "Treinos"
-                    : personalSelected.replace(" ", "")
-                )
-              }
-            >
-              Buscar
-            </Button>
-          </Box>
-          {trainings && (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center"></StyledTableCell>
-                    <StyledTableCell align="center">Data</StyledTableCell>
-                    <StyledTableCell align="center">Método</StyledTableCell>
-                    <StyledTableCell align="center">
-                      Aquecimento
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      Ativação Neural
-                    </StyledTableCell>
-                    <StyledTableCell align="center">Exercícios</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {trainings.Treinos.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  ).map((row, index) => (
-                    <StyledTableRow key={row.Nome}>
+          )}
+          <Button variant="contained" onClick={() => handleGetTrainings()}>
+            Buscar
+          </Button>
+        </Box>
+        {trainings && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell>Data criação</StyledTableCell>
+                  <StyledTableCell>Tipo</StyledTableCell>
+                  <StyledTableCell>Título</StyledTableCell>
+                  <StyledTableCell>Finalizado</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {trainings
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <StyledTableRow key={row.id}>
                       <StyledTableCell
                         component="th"
                         scope="row"
-                        sx={{ cursor: "pointer" }}
+                        sx={{ display: "flex", gap: 2 }}
                       >
                         <EditIcon
-                          onClick={() => handleSelectTrainingEdit(row, index)}
+                          onClick={() =>
+                            handleSelectTrainingEdit(row.id, row.Tipo)
+                          }
+                          sx={{ cursor: "pointer" }}
                         />
+                        <DeleteIcon
+                          onClick={() => handleSelectTrainingDelete(row.id)}
+                          sx={{ cursor: "pointer" }}
+                        />
+                        <VisibilityIcon
+                          onClick={() => {
+                            setTrainingEdit(row.id);
+                            setViewDetail(true);
+                          }}
+                          sx={{ cursor: "pointer" }}
+                        />
+                        <ContentCopyIcon
+                         onClick={() => {
+                          setTrainingEdit(row.id);
+                          setAlertCopy(true);
+                        }}
+                        sx={{ cursor: "pointer" }}
+                         />
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         {row.Data}
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
-                        {row.Metodo}
+                        {row.Tipo}
                       </StyledTableCell>
-                      <StyledTableCell
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        <CustomWidthTooltip
-                          disableFocusListener
-                          title={row.Aquecimento.map((aqc) => (
-                            <Box sx={{ display: "flex" }}>
-                              <Typography>{aqc.exercicio}/</Typography>
-                              <Typography>{aqc.reps}</Typography>
-                            </Box>
-                          ))}
-                        >
-                          <Typography>
-                            {row.Aquecimento[0].exercicio}
-                          </Typography>
-                        </CustomWidthTooltip>
+                      <StyledTableCell component="th" scope="row">
+                        {row.Titulo}
                       </StyledTableCell>
-                      <StyledTableCell
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        <Tooltip disableFocusListener title={row.Ativacao}>
-                          <Typography>{row.Ativacao}</Typography>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="center"
-                        component="th"
-                        scope="row"
-                      >
-                        <CustomWidthTooltip
-                          disableFocusListener
-                          title={row.Exercicios.map((aqc) => (
-                            <Box sx={{ display: "flex" }}>
-                              <Typography>{aqc.exercicio}/</Typography>
-                              <Typography>{aqc.reps}</Typography>
-                            </Box>
-                          ))}
-                        >
-                          <Typography>{row.Exercicios[0].exercicio}</Typography>
-                        </CustomWidthTooltip>
+                      <StyledTableCell component="th" scope="row">
+                        {row.Finalizado ? "Sim" : "Não"}
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
-                </TableBody>
-              </Table>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={trainings.Treinos.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </TableContainer>
-          )}
-        </TabPanel>
-        <TabPanel value={typeTraining} index={1}>
-          <Corrida />
-        </TabPanel>
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={loading}
-          onClick={handleClose}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={trainings.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        )}
+        <AlertFeedBack
+          open={openAlert}
+          setOpen={setOpenAlert}
+          title={title}
+          severity={severity}
+        />
+        <LoadingDefault open={loading} />
       </Box>
+      {openEditFuncional && (
+        <EditFunctionalTraining
+          open={openEditFuncional}
+          setOpen={setOpenEditFuncional}
+          trainingId={trainingEdit}
+          handleGetTrainings={handleGetTrainings}
+        />
+      )}
+      {openEditCorrida && (
+        <EditRunTraining
+          open={openEditCorrida}
+          setOpen={setOpenEditCorrida}
+          trainingId={trainingEdit}
+          handleGetTrainings={handleGetTrainings}
+        />
+      )}
+      {viewDetail && (
+        <ViewDetailTraining
+          open={viewDetail}
+          setOpen={setViewDetail}
+          trainingId={trainingEdit}
+        />
+      )}
+      {alertCopy && (
+        <CopyTraining
+          open={alertCopy}
+          setOpen={setAlertCopy}
+          trainingId={trainingEdit}
+        />
+      )}
     </Box>
   );
 };

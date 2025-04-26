@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackdropImage from "../../Assets/Images/backdropLogin.jpeg";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import {
   Backdrop,
   Box,
@@ -11,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import "./styleLogin.css";
+import { db } from "../../firebase";
 
 export default function Login() {
   const [email, setEmail] = useState("@correndodosofa.com.br");
@@ -26,12 +31,39 @@ export default function Login() {
 
   async function handleLogin(e) {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     if (email !== "" && password !== "") {
       await signInWithEmailAndPassword(auth, email, password)
         .then((value) => {
-          // navegar para /admin
-          navigate("/", { replace: true });
+          onAuthStateChanged(auth, (user) => {
+            //se tem user logado
+            if (user) {
+              const userValues = {
+                uid: user.uid,
+                email: user.email,
+              };
+
+              localStorage.setItem("@detailUser", JSON.stringify(userValues));
+
+              const userRef = db.collection("users").doc(user.uid);
+              userRef.get().then((doc) => {
+                if (doc.exists) {
+                  if (doc.data().isAdmin) {
+                    navigate("/", { replace: true });
+                  } else {
+                    navigate("/myTrainings");
+                  }
+                  // let data = doc.data();
+                  // data.id = user.uid;
+                  // setUserData(data);
+                  // setIsAdmin(doc.data().isAdmin);
+                  // if (!doc.data().isAdmin) {
+                  //   navigate("/trainingToDay");
+                  // }
+                }
+              });
+            }
+          });
         })
         .catch((error) => {
           console.log("Erro ao logar: " + error);
@@ -42,9 +74,9 @@ export default function Login() {
             alert("Senha incorreta!");
           }
         });
-        setLoading(false)
+      setLoading(false);
     } else {
-      setLoading(false)
+      setLoading(false);
       alert("Preencha todos os campos!");
     }
   }

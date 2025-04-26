@@ -6,6 +6,10 @@ import {
   getDocs,
   collection,
   setDoc,
+  getDoc,
+  updateDoc,
+  where,
+  deleteDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -17,9 +21,6 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 
-
-
-
 /******Função que faz o upload do vídeo******/
 export const uploadVideo = async (file) => {
   const storage = getStorage();
@@ -29,16 +30,16 @@ export const uploadVideo = async (file) => {
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
     const dataReturn = {
-      status:'success',
-      url:url
-    }
+      status: "success",
+      url: url,
+    };
     return dataReturn;
   } catch (error) {
     console.error("Erro ao fazer upload do vídeo:", error);
     const dataReturn = {
-      status:'error',
-      error:error
-    }
+      status: "error",
+      error: error,
+    };
     return dataReturn;
   }
 };
@@ -65,10 +66,20 @@ export const fetchMetods = async () => {
 };
 
 /******Função que faz o Get dos treinos******/
-export const fetchTrainings = async (training) => {
-  const data = db.collection(training);
-  const response = await data.get();
+export const fetchTrainings = async (userId) => {
+  const citiesRef = collection(db, "Treinos");
+  const q = query(citiesRef, where("userId", "==", userId));
+  const response = await getDocs(q);
+  // const data = db.collection(training);
+  // const response = await data.get();
   return response;
+};
+
+/******Função que faz o Get do treino especifico******/
+export const fetchOneTraining = async (trainingId) => {
+  const docRef = doc(db, "Treinos", trainingId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
 };
 
 /******Função que faz o Get dos treinos de corrida******/
@@ -218,6 +229,18 @@ export const deleteMetod = async (id) => {
   return response;
 };
 
+/******Função que faz o delete do treino******/
+export const deleteTraining = async (id) => {
+  const response = await deleteDoc(doc(db, "Treinos", id))
+    .then(() => {
+      return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
 /******Função que edita exercicio******/
 export const changeExercise = async (data, id) => {
   const response = await db
@@ -278,8 +301,21 @@ export const changeTrainingData = async (data, id) => {
   return response;
 };
 
+/******Função que edita treino******/
+export const editTrainingData = async (data, id) => {
+  const trainingRef = doc(db, "Treinos", id);
+  const response = await updateDoc(trainingRef, data)
+    .then(() => {
+      return { status: 200 };
+    })
+    .catch((err) => {
+      return { status: 400 };
+    });
+  return response;
+};
+
 /******Função que adiciona usuário******/
-export const addUser = async (email, uid, nome, isAdmin, tipo) => {
+export const addUser = async (email, uid, nome, isAdmin, tipo, ativo) => {
   const response = await db
     .collection("users")
     .doc(uid)
@@ -287,7 +323,9 @@ export const addUser = async (email, uid, nome, isAdmin, tipo) => {
       email: email,
       nome: nome,
       tipo: tipo,
+      ativo: ativo,
       isAdmin,
+      treinos: [],
     })
     .then((doc) => {
       return { data: doc, status: 200 };
@@ -319,37 +357,50 @@ export const confirmTraining = async (data) => {
   return response;
 };
 
-
-
 /****Personal ******/
 
-
 /******Função que cria Bd para personal******/
-export const createPersonalTraining = async (data, name) => {
-  const bdPersonal = name.replace(" ", "")
+export const createPersonalTraining = async (data) => {
+  // const bdPersonal = name.replace(" ", "")
   const response = await db
-    .collection(bdPersonal)
+    .collection("Treinos")
     .add(data)
     .then(() => {
       return { data: doc, status: 200 };
     })
     .catch((err) => {
+      console.log("erro ", err);
       return { status: 400 };
     });
   return response;
 };
 
 /******Função que adiciona treino para personal******/
-export const addPersonalTraining = async (data, name, id) => {
-  const bdPersonal = name.replace(" ", "")
-  const response = await db
-    .collection(bdPersonal)
-    .doc(data.id)
-    .update(data)
+// export const addPersonalTraining = async (data, name, id) => {
+//   const bdPersonal = name.replace(" ", "")
+//   const response = await db
+//     .collection(bdPersonal)
+//     .doc(data.id)
+//     .update(data)
+//     .then(() => {
+//       return { data: doc, status: 200 };
+//     })
+//     .catch((err) => {
+//       return { status: 400 };
+//     });
+//   return response;
+// };
+
+export const addPersonalTraining = async (data, id) => {
+  const userRef = doc(db, "users", id);
+  const response = await updateDoc(userRef, {
+    treinos: data,
+  })
     .then(() => {
       return { data: doc, status: 200 };
     })
     .catch((err) => {
+      console.log("erro ", err);
       return { status: 400 };
     });
   return response;
@@ -357,7 +408,32 @@ export const addPersonalTraining = async (data, name, id) => {
 
 /******Função que faz o Get dos treinos do aluno******/
 export const fetchTrainingsPersonal = async (colect) => {
-  const data = db.collection(colect);
-  const response = await data.get();
+  const docRef = doc(db, "users", colect);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
+};
+
+/******Função que faz o Get dos treinos não finalizados do aluno******/
+export const fetchTrainingsNotFinished = async (id) => {
+  const userRef = collection(db, "Treinos");
+  const q1 = query(
+    userRef,
+    where("userId", "==", id),
+    where("Finalizado", "==", false)
+  );
+  const response = [];
+  const querySnapshot = await getDocs(q1);
+  querySnapshot.forEach((doc) => {
+    let item = doc.data();
+    item.id = doc.id;
+    response.push(item);
+  });
   return response;
+};
+
+/******Função que faz o Get do treino específico******/
+export const fetchGetSingleTraining = async (id) => {
+  const docRef = doc(db, "Treinos", id);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
 };

@@ -1,11 +1,11 @@
 .containerGerate {
-    overflow: scroll;
+    /* overflow: scroll; */
     scrollbar-width: none;
     -ms-overflow-style: none;
     display:flex;
     flex-direction: column;
     justify-content:flex-start;
-    max-height: 85%;
+    /* max-height: 85%; */
     margin-top: 10px
 }
 
@@ -16,7 +16,7 @@
 
 
 .containerGerateTraining {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     scrollbar-width: none;
     -ms-overflow-style: none;
     display:flex;

@@ -6,18 +6,21 @@ import Categories from "./Pages/Categories";
 import Metods from "./Pages/Metods";
 import Training from "./Pages/Training";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { lightBlue } from "@mui/material/colors";
+import { lightBlue, blue } from "@mui/material/colors";
 import TrainingToDay from "./Pages/TrainingToDay";
 import Login from "./Pages/Login";
 import { Private } from "./Private";
 import Users from "./Pages/Users";
 import Confirmed from "./Pages/Confirmed";
 import NewTraining from "./Pages/NewTraining";
+import MyTrainings from "./Pages/MyTrainings";
+import TrainingNow from "./Pages/TrainingNow";
 
 const theme = createTheme({
   palette: {
     primary: {
       main: lightBlue[500],
+      dark: blue[900],
     },
   },
 });
@@ -111,6 +114,26 @@ function App() {
               <Private>
                 <Template>
                   <NewTraining />
+                </Template>
+              </Private>
+            }
+          />
+          <Route
+            path="/myTrainings"
+            element={
+              <Private>
+                <Template>
+                  <MyTrainings />
+                </Template>
+              </Private>
+            }
+          />
+          <Route
+            path="/trainingNow/:id"
+            element={
+              <Private>
+                <Template>
+                  <TrainingNow />
                 </Template>
               </Private>
             }
