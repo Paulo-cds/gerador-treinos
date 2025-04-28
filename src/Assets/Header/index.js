@@ -70,7 +70,7 @@ function Header(props, theme) {
       }
     });
   };
-  
+
   const drawer = (
     <div>
       <Toolbar
@@ -143,20 +143,6 @@ function Header(props, theme) {
               <ListItemButton
                 onClick={() => {
                   mobileOpen && handleDrawerToggle();
-                  navigate("/trainings");
-                }}
-              >
-                <ListItemIcon>
-                  <GiStrongMan />
-                </ListItemIcon>
-                <ListItemText primary={"Treinos"} />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  mobileOpen && handleDrawerToggle();
                   navigate("/newTraining");
                 }}
               >
@@ -203,7 +189,22 @@ function Header(props, theme) {
             <Divider />
           </>
         )}
-        <ListItem disablePadding>
+        {(userData.isAdmin || userData.tipo === "personal") && (
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                mobileOpen && handleDrawerToggle();
+                navigate("/trainings");
+              }}
+            >
+              <ListItemIcon>
+                <GiStrongMan />
+              </ListItemIcon>
+              <ListItemText primary={admin ? "Treinos" : "Histórico"} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {/* <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
               mobileOpen && handleDrawerToggle();
@@ -216,7 +217,7 @@ function Header(props, theme) {
             <ListItemText primary={"Treino de hoje"} />
           </ListItemButton>
         </ListItem>
-        <Divider />
+        <Divider /> */}
         {/* <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -262,7 +263,7 @@ function Header(props, theme) {
         }}
       >
         <Toolbar>
-          {((userData.tipo && userData.tipo !== "turma") || admin) && (
+          {(userData.tipo !== "turma" || admin) && (
             <IconButton
               color="inherit"
               aria-label="open drawer"

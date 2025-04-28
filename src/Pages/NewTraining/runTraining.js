@@ -34,8 +34,10 @@ const RunTraining = ({
       title: "",
       finalizabled: true,
       linkVideo: "",
+      linkVideoFinish: "",
       warmUp: "",
       training: "",
+      finalTraining: "",
     },
     validationSchema: yup.object({
       training: yup.string(),
@@ -59,7 +61,9 @@ const RunTraining = ({
           Titulo: values.title,
           Finalizavel: values.finalizabled,
           Exemplo: values.linkVideo,
+          ExemploFinal: values.linkVideoFinish,
           Treino: values.training,
+          FinalizacaoTreino: values.finalTraining,
         };
         newTraining.push(trainingGer);
         try {
@@ -176,6 +180,20 @@ const RunTraining = ({
         onChange={formik.handleChange}
         multiline
         rows={4}
+      />
+      <TextField
+        name="finalTraining"
+        value={formik.values.finalTraining}
+        label="Finalização do treino"
+        onChange={formik.handleChange}
+        multiline
+        rows={4}
+      />
+      <TextField
+        name="linkVideoFinish"
+        value={formik.values.linkVideoFinish}
+        label="Link de finalização de treino"
+        onChange={formik.handleChange}
       />
       <TextField
         name="observation"

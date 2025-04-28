@@ -20,7 +20,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   deleteTraining,
   fetchTrainings,
@@ -37,10 +37,12 @@ import EditRunTraining from "./editRunTraining";
 import AlertFeedBack from "../../Assets/Components/alertFeedBack";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ViewDetailTraining from "./viewDetailTraining";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CopyTraining from "./copyTraining";
+import { Context } from "../../Private";
 
 const Training = () => {
+  const { userData } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
@@ -53,12 +55,14 @@ const Training = () => {
   const [trainingEdit, setTrainingEdit] = useState();
   const [users, setUsers] = useState([]);
   const [typeUser, setTypeUser] = useState("");
-  const [personalSelected, setPersonalSelected] = useState("");
+  const [personalSelected, setPersonalSelected] = useState(
+    userData.tipo === "personal" ? userData.id : ""
+  );
   const [openEditFuncional, setOpenEditFuncional] = useState(false);
   const [openEditCorrida, setOpenEditCorrida] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [viewDetail, setViewDetail] = useState(false);
-  const [alertCopy, setAlertCopy] = useState(false)
+  const [alertCopy, setAlertCopy] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -90,9 +94,13 @@ const Training = () => {
   }));
 
   useEffect(() => {
-    handleGetUsers();
+    if (userData.tipo === "personal") {
+      handleGetTrainings();
+    } else {
+      handleGetUsers();
+    }
   }, []);
-
+  
   const handleGetTrainings = async (type) => {
     setLoading(true);
     try {
@@ -221,49 +229,51 @@ const Training = () => {
           </Alert>
         </Snackbar>
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={typeUser}
-              label="type"
-              name="type"
-              onChange={(e) => setTypeUser(e.target.value)}
-              sx={{ backgroundColor: "white" }}
-            >
-              <MenuItem value={"turma"}>Turma</MenuItem>
-              <MenuItem value={"personal"}>Personal</MenuItem>
-            </Select>
-          </FormControl>
-          {typeUser === "personal" && (
+        {userData.isAdmin && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
+              <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={personalSelected}
-                label="personal"
-                name="personal"
-                onChange={(e) => setPersonalSelected(e.target.value)}
+                value={typeUser}
+                label="type"
+                name="type"
+                onChange={(e) => setTypeUser(e.target.value)}
                 sx={{ backgroundColor: "white" }}
               >
-                {users.map(
-                  (user, index) =>
-                    user.tipo === "personal" && (
-                      <MenuItem key={index} value={user.id}>
-                        {user.nome}
-                      </MenuItem>
-                    )
-                )}
+                <MenuItem value={"turma"}>Turma</MenuItem>
+                <MenuItem value={"personal"}>Personal</MenuItem>
               </Select>
             </FormControl>
-          )}
-          <Button variant="contained" onClick={() => handleGetTrainings()}>
-            Buscar
-          </Button>
-        </Box>
+            {typeUser === "personal" && (
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Aluno</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={personalSelected}
+                  label="personal"
+                  name="personal"
+                  onChange={(e) => setPersonalSelected(e.target.value)}
+                  sx={{ backgroundColor: "white" }}
+                >
+                  {users.map(
+                    (user, index) =>
+                      user.tipo === "personal" && (
+                        <MenuItem key={index} value={user.id}>
+                          {user.nome}
+                        </MenuItem>
+                      )
+                  )}
+                </Select>
+              </FormControl>
+            )}
+            <Button variant="contained" onClick={() => handleGetTrainings()}>
+              Buscar
+            </Button>
+          </Box>
+        )}
         {trainings && (
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -286,16 +296,27 @@ const Training = () => {
                         scope="row"
                         sx={{ display: "flex", gap: 2 }}
                       >
-                        <EditIcon
-                          onClick={() =>
-                            handleSelectTrainingEdit(row.id, row.Tipo)
-                          }
-                          sx={{ cursor: "pointer" }}
-                        />
-                        <DeleteIcon
-                          onClick={() => handleSelectTrainingDelete(row.id)}
-                          sx={{ cursor: "pointer" }}
-                        />
+                        {userData.isAdmin && (
+                          <>
+                            <EditIcon
+                              onClick={() =>
+                                handleSelectTrainingEdit(row.id, row.Tipo)
+                              }
+                              sx={{ cursor: "pointer" }}
+                            />
+                            <DeleteIcon
+                              onClick={() => handleSelectTrainingDelete(row.id)}
+                              sx={{ cursor: "pointer" }}
+                            />
+                            <ContentCopyIcon
+                              onClick={() => {
+                                setTrainingEdit(row.id);
+                                setAlertCopy(true);
+                              }}
+                              sx={{ cursor: "pointer" }}
+                            />
+                          </>
+                        )}
                         <VisibilityIcon
                           onClick={() => {
                             setTrainingEdit(row.id);
@@ -303,13 +324,6 @@ const Training = () => {
                           }}
                           sx={{ cursor: "pointer" }}
                         />
-                        <ContentCopyIcon
-                         onClick={() => {
-                          setTrainingEdit(row.id);
-                          setAlertCopy(true);
-                        }}
-                        sx={{ cursor: "pointer" }}
-                         />
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         {row.Data}

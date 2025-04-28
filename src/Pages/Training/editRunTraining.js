@@ -28,8 +28,10 @@ const EditRunTraining = ({ trainingId, open, setOpen, handleGetTrainings }) => {
       finalizabled: true,
       finalized: false,
       linkVideo: "",
+      linkVideoFinish: "",
       warmUp: "",
       training: "",
+      finalTraining: "",
     },
     validationSchema: yup.object({
       training: yup.string().required("O campo é obrigatório."),
@@ -48,8 +50,10 @@ const EditRunTraining = ({ trainingId, open, setOpen, handleGetTrainings }) => {
           Titulo: values.title,
           Finalizavel: values.finalizabled,
           Exemplo: values.linkVideo,
+          ExemploFinal: values.linkVideoFinish,
           Treino: values.training,
           Finalizado: values.finalized,
+          FinalizacaoTreino: values.finalTraining,
         };
         await editTrainingData(data, trainingId);
         setSeverity("success");
@@ -80,8 +84,10 @@ const EditRunTraining = ({ trainingId, open, setOpen, handleGetTrainings }) => {
       formik.setFieldValue("finalizabled", response.Finalizavel);
       formik.setFieldValue("finalized", response.Finalizado);
       formik.setFieldValue("linkVideo", response.Exemplo);
+      formik.setFieldValue("linkVideoFinish", response.ExemploFinal);
       formik.setFieldValue("warmUp", response.Aquecimento);
       formik.setFieldValue("training", response.Treino);
+      formik.setFieldValue("finalTraining", response.FinalizacaoTreino);
     } catch (e) {
       console.log(e);
     }
@@ -139,6 +145,20 @@ const EditRunTraining = ({ trainingId, open, setOpen, handleGetTrainings }) => {
           onChange={formik.handleChange}
           multiline
           rows={4}
+        />
+        <TextField
+          name="finalTraining"
+          value={formik.values.finalTraining}
+          label="Finalização do treino"
+          onChange={formik.handleChange}
+          multiline
+          rows={4}
+        />
+        <TextField
+          name="linkVideoFinish"
+          value={formik.values.linkVideoFinish}
+          label="Link de finalização de treino"
+          onChange={formik.handleChange}
         />
         <TextField
           name="observation"

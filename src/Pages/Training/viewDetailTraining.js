@@ -86,54 +86,52 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                   {trainingView.Titulo}
                 </Typography>
               </Box>
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "primary.main",
-                  borderRadius: "20px",
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                }}
-              >
-                <Typography variant="h6">Aquecimento</Typography>
-                <Divider />
-                <Typography variant="subtitle1">
-                  {trainingView.Aquecimento}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "primary.main",
-                  borderRadius: "20px",
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                }}
-              >
-                <Typography variant="h6">Exemplo</Typography>
-                <Divider />
-                {trainingView.Exemplo && (
-                  <Typography
-                    variant="subtitle2"
-                    sx={{
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                    onClick={() => handleSetVideo(trainingView.Exemplo)}
-                  >
-                    <OndemandVideoIcon />
-                  </Typography>
-                )}
-                {/* <Typography variant="subtitle1">
-                  {trainingView.Exemplo}
-                </Typography> */}
-              </Box>
+              {(trainingView.Aquecimento || trainingView.Exemplo) && (
+                <Box
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: "20px",
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {trainingView.Aquecimento && (
+                    <>
+                      <Typography variant="h6">Aquecimento</Typography>
+                      <Divider />
+                      <Typography variant="subtitle1">
+                        {trainingView.Aquecimento}
+                      </Typography>
+                    </>
+                  )}
+                  {trainingView.Exemplo && (
+                    <>
+                      {trainingView.Aquecimento && <Divider />}
+                      <Typography
+                        variant="h6"
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        Exemplo aquecimento:{" "}
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                          onClick={() => handleSetVideo(trainingView.Exemplo)}
+                        >
+                          <OndemandVideoIcon />
+                        </Typography>
+                      </Typography>
+                    </>
+                  )}
+                </Box>
+              )}
               <Box
                 sx={{
                   border: "1px solid",
@@ -151,6 +149,57 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                   {trainingView.Treino}
                 </Typography>
               </Box>
+              {(trainingView.FinalizacaoTreino ||
+                trainingView.ExemploFinal) && (
+                <Box
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: "20px",
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {trainingView.FinalizacaoTreino && (
+                    <>
+                      <Typography variant="h6">
+                        Finalização do treino
+                      </Typography>
+                      <Divider />
+                      <Typography variant="subtitle1">
+                        {trainingView.FinalizacaoTreino}
+                      </Typography>
+                    </>
+                  )}
+                  {trainingView.ExemploFinal && (
+                    <>
+                      <Divider />
+                      <Typography
+                        variant="h6"
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        Exemplo finalização:{" "}
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                          onClick={() =>
+                            handleSetVideo(trainingView.ExemploFinal)
+                          }
+                        >
+                          <OndemandVideoIcon />
+                        </Typography>
+                      </Typography>
+                    </>
+                  )}
+                </Box>
+              )}
               {trainingView.Observacao && (
                 <Box
                   sx={{

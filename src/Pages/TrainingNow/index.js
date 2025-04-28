@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import BackdropImage from "../../Assets/Images/backdropToDay.jpg";
-import {
-  fetchGetSingleTraining,
-} from "../../Services/routes";
+import { fetchGetSingleTraining } from "../../Services/routes";
 import LoadingDefault from "../../Assets/Components/loadingDefault";
 import { useParams } from "react-router-dom";
 import Table from "@mui/material/Table";
@@ -121,34 +119,38 @@ const TrainingNow = () => {
                     <Typography variant="h6">{trainingView.Titulo}</Typography>
                   </Box>
                 )}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    borderBottom: "1px solid black",
-                  }}
-                >
-                  <Typography variant="h6">Aquecimento</Typography>
-                  <Divider />
-                  <Typography variant="subtitle1">
-                    {trainingView.Aquecimento}
-                  </Typography>
-                  {trainingView.Exemplo && (
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 2,
-                      }}
-                      onClick={() => handleSetVideo(trainingView.Exemplo)}
-                    >
-                      Exemplo: <OndemandVideoIcon />
-                    </Typography>
-                  )}
-                </Box>
+                {(trainingView.Aquecimento || trainingView.Exemplo) && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      borderBottom: "1px solid black",
+                    }}
+                  >
+                    <Typography variant="h6">Aquecimento</Typography>
+                    <Divider />
+                    {trainingView.Aquecimento && (
+                      <Typography variant="subtitle1">
+                        {trainingView.Aquecimento}
+                      </Typography>
+                    )}
+                    {trainingView.Exemplo && (
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                        }}
+                        onClick={() => handleSetVideo(trainingView.Exemplo)}
+                      >
+                        Exemplo: <OndemandVideoIcon />
+                      </Typography>
+                    )}
+                  </Box>
+                )}
                 <Box
                   sx={{
                     display: "flex",
@@ -163,6 +165,46 @@ const TrainingNow = () => {
                     {trainingView.Treino}
                   </Typography>
                 </Box>
+                {(trainingView.FinalizacaoTreino ||
+                  trainingView.ExemploFinal) && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      borderBottom: "1px solid black",
+                    }}
+                  >
+                    <Typography variant="h6">Finalização do treino</Typography>
+                    {trainingView.FinalizacaoTreino && (
+                      <>
+                        <Divider />
+                        <Typography variant="subtitle1">
+                          {trainingView.FinalizacaoTreino}
+                        </Typography>
+                      </>
+                    )}
+                    {trainingView.ExemploFinal && (
+                      <>
+                        {trainingView.FinalizacaoTreino && <Divider />}
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                          onClick={() =>
+                            handleSetVideo(trainingView.ExemploFinal)
+                          }
+                        >
+                          Exemplo: <OndemandVideoIcon />
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+                )}
                 {trainingView.Observacao && (
                   <Box
                     sx={{
@@ -240,7 +282,7 @@ const TrainingNow = () => {
                       Ativação Neural
                     </Typography>
                     <Divider />
-                    <Box sx={{ textAlign: "center"}}>
+                    <Box sx={{ textAlign: "center" }}>
                       <Typography>{trainingView.Ativacao}</Typography>
                     </Box>
                   </Box>
@@ -301,17 +343,18 @@ const TrainingNow = () => {
               </>
             )}
             {trainingView.Finalizavel && (
-              <Button
-                variant="contained"
+              <Box
                 sx={{
-                  mr: "auto",
-                  ml: "auto",
                   mt: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                onClick={() => setOpenFinish(true)}
               >
-                Finalizar treino
-              </Button>
+                <Button variant="contained" onClick={() => setOpenFinish(true)}>
+                  Finalizar treino
+                </Button>
+              </Box>
             )}
           </Box>
         ) : (
