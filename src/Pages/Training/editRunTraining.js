@@ -84,10 +84,10 @@ const EditRunTraining = ({ trainingId, open, setOpen, handleGetTrainings }) => {
       formik.setFieldValue("finalizabled", response.Finalizavel);
       formik.setFieldValue("finalized", response.Finalizado);
       formik.setFieldValue("linkVideo", response.Exemplo);
-      formik.setFieldValue("linkVideoFinish", response.ExemploFinal);
+      formik.setFieldValue("linkVideoFinish", response.ExemploFinal ? response.ExemploFinal : "");
       formik.setFieldValue("warmUp", response.Aquecimento);
       formik.setFieldValue("training", response.Treino);
-      formik.setFieldValue("finalTraining", response.FinalizacaoTreino);
+      formik.setFieldValue("finalTraining", response.FinalizacaoTreino ? response.FinalizacaoTreino : "");
     } catch (e) {
       console.log(e);
     }

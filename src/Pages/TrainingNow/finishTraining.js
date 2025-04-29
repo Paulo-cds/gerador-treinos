@@ -25,7 +25,7 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [title, setTitle] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const effortLevels = [
     {
@@ -52,24 +52,26 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
   ];
 
   const handleFinishTraining = async () => {
-    if(!selectedLevel){
-        alert("Selecione o nível de esforço!")
-        return
+    if (!selectedLevel) {
+      alert("Selecione o nível de esforço!");
+      return;
     }
     setLoading(true);
     try {
+      const match = stravaLink.match(/https?:\/\/[^\s]+/);
+      const link = match ? match[0] : "";
       const data = {
-        StravaLink: stravaLink,
+        StravaLink: link,
         Esforco: selectedLevel,
-        Finalizado:true
+        Finalizado: true,
       };
       await editTrainingData(data, id);
       setSeverity("success");
       setTitle("Treino finalizado com sucesso!");
       setOpenAlert(true);
-      setTimeout(()=>{
-        navigate('/myTrainings')
-      },1500)
+      setTimeout(() => {
+        navigate("/myTrainings");
+      }, 1500);
     } catch (e) {
       console.log(e);
       setSeverity("error");
@@ -134,7 +136,9 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
           }}
         >
           <Button onClick={() => setOpen(false)}>Cancelar</Button>
-          <Button variant="contained" onClick={()=>handleFinishTraining()} >Finalizar</Button>
+          <Button variant="contained" onClick={() => handleFinishTraining()}>
+            Finalizar
+          </Button>
         </Box>
       </Paper>
       <LoadingDefault open={loading} />

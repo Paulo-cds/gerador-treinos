@@ -4,6 +4,7 @@ import { Backdrop, Box, Button, Divider, Typography } from "@mui/material";
 import LoadingDefault from "../../Assets/Components/loadingDefault";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import Player from "../../Assets/Player";
+import LinkIcon from "@mui/icons-material/Link";
 
 const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
   const [loading, setLoading] = useState(false);
@@ -244,16 +245,17 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                 {trainingView.StravaLink && (
                   <>
                     <Divider />
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        cursor: "pointer",
-                      }}
-                      onClick={() =>
-                        window.open(trainingView.StravaLink, "_blank")
-                      }
-                    >
-                      Link Strava: {trainingView.StravaLink}
+                    <Typography variant="subtitle1" sx={{display:'flex', alignItems:'center', gap:1}} >
+                      Link Strava:{" "}
+                      <LinkIcon
+                        sx={{
+                          cursor: "pointer",
+                          fontSize:'2.5em'
+                        }}
+                        onClick={() =>
+                          window.open(trainingView.StravaLink, "_blank")
+                        }
+                      />
                     </Typography>
                   </>
                 )}
