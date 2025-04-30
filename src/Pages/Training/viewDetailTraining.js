@@ -245,12 +245,15 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                 {trainingView.StravaLink && (
                   <>
                     <Divider />
-                    <Typography variant="subtitle1" sx={{display:'flex', alignItems:'center', gap:1}} >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
                       Link Strava:{" "}
                       <LinkIcon
                         sx={{
                           cursor: "pointer",
-                          fontSize:'2.5em'
+                          fontSize: "2.5em",
                         }}
                         onClick={() =>
                           window.open(trainingView.StravaLink, "_blank")
@@ -286,25 +289,7 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                   </Typography>
                 </Box>
               )}
-              {trainingView.Ativacao && (
-                <Box
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "primary.main",
-                    borderRadius: "20px",
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="h6">Ativacao Neural</Typography>
-                  <Divider />
-                  <Typography variant="subtitle1">
-                    {trainingView.Ativacao}
-                  </Typography>
-                </Box>
-              )}
+
               <Box
                 sx={{
                   border: "1px solid",
@@ -337,6 +322,25 @@ const ViewDetailTraining = ({ trainingId, open, setOpen }) => {
                   </>
                 ))}
               </Box>
+              {trainingView.Ativacao && (
+                <Box
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: "20px",
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  <Typography variant="h6">Ativacao Neural</Typography>
+                  <Divider />
+                  <Typography variant="subtitle1">
+                    {trainingView.Ativacao}
+                  </Typography>
+                </Box>
+              )}
               <Box
                 sx={{
                   border: "1px solid",
