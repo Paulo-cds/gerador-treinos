@@ -58,8 +58,11 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
     }
     setLoading(true);
     try {
-      const match = stravaLink.match(/https?:\/\/[^\s]+/);
-      const link = match ? match[0] : "";
+      let link = ""
+      if(stravaLink){
+        const match = stravaLink.match(/https?:\/\/[^\s]+/);
+        link = match ? match[0] : "";
+      }
       const data = {
         StravaLink: link,
         Esforco: selectedLevel,
