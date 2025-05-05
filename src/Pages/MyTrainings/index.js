@@ -12,7 +12,7 @@ const MyTrainings = () => {
   const [myUnfinishedTrainings, setMyUnfinishedTrainings] = useState();
   const [loading, setLoading] = useState(false);
   const [viewTrainingType, setViewTrainingType] = useState("funcional");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     handleGetMyTrainings();
@@ -21,23 +21,30 @@ const MyTrainings = () => {
   const handleGetMyTrainings = async () => {
     setLoading(true);
     try {
-      const response = await fetchTrainingsNotFinished(userData.tipo === 'personal' ? userData.id : "turma");
+      const response = await fetchTrainingsNotFinished(
+        userData.tipo === "personal" ? userData.id : "turma"
+      );
       let control = response;
+      control.forEach((item) => {
+        if (typeof item.Data === "object") {
+          item.Data = new Date(item.Data.seconds * 1000);
+        } else {
+          item.Data = new Date(item.Data.split("/").reverse().join("/"));
+        }
+      });
       control = control.sort((a, b) => {
-        const dataA = new Date(a.Data.split("/").reverse().join("/"));
-        const dataB = new Date(b.Data.split("/").reverse().join("/"));
-        return dataA - dataB;
+        return new Date(a.Data) - new Date(b.Data);
       });
       setMyUnfinishedTrainings(control);
-      if(userData.tipo !== 'personal'){
-        navigate(`/trainingNow/${control[control.length-1].id}`)
+      if (userData.tipo !== "personal") {
+        navigate(`/trainingNow/${control[control.length - 1].id}`);
       }
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
   };
- 
+  
   return (
     <Box
       sx={{

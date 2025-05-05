@@ -20,14 +20,12 @@ const RunTraining = ({
   users,
 }) => {
   const [loading, setLoading] = useState(false);
-  const options = { timeZone: "America/Sao_Paulo" };
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [title, setTitle] = useState("");
 
   const formik = useFormik({
     initialValues: {
-      data: new Date(),
       type: "",
       personal: "",
       observation: "",
@@ -42,19 +40,15 @@ const RunTraining = ({
     validationSchema: yup.object({
       training: yup.string(),
       observation: yup.string(),
-      data: yup.date().required("O campo é obrigatório."),
       type: yup.string().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const prev = values.data;
-        prev.setDate(prev.getDate());
-        const viewData = prev.toLocaleDateString("pt-BR", options);
         let newTraining = [];
         const trainingGer = {
           Aquecimento: values.warmUp,
-          Data: viewData,
+          Data: new Date(),
           Observacao: values.observation,
           Tipo: "corrida",
           Finalizado: false,

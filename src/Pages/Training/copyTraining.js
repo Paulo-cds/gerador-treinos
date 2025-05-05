@@ -40,6 +40,7 @@ const CopyTraining = ({ trainingId, open, setOpen }) => {
         fetchOneTraining(trainingId),
         fetchUsers(),
       ]);
+      response[0].Data = new Date()
       setTrainingSelected(response[0]);
       const newUser = [];
       response[1].docs.forEach((item) => {
@@ -53,7 +54,6 @@ const CopyTraining = ({ trainingId, open, setOpen }) => {
     }
     setLoading(false);
   };
-  
 
   const handleChange = (event) => {
     const {

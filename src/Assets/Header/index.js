@@ -230,8 +230,8 @@ function Header(props, theme) {
             </ListItemIcon>
             <ListItemText primary={"Confirmados"} />
           </ListItemButton>
-        </ListItem>
-        <Divider /> */}
+        </ListItem>*/}
+        <Divider /> 
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {

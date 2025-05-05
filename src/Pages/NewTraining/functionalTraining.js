@@ -6,11 +6,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  styled,
   Switch,
   TextField,
-  Tooltip,
-  tooltipClasses,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -19,9 +16,6 @@ import { useState } from "react";
 import { createPersonalTraining } from "../../Services/routes";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Player from "../../Assets/Player";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import { backdropHeaderTable } from "../../Assets/colors";
 import AlertFeedBack from "../../Assets/Components/alertFeedBack";
 import LoadingDefault from "../../Assets/Components/loadingDefault";
 
@@ -50,7 +44,6 @@ const FunctionalTraining = ({
       numero: "",
       qtdExercicios: "",
       ativacao: "",
-      data: new Date(),
       type: "",
       personal: "",
       observation: "",
@@ -63,40 +56,12 @@ const FunctionalTraining = ({
       qtdExercicios: yup.number().required("O campo é obrigatório."),
       ativacao: yup.string(),
       observation: yup.string(),
-      data: yup.date().required("O campo é obrigatório."),
       type: yup.string().required("O campo é obrigatório."),
     }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        //gerando método
         setAtivacao(formik.values.ativacao);
-        // let notMetod = true;
-        // let qtdExe = 0;
-        // if (trainings) {
-        //   let controlLength = 0
-        //   while (notMetod) {
-        //     let sortMet = Math.floor(Math.random() * metods.length);
-        //     const verificMet = trainings.Treinos.find(
-        //       (tr) => tr.Metodo === metods[sortMet].nome
-        //     );
-
-        //     if (!verificMet || controlLength >= metods.length) {
-        //       setMtTreino(metods[sortMet].nome);
-        //       qtdExe = metods[sortMet].quantidade;
-        //       notMetod = false; // saia do laço quando a sentença for falsa
-        //     }
-        //     controlLength++
-        //   }
-        // } else {
-        //   let sortMet = Math.floor(Math.random() * metods.length);
-        //   qtdExe = metods[sortMet].quantidade;
-        //   setMtTreino(metods[sortMet].nome);
-        // }
-
-        // final gerando método
-
-        //gerando aquecimento
         let notAqc = true;
         let exeAqc = [];
         if (trainings) {
@@ -228,16 +193,13 @@ const FunctionalTraining = ({
 
   const handleSaveTraining = async () => {
     setLoading(true);
-    const prev = formik.values.data;
-    prev.setDate(prev.getDate());
-    const viewData = prev.toLocaleDateString("pt-BR", options);
     let newTraining = [];
     const trainingGer = {
       RoundsAqc: roundsAqc,
       RoundsTraining: roundsTraining,
       Aquecimento: aquecimento,
       Ativacao: ativacao,
-      Data: viewData,
+      Data: new Date(),
       Exercicios: exeTreino,
       Observacao: formik.values.observation,
       Tipo: "funcional",

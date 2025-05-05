@@ -100,7 +100,7 @@ const Training = () => {
       handleGetUsers();
     }
   }, []);
-  
+
   const handleGetTrainings = async (type) => {
     setLoading(true);
     try {
@@ -113,11 +113,17 @@ const Training = () => {
         newItem.id = item.id;
         newTrainings.push(newItem);
       });
+
       let control = newTrainings;
+      control.forEach((item) => {
+        if (typeof item.Data === "object") {
+          item.Data = new Date(item.Data.seconds * 1000);
+        } else {
+          item.Data = new Date(item.Data.split("/").reverse().join("/"));
+        }
+      });
       control = control.sort((a, b) => {
-        const dataA = new Date(a.Data.split("/").reverse().join("/"));
-        const dataB = new Date(b.Data.split("/").reverse().join("/"));
-        return dataB - dataA;
+        return new Date(b.Data) - new Date(a.Data);
       });
       setTrainings(control);
     } catch (e) {
@@ -128,7 +134,7 @@ const Training = () => {
     }
     setLoading(false);
   };
-
+  
   const handleGetUsers = async () => {
     setLoading(true);
     try {
@@ -326,7 +332,7 @@ const Training = () => {
                         />
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
-                        {row.Data}
+                        {new Date(row.Data).toLocaleDateString()}
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         {row.Tipo}

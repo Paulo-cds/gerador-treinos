@@ -17,6 +17,11 @@ import LoadingDefault from "../../Assets/Components/loadingDefault";
 import { editTrainingData } from "../../Services/routes";
 import AlertFeedBack from "../../Assets/Components/alertFeedBack";
 import { useNavigate } from "react-router-dom";
+import LeveIcon from "../../images/leve.png";
+import MuitoLeve from "../../images/muito leve.png";
+import Medio from "../../images/medio.png";
+import Dificil from "../../images/dificil.png";
+import MuitoDificil from "../../images/muito dificil.png";
 
 const FinishTraining = ({ open, setOpen, id, run }) => {
   const [stravaLink, setStravaLink] = useState();
@@ -31,23 +36,32 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
     {
       level: 1,
       label: "0 a 2",
-      icon: <MoodBadTwoToneIcon fontSize="100px" />,
+      effort: "Muito leve",
+      icon: <img src={MuitoLeve} alt="Leve" width="40px" />,
     },
     {
       level: 2,
       label: "3 a 4",
-      icon: <SentimentDissatisfiedTwoToneIcon fontSize="100px" />,
+      effort: "Leve",
+      icon: <img src={LeveIcon} alt="Leve" width="40px" />,
     },
     {
       level: 3,
       label: "5 a 6",
-      icon: <SentimentSatisfiedAltTwoToneIcon fontSize="100px" />,
+      effort: "Médio",
+      icon: <img src={Medio} alt="Leve" width="40px" />,
     },
-    { level: 4, label: "7 a 8", icon: <MoodTwoToneIcon fontSize="100px" /> },
+    {
+      level: 4,
+      label: "7 a 8",
+      effort: "Dificil",
+      icon: <img src={Dificil} alt="Leve" width="40px" />,
+    },
     {
       level: 5,
       label: "9 a 10",
-      icon: <SentimentVeryDissatisfiedTwoToneIcon fontSize="100px" />,
+      effort: "Muito dificil",
+      icon: <img src={MuitoDificil} alt="Leve" width="40px" />,
     },
   ];
 
@@ -58,8 +72,8 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
     }
     setLoading(true);
     try {
-      let link = ""
-      if(stravaLink){
+      let link = "";
+      if (stravaLink) {
         const match = stravaLink.match(/https?:\/\/[^\s]+/);
         link = match ? match[0] : "";
       }
@@ -105,14 +119,17 @@ const FinishTraining = ({ open, setOpen, id, run }) => {
             Selecione o nível de esforço
           </Typography>
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            {effortLevels.map(({ level, label, icon }) => (
-              <Tooltip title={label} key={level}>
+            {effortLevels.map(({ level, label, effort, icon }) => (
+              <Tooltip title={effort} key={level}>
                 <Box
                   onClick={() => setSelectedLevel(label)}
                   sx={{
                     cursor: "pointer",
                     textAlign: "center",
-                    color: selectedLevel === label ? "blue" : "black",
+                    p:'2px',
+                    boxShadow: selectedLevel === label ? "0px 0px 10px yellow" : "none",
+                    borderRadius: selectedLevel === label ? "15px 15px" : "none",
+                    backgroundColor: selectedLevel === label ? "yellow" : "none",
                   }}
                 >
                   <Box sx={{ fontSize: "2rem" }}>{icon}</Box>
